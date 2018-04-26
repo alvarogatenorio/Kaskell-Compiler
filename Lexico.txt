@@ -24,4 +24,39 @@ letra = ([A-Z]|[a-z])
 digito = [0-9]
 entero = {digito}+
 separador = [ \t\r\b\n]
-comentario = 
+comentario = {$.}({letra}|{digito}|{separador}|{.}{^$}|{$})*{.$}
+suma = \+
+menos = \-
+prod = \*
+div = /
+izqPar = \(
+derPar = \)
+asig = \=
+cartProd = X
+coma = \,
+mayor = \>
+menor = \<
+izqCor = \[
+derCor = \]
+izqLlav = \{
+derLlav = \}
+igualdad = \=\=
+desigualdad = \=\\\=
+puntoComa = \;
+gorrito = \^
+flecha = \|\-\>
+mod = mod
+or = or
+and = and
+not = not
+int = kinkeger
+bool = kool
+struct = struK
+punt = K\-
+tipoSin = KK
+if = if
+else = else
+while = while
+for = for
+dosPuntos = \:
+%%
