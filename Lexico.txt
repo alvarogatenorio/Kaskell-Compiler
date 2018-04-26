@@ -1,0 +1,27 @@
+package kaskell;
+
+%%
+%line
+%class AnalizadorKasklex
+%type UnidadLexica
+%unicode
+
+%{
+	private  KOperations kops;
+	public String lexema() {return yytext();}
+	public int fila() {return yyLine+1;}
+%}
+
+%eofval{
+	return kops.unidadEof()
+%eofval}
+
+%init{
+	kops = new KOperations(this); 
+%init}
+
+letra = ([A-Z]|[a-z])
+digito = [0-9]
+entero = {digito}+
+separador = [ \t\r\b\n]
+comentario = 
