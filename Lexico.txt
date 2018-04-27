@@ -23,6 +23,7 @@ package kaskell;
 letra = ([A-Z]|[a-z])
 digito = [0-9]
 entero = {digito}+
+identificador = {letra}({letra}|{digito})*
 separador = [ \t\r\b\n]
 comentario = {$.}({letra}|{digito}|{separador}|{.}{^$}|{$})*{.$}
 suma = \+
@@ -60,3 +61,23 @@ while = while
 for = for
 dosPuntos = \:
 %%
+{separador}      {}
+{comentario}     {}
+{identificador}  {return kops.unidadId();}
+{entero}         {return kops.unidadEntero();}
+{suma}           {return kops.unidadSuma();}
+{menos}          {return kops.unidadResta();}
+{prod}           {return kops.unidadProducto();}
+{div}            {return kops.unidadDivision();}
+{izqPar}         {return kops.unidadIzqPar();}
+{derPar}         {return kops.unidadderPar();}
+{asig}           {return kops.unidadAsig();}
+{cartProd}       {return kops.unidadCartProd();}
+{coma}           {return kops.unidadComa();}
+{mayor}          {return kops.unidadMayor();}
+{menor}          {return kops.unidadMenor);}
+{izqCor}         {return kops.unidadIzqCor();}
+{derCor}         {return kops.unidadDerCor();}
+{izqLlav}        {return kops.unidadIzqLlav();}
+{derLlav}        {return kops.unidadDerLlav();}
+{igualdad}       {return kops.unidadIgualdad();}
