@@ -73,12 +73,15 @@ Comment = "$." [^.] ~".$" | "$." "."+ "$"
     ";"                { System.out.print(" ; "); return symbol(sym.SEMICOLON); }
     ","                { System.out.print(" , "); return symbol(sym.COMMA); }
     "+"                { System.out.print(" + "); return symbol(sym.PLUS); }
+    "++"               { System.out.print(" + "); return symbol(sym.PPLUS); }
     "-"                { System.out.print(" - "); return symbol(sym.MINUS); }
+    "--"               { System.out.print(" - "); return symbol(sym.MMINUS); }
     "*"                { System.out.print(" * "); return symbol(sym.TIMES); }
     "/"                { System.out.print(" / "); return symbol(sym.DIV); }
     ">"                { System.out.print(" > "); return symbol(sym.GE); }
     "<"                { System.out.print(" < "); return symbol(sym.LE); }
     "="                { System.out.print(" = "); return symbol(sym.EQ); }
+    "=="               { System.out.print(" : "); return symbol(sym.EQQ); }
     ":"                { System.out.print(" : "); return symbol(sym.DOTS); }
     "|"                { System.out.print(" | "); return symbol(sym.VERT); }
     "^"                { System.out.print(" ^ "); return symbol(sym.EXP); }

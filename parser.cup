@@ -4,12 +4,13 @@ package kaskell;
 
 terminal LBRACE, RBRACE, IDENT, EQ, SEMICOLON, PLUS, MINUS, TIMES, DIV,
          GE, LE, DOTS, VERT, EXP, LPAR, RPAR, LBRACK, RBRACK, INT, COMMA,
-         INTT, BOOL, RETURN, X, IF, ELSE, WHILE, FOR, OR, AND, MOD, TRUE, FALSE;
+         INTT, BOOL, RETURN, X, IF, ELSE, WHILE, FOR, OR, AND, MOD, TRUE,
+         FALSE, PPLUS, MMINUS, EQQ;
 
 non terminal S,
              blocks, block, return_block,
              statements, statement,
-             basic_statement,
+             basic_statement, mixed_basic,
                  assignment, return, declaration,
              complex_statement,
                  if, while, for,
@@ -17,7 +18,12 @@ non terminal S,
              array, multi_array,
              functions, function,
              function_tail, type_cartesian, ident_tuple,
-             expression, function_head, for_tuple;
+             expression, function_head, for_tuple,
+             expression_p1, expression_p2, expression_p3, expression_p4;
+
+precedence left PLUS, MINUS, OR, PPLUS, MMINUS;
+precedence left TIMES, DIV, MOD, AND;
+precedence left GE, LE, EQQ;
 
 start with S;
 
@@ -29,7 +35,8 @@ statement ::= basic_statement SEMICOLON |
 statements ::= statements statement |
                statement;
 basic_statement ::= assignment |
-                    declaration;
+                    declaration |
+                    mixed_basic;
 complex_statement ::= if |
                       while |
                       for;
@@ -45,6 +52,8 @@ declaration ::= type IDENT |
 
 assignment ::= IDENT multi_array EQ expression |
                IDENT EQ expression;
+
+mixed_basic ::= type IDENT EQ expression;
 
 return ::= RETURN IDENT SEMICOLON;
 
@@ -64,4 +73,23 @@ if ::= IF LPAR expression RPAR block |
 while ::= WHILE LPAR expression RPAR block;
 for ::= FOR LPAR for_tuple RPAR block;
 for_tuple ::= IDENT SEMICOLON expression SEMICOLON assignment;
-expression ::= INT | IDENT;
+
+expression ::= MINUS expression |
+                  expression_p1 PPLUS |
+                  expression_p1 MMINUS |
+                  expression PLUS expression |
+                  expression MINUS expression |
+                  expression OR expression |
+                  expression_p1;
+expression_p1 ::= expression_p1 TIMES expression_p1 |
+                  expression_p1 DIV expression_p2 |
+                  expression_p1 MOD expression_p2 |
+                  expression_p1 AND expression_p1 |
+                  expression_p2;
+expression_p2 ::= expression_p3 EXP expression_p2 |
+                  expression_p3;
+expression_p3 ::= expression_p3 GE expression_p3 |
+                  expression_p3 LE expression_p3 |
+                  expression_p3 EQQ expression_p3 |
+                  expression_p4;
+expression_p4 ::= INT | TRUE | FALSE | IDENT | LPAR expression RPAR;
