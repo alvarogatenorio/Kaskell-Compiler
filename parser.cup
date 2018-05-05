@@ -1,0 +1,55 @@
+/*QUEDAN POR RESOLVER APAÑOS DE BLANCOS*/
+
+package kaskell;
+
+terminal LBRACE, RBRACE, IDENT, EQ, SEMICOLON, PLUS, MINUS, TIMES, DIV,
+         GE, LE, DOTS, VERT, EXP, LPAR, RPAR, LBRACK, RBRACK, INT, WHITE, COMMA;
+
+non terminal S,
+             blocks, block,
+             statements, statement,
+             basic_statement,
+                 assignment, return, declaration,
+             complex_statement,
+                 if, while, for,
+             type, basic_type, vector_type,
+             array, multi_array,
+             functions, function,
+             function_tail, type_cartesian, ident_tuple,
+             expression, function_head, for_tuple;
+
+start with S;
+
+S ::= blocks WHITE | blocks WHITE functions WHITE;
+
+statement ::= basic_statement SEMICOLON | complex_statement WHITE | block;
+statements ::= statements WHITE statement | statement;
+basic_statement ::= assignment | declaration | return;
+complex_statement ::= if | while | for;
+
+array ::= LBRACK INT RBRACK;
+multi_array ::= multi_array array | array;
+
+declaration ::= IDENT WHITE IDENT |
+                multi_array WHITE IDENT WHITE IDENT;
+
+assignment ::= IDENT multi_array WHITE EQ WHITE expression |
+               IDENT WHITE EQ WHITE expression;
+return ::= IDENT WHITE assignment;
+
+block ::= LBRACE WHITE statements WHITE RBRACE ;
+blocks ::= blocks WHITE block | block;
+
+function_head ::= IDENT DOTS type_cartesian WHITE MINUS GE WHITE IDENT;
+function_tail ::= LPAR ident_tuple RPAR WHITE VERT MINUS GE WHITE block;
+function ::= function_head WHITE function_tail;
+ident_tuple ::= ident_tuple COMMA WHITE IDENT | IDENT;
+type_cartesian ::= type_cartesian WHITE IDENT WHITE IDENT | IDENT;
+functions ::= functions WHITE function | function;
+
+if ::= IDENT WHITE LPAR expression RPAR WHITE block WHITE IDENT WHITE block;
+//while ::= IDENT WHITE LPAR expression RPAR WHITE block;
+for ::= IDENT WHITE LPAR for_tuple RPAR block;
+for_tuple ::= IDENT SEMICOLON WHITE expression SEMICOLON WHITE expression;
+
+expression ::= INT | IDENT;
