@@ -1,0 +1,10 @@
+{
+	{
+                kool a;
+                [3][3][3] kinkeger A;
+		A[5][2][0] = 4;
+	}
+}
+f : kinkeger X kinkeger X kool X kool -> kool
+(a, b, c, d) |->
+{s = 10; {kinkeger a; khile(3){r=0;} kor(a;b;c=0){a=0;}} kreturn s;  }  

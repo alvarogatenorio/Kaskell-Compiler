@@ -3,16 +3,17 @@
 package kaskell;
 
 terminal LBRACE, RBRACE, IDENT, EQ, SEMICOLON, PLUS, MINUS, TIMES, DIV,
-         GE, LE, DOTS, VERT, EXP, LPAR, RPAR, LBRACK, RBRACK, INT, WHITE, COMMA;
+         GE, LE, DOTS, VERT, EXP, LPAR, RPAR, LBRACK, RBRACK, INT, COMMA,
+         INTT, BOOL, RETURN, X, IF, ELSE, WHILE, FOR, OR, AND, MOD, TRUE, FALSE;
 
 non terminal S,
-             blocks, block,
+             blocks, block, return_block,
              statements, statement,
              basic_statement,
                  assignment, return, declaration,
              complex_statement,
                  if, while, for,
-             type, basic_type, vector_type,
+             type,
              array, multi_array,
              functions, function,
              function_tail, type_cartesian, ident_tuple,
@@ -20,36 +21,47 @@ non terminal S,
 
 start with S;
 
-S ::= blocks WHITE | blocks WHITE functions WHITE;
+S ::= blocks | blocks functions;
 
-statement ::= basic_statement SEMICOLON | complex_statement WHITE | block;
-statements ::= statements WHITE statement | statement;
-basic_statement ::= assignment | declaration | return;
-complex_statement ::= if | while | for;
+statement ::= basic_statement SEMICOLON |
+              complex_statement |
+              block;
+statements ::= statements statement |
+               statement;
+basic_statement ::= assignment |
+                    declaration;
+complex_statement ::= if |
+                      while |
+                      for;
 
 array ::= LBRACK INT RBRACK;
 multi_array ::= multi_array array | array;
 
-declaration ::= IDENT WHITE IDENT |
-                multi_array WHITE IDENT WHITE IDENT;
+type ::= INTT |
+         BOOL;
+         
+declaration ::= type IDENT |
+                multi_array type IDENT;
 
-assignment ::= IDENT multi_array WHITE EQ WHITE expression |
-               IDENT WHITE EQ WHITE expression;
-return ::= IDENT WHITE assignment;
+assignment ::= IDENT multi_array EQ expression |
+               IDENT EQ expression;
 
-block ::= LBRACE WHITE statements WHITE RBRACE ;
-blocks ::= blocks WHITE block | block;
+return ::= RETURN IDENT SEMICOLON;
 
-function_head ::= IDENT DOTS type_cartesian WHITE MINUS GE WHITE IDENT;
-function_tail ::= LPAR ident_tuple RPAR WHITE VERT MINUS GE WHITE block;
-function ::= function_head WHITE function_tail;
-ident_tuple ::= ident_tuple COMMA WHITE IDENT | IDENT;
-type_cartesian ::= type_cartesian WHITE IDENT WHITE IDENT | IDENT;
-functions ::= functions WHITE function | function;
+block ::= LBRACE statements RBRACE;
+return_block ::= LBRACE statements return RBRACE;
+blocks ::= blocks block | block;
 
-if ::= IDENT WHITE LPAR expression RPAR WHITE block WHITE IDENT WHITE block;
-//while ::= IDENT WHITE LPAR expression RPAR WHITE block;
-for ::= IDENT WHITE LPAR for_tuple RPAR block;
-for_tuple ::= IDENT SEMICOLON WHITE expression SEMICOLON WHITE expression;
+function_head ::= IDENT DOTS type_cartesian MINUS GE type;
+function_tail ::= LPAR ident_tuple RPAR VERT MINUS GE return_block;
+function ::= function_head function_tail;
+ident_tuple ::= ident_tuple COMMA IDENT | IDENT;
+type_cartesian ::= type_cartesian X type | type;
+functions ::= functions function | function;
 
+if ::= IF LPAR expression RPAR block |
+       IF LPAR expression RPAR block ELSE block;
+while ::= WHILE LPAR expression RPAR block;
+for ::= FOR LPAR for_tuple RPAR block;
+for_tuple ::= IDENT SEMICOLON expression SEMICOLON assignment;
 expression ::= INT | IDENT;

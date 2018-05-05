@@ -1,5 +1,5 @@
 package kaskell;
-
+import java.util.HashMap;
 import java_cup.runtime.Symbol;
 
 %%
@@ -35,6 +35,27 @@ import java_cup.runtime.Symbol;
     }
 %}
 
+/*Map for keywords*/
+%{
+    private HashMap<String, Integer> keywords = new HashMap<String, Integer>();
+%}
+
+%init{
+    keywords.put("kif", sym.IF);
+    keywords.put("kelse", sym.ELSE);
+    keywords.put("khile", sym.WHILE);
+    keywords.put("kor", sym.FOR);
+    keywords.put("kinkeger", sym.INTT);
+    keywords.put("kool", sym.BOOL);
+    keywords.put("X", sym.X);
+    keywords.put("korr", sym.OR);
+    keywords.put("kand", sym.AND);
+    keywords.put("kod", sym.MOD);
+    keywords.put("kreturn", sym.RETURN);
+    keywords.put("krue", sym.TRUE);
+    keywords.put("kalse", sym.FALSE);
+%init}
+
 /*-----Macros (regular definitions)-----*/
 
 White = [\ \n\r\t\f]+
@@ -49,31 +70,35 @@ Comment = "$." [^.] ~".$" | "$." "."+ "$"
 
 <YYINITIAL> {
 
-    ";"                { System.out.print(";"); return symbol(sym.SEMICOLON); }
-    ","                { System.out.print(","); return symbol(sym.COMMA); }
-    "+"                { System.out.print("+"); return symbol(sym.PLUS); }
-    "-"                { System.out.print("-"); return symbol(sym.MINUS); }
-    "*"                { System.out.print("*"); return symbol(sym.TIMES); }
-    "/"                { System.out.print("/"); return symbol(sym.DIV); }
-    ">"                { System.out.print(">"); return symbol(sym.GE); }
-    "<"                { System.out.print("<"); return symbol(sym.LE); }
-    "="                { System.out.print("="); return symbol(sym.EQ); }
-    ":"                { System.out.print(":"); return symbol(sym.DOTS); }
-    "|"                { System.out.print("|"); return symbol(sym.VERT); }
-    "^"                { System.out.print("^"); return symbol(sym.EXP); }
-    "("                { System.out.print("("); return symbol(sym.LPAR); }
-    ")"                { System.out.print(")"); return symbol(sym.RPAR); }
-    "["                { System.out.print("["); return symbol(sym.LBRACK); }
-    "]"                { System.out.print("]"); return symbol(sym.RBRACK); }
-    "{"                { System.out.print("{"); return symbol(sym.LBRACE); }
-    "}"                { System.out.print("}"); return symbol(sym.RBRACE); }
+    ";"                { System.out.print(" ; "); return symbol(sym.SEMICOLON); }
+    ","                { System.out.print(" , "); return symbol(sym.COMMA); }
+    "+"                { System.out.print(" + "); return symbol(sym.PLUS); }
+    "-"                { System.out.print(" - "); return symbol(sym.MINUS); }
+    "*"                { System.out.print(" * "); return symbol(sym.TIMES); }
+    "/"                { System.out.print(" / "); return symbol(sym.DIV); }
+    ">"                { System.out.print(" > "); return symbol(sym.GE); }
+    "<"                { System.out.print(" < "); return symbol(sym.LE); }
+    "="                { System.out.print(" = "); return symbol(sym.EQ); }
+    ":"                { System.out.print(" : "); return symbol(sym.DOTS); }
+    "|"                { System.out.print(" | "); return symbol(sym.VERT); }
+    "^"                { System.out.print(" ^ "); return symbol(sym.EXP); }
+    "("                { System.out.print(" ( "); return symbol(sym.LPAR); }
+    ")"                { System.out.print(" ) "); return symbol(sym.RPAR); }
+    "["                { System.out.print(" [ "); return symbol(sym.LBRACK); }
+    "]"                { System.out.print(" ] "); return symbol(sym.RBRACK); }
+    "{"                { System.out.print(" { "); return symbol(sym.LBRACE); }
+    "}"                { System.out.print(" } "); return symbol(sym.RBRACE); }
 
-    {Integer} { System.out.print(yytext());
+    {Integer} { System.out.print(" "+yytext()+" ");
                 return symbol(sym.INT, new Integer(yytext())); }
-    {Identifier} { System.out.print(yytext());
-                   return symbol(sym.IDENT, new Integer(1)); }
+    {Identifier} { String text = yytext();
+                   System.out.print(" "+text+" ");
+                   Integer s = keywords.get(text);
+                   if (s != null) { return symbol(s); }
+                   else { return symbol(sym.IDENT, new Integer(1)); }
+          }
     {Comment} {}
-    {White} { System.out.print("_"); return symbol(sym.WHITE); }
+    {White} { System.out.print(yytext()); }
 }
 
 
