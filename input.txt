@@ -5,9 +5,15 @@
 		A[5][2][0] = 4;
 	}
 }
+{komega(a,b,c);}
 $........$
 $.Krusty.$
-{a=-8+7-6*9/kalse kod (krue--) ^23 korr 34 kand krue++;}
+$.
+hjhk
+hghjggj
+hh
+.$
+{kinkeger a= -1++*5^i-7 kod 3 korr 5;}
 f : kinkeger X kinkeger X kool X kool -> kool
 (a, b, c, d) |->
-{s = 10; {kinkeger a=8; khile(3){r=0;} kor(a;b;c=0){a=0;}} kreturn s;  }  
+{s = 10; {kinkeger a=8; khile(3){r=0;} kor(a=9;b;c=0){a=0;}} kreturn s;  }  

@@ -1,2 +1,0 @@
-# Kaskell
-Intento de compilador
