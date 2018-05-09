@@ -1,3 +1,4 @@
+$.-----Kaskell test flight-----.$
 {
 	{
                 kool a;
@@ -14,6 +15,7 @@ hghjggj
 hh
 .$
 {kinkeger a= -1++*5^i-7 kod 3 korr 5;}
-f : kinkeger X kinkeger X kool X kool -> kool
+f : [6][4][2]kinkeger X kinkeger X kool X kool -> kool
 (a, b, c, d) |->
-{s = 10; {kinkeger a=8; khile(3){r=0;} kor(a=9;b;c=0){a=0;}} kreturn s;  }  
+{kinkeger s = 10; {kinkeger a=8; khile(3){kool r=0;} kor( kool a=9; b; c=0){kool a=0;}} kreturn s;  }
+f : ->|->{a=8;g;}

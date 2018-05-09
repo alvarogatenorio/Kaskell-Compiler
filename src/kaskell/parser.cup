@@ -1,0 +1,451 @@
+/*-----------------
+  -----Imports-----
+  -----------------*/
+
+package kaskell;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import expressions.*;
+import functions.*;
+import statements.*;
+import types.*;
+
+import java_cup.runtime.Symbol;
+
+/*-------------------------------
+  -----Syntax error handling-----
+  -------------------------------*/
+parser code {:
+    public void report_error(String message, Object info) {
+        StringBuilder errorMessage = new StringBuilder("SYNTAX ERROR: ");
+        if (info instanceof Symbol) {
+            Symbol s = (Symbol) info;
+            if (s.left >= 0) {
+                errorMessage.append("line " + (s.left + 1));
+                if (s.right >= 0) {
+                    errorMessage.append(" column " + (s.right +1));
+                }
+            }
+        }
+        errorMessage.append("\n" + message);
+        System.err.println(errorMessage);
+    }
+:}
+
+/*-------------------------------------
+  -----Terminals and non terminals-----
+  -------------------------------------*/
+
+terminal LBRACE, RBRACE, EQ, SEMICOLON, PLUS, MINUS, TIMES, DIV,
+         GE, LE, DOTS, VERT, EXP, LPAR, RPAR, LBRACK, RBRACK, COMMA,
+         INTT, BOOL, RETURN, X, IF, ELSE, WHILE, FOR, OR, AND, MOD, PPLUS,
+         MMINUS, EQQ, NOT;
+
+terminal String IDENT; 
+terminal Integer INT;
+terminal Boolean TRUE, FALSE;
+
+non terminal Program          S;
+non terminal List<Block>      blocks;
+non terminal Block            block;
+non terminal ReturnBlock      return_block;
+non terminal Expression       return;
+non terminal List<Statement>  statements;
+non terminal Statement        statement;
+non terminal BasicStatement   basic_statement;
+non terminal Mixed            mixed_basic;
+non terminal Call             function_call;
+non terminal Assignment       assignment;
+non terminal Declaration      declaration;
+non terminal ComplexStatement complex_statement;
+non terminal If               if;
+non terminal While            while;
+non terminal For              for;
+non terminal ForTuple         for_tuple;
+non terminal Type             type;
+non terminal List<Integer>    multi_array;
+non terminal Integer          array;
+non terminal List<Function>   functions;
+non terminal Function         function;
+non terminal FunctionHead     function_head;
+non terminal FunctionTail     function_tail;
+non terminal List<Type>       type_cartesian;
+non terminal Expression       expression, expression_p1, expression_p2,
+                              expression_p3, expression_p4, expression_p5,
+                              expression_p6;
+non terminal List<Identifier> ident_tuple;
+
+/*Starting symbol of the program*/
+start with S;
+
+/*-----------------
+  -----Program-----
+  -----------------*/
+
+/*A program is a sequence of blocks or a sequence of blocks followed by a sequence
+  of functions (maybe we should revert the order)*/
+S ::= blocks:bs              {: RESULT = new Program(bs); :}
+      |
+      blocks:bs functions:fs {: RESULT = new Program(bs, fs); :}
+      ;
+
+/*--------------------
+  -----Statements-----
+  --------------------*/
+
+/*A sequence of statements is a sequence of statements followed by a statement, or
+  a statement*/
+statements ::= statements:ss statement:s {: ss.add(s); RESULT = ss; :}
+               |
+               statement:s {: 
+                              ArrayList<Statement> ss = new ArrayList<Statement>();
+                              ss.add(s);
+                              RESULT = ss;
+                           :}
+               ;
+/*A statement is a basic statement followed by a semicolon, a complex statement or
+  a block*/
+statement ::= basic_statement:s SEMICOLON {: RESULT = s; :}
+              |
+              complex_statement:s         {: RESULT = s; :}
+              |
+              block:b                     {: RESULT = b; :}
+              ;
+
+/*A basic statement is an assignment, a declaration, an assignment-declaration or
+  a function call*/
+basic_statement ::= assignment:a    {: RESULT = a; :}
+                    |
+                    declaration:d   {: RESULT = d; :}
+                    |
+                    mixed_basic:da  {: RESULT = da; :}
+                    |
+                    function_call:f {: RESULT = f; :}
+                    ;
+/*A complex statement is an if, a while, or a for*/
+complex_statement ::= if:i    {: RESULT = i; :}
+                      |
+                      while:w {: RESULT = w; :}
+                      |
+                      for:f   {: RESULT = f; :}
+                      ;
+
+/*A declaration is a type or a multidimensional array type followed by an identifier*/
+declaration ::= type:t IDENT:i
+                {:
+                    Identifier ident = new Identifier(i);
+                    ident.setRow(ileft);
+                    ident.setColumn(iright);
+                    RESULT = new Declaration(t,ident);
+                    
+                :}
+                |
+                multi_array:m type:t IDENT:i
+                {:
+                    Identifier ident = new Identifier(i);
+                    ident.setRow(ileft);
+                    ident.setColumn(iright);
+                    RESULT = new Declaration(new ArrayType(t.getType(),m), ident);
+                :}
+                ;
+/*An assignment is an identifier followed (or not) by a multidimensional array an 
+  equals symbol and an expression*/
+assignment ::= IDENT:i multi_array:ii EQ expression:e
+               {:
+                   Identifier ident = new Identifier(i);
+                   ident.setRow(ileft);
+                   ident.setColumn(iright);
+                   RESULT = new ArrayAssignment(ident,ii,e);
+               :}
+               |
+               IDENT:i EQ expression:e
+               {:
+                   Identifier ident = new Identifier(i);
+                   ident.setRow(ileft);
+                   ident.setColumn(iright);
+                   RESULT = new Assignment(ident,e);
+               :}
+               ;
+/*An assignment-declaration is a type followed by an identifier, an equals symbol and
+  an expression*/
+mixed_basic ::= type:t IDENT:i EQ expression:e
+                {:
+                    Identifier ident = new Identifier(i);
+                    ident.setRow(ileft);
+                    ident.setColumn(iright);
+                    RESULT = new Mixed(t,ident,e);
+                :}
+                ;
+/*A function call is an identifier followed by the arguments of the function*/
+function_call ::= IDENT:i LPAR ident_tuple:ii RPAR
+                  {:
+                      Identifier ident = new Identifier(i);
+                      ident.setRow(ileft);
+                      ident.setColumn(iright);
+                      RESULT = new Call(ident, ii);
+                  :}
+                  |
+                  IDENT:i
+                  {:
+                      Identifier ident = new Identifier(i);
+                      ident.setRow(ileft);
+                      ident.setColumn(iright);
+                      RESULT = new Call(ident, null);
+                  :}
+                  ;
+
+/*An array is an integer between brackets*/
+array ::= LBRACK INT:i RBRACK {: RESULT = i; :};
+/*A multidimensional array is a sequence of arrays*/
+multi_array ::= multi_array:ii array:i
+                {: ii.add(i); RESULT = ii; :}
+                |
+                array:i
+                {:
+                    ArrayList<Integer> ii = new ArrayList<Integer>();
+                    ii.add(i);
+                    RESULT = ii;
+                :}
+                ;
+/*There are only two types, integers and booleans*/
+type ::= INTT {: RESULT = new Type(Types.INTEGER); :}
+         |
+         BOOL {: RESULT = new Type(Types.BOOLEAN); :}
+         ;
+
+/*-----Complex statements-----*/
+if ::= IF LPAR expression:e RPAR block:b
+       {: RESULT = new If(e,b); :}
+       |
+       IF LPAR expression:e RPAR block:b1 ELSE block:b2
+       {: RESULT = new IfElse(e, b1, b2); :}
+       ;
+while ::= WHILE LPAR expression:e RPAR block:b
+          {: RESULT = new While(e,b); :}
+          ;
+for ::= FOR LPAR for_tuple:f RPAR block:b
+        {: RESULT = new For(f,b); :}
+        ;
+for_tuple ::= assignment:a SEMICOLON expression:e SEMICOLON assignment:l
+              {: RESULT = new ForTuple(a,e,l); :}
+              |
+              mixed_basic:da SEMICOLON expression:e SEMICOLON assignment:l
+              {: RESULT = new ForTuple(da, e, l); :}
+              ;
+
+/*---------------
+  ----Return-----
+  ---------------*/
+
+return ::= RETURN expression:e SEMICOLON {: RESULT = e; :};
+
+/*----------------
+  -----Blocks-----
+  ----------------*/
+  
+block ::= LBRACE statements:ss RBRACE
+          {: RESULT = new Block(ss); :}
+          ;
+return_block ::= LBRACE statements:ss return:r RBRACE
+                 {: RESULT = new ReturnBlock(ss,r); :}
+                 |
+                 LBRACE return:r RBRACE
+                 {: RESULT = new ReturnBlock(null, r); :}
+                 ;
+blocks ::= blocks:bb block:b
+           {: bb.add(b); RESULT = bb; :}
+           |
+           block:b
+           {: 
+               ArrayList<Block> bb = new ArrayList<Block>();
+               bb.add(b);
+               RESULT = bb;
+           :}
+           ;
+
+/*-------------------
+  -----Functions-----
+  -------------------*/
+
+function_head ::= IDENT:i DOTS type_cartesian:tt MINUS GE type:t
+                  {:
+                      Identifier ident = new Identifier(i);
+                      ident.setRow(ileft);
+                      ident.setColumn(iright);
+                      RESULT = new FunctionHead(ident, tt, t);
+                  :}
+                  |
+                  IDENT:i DOTS MINUS GE type:t
+                  {:
+                      Identifier ident = new Identifier(i);
+                      ident.setRow(ileft);
+                      ident.setColumn(iright);
+                      RESULT = new FunctionHead(ident, null, t);
+                  :}
+                  |
+                  IDENT:i DOTS MINUS GE
+                  {:
+                      Identifier ident = new Identifier(i);
+                      ident.setRow(ileft);
+                      ident.setColumn(iright);
+                      RESULT = new FunctionHead(ident, null, null);
+                  :}
+                  |
+                  IDENT:i DOTS type_cartesian:tt MINUS GE
+                  {:
+                      Identifier ident = new Identifier(i);
+                      ident.setRow(ileft);
+                      ident.setColumn(iright);
+                      RESULT = new FunctionHead(ident, tt, null);
+                  :}
+                  ;
+function_tail ::= LPAR ident_tuple:ii RPAR VERT MINUS GE return_block:b
+                  {: RESULT = new FunctionTail(ii, b); :}
+                  |
+                  VERT MINUS GE return_block:b
+                  {: RESULT = new FunctionTail(null, b); :}
+                  |
+                  VERT MINUS GE block:b
+                  {: RESULT = new FunctionTail(null, b); :}
+                  |
+                  LPAR ident_tuple:ii RPAR VERT MINUS GE block:b
+                  {: RESULT = new FunctionTail(ii, b); :}
+                  ;
+function ::= function_head:h function_tail:t {: RESULT = new Function(h,t); :};
+ident_tuple ::= ident_tuple:ii COMMA IDENT:i
+                {:
+                    Identifier ident = new Identifier(i);
+                    ident.setRow(ileft);
+                    ident.setColumn(iright);
+                    ii.add(ident); RESULT = ii;    
+                :}
+                |
+                IDENT:i
+                {:
+                    Identifier ident = new Identifier(i);
+                    ident.setRow(ileft);
+                    ident.setColumn(iright);
+                    ArrayList<Identifier> ii = new ArrayList<Identifier>();
+                    ii.add(ident);
+                    RESULT = ii;
+                :}
+                ;
+type_cartesian ::= type_cartesian:tt X type:t
+                   {: tt.add(t); RESULT = tt; :}
+                   |
+                   type:t
+                   {:
+                       ArrayList<Type> tt = new ArrayList<Type>();
+                       tt.add(t);
+                       RESULT = tt;
+                   :}
+                   |
+                   type_cartesian:tt X multi_array:m type:t
+                   {:
+                       tt.add(new ArrayType(t.getType(), m));
+                       RESULT = tt;
+                   :}
+                   |
+                   multi_array:m type:t
+                   {:
+                       ArrayList<Type> tt = new ArrayList<Type>();
+                       tt.add(new ArrayType(t.getType(), m));
+                       RESULT = tt;
+                   :}
+                   ;
+functions ::= functions:ff function:f
+              {: ff.add(f); RESULT = ff; :}
+              |
+              function:f
+              {:
+                  ArrayList<Function> ff = new ArrayList<Function>();
+                  ff.add(f);
+                  RESULT = ff; 
+              :}
+              ;
+
+/*---------------------
+  -----Expressions-----
+  ---------------------*/
+
+expression ::=    expression:l PLUS expression_p1:r
+                  {: RESULT = new BinaryExpression(l,BinaryOperators.PLUS,r); :}
+                  |
+                  expression:l MINUS expression_p1:r
+                  {: RESULT = new BinaryExpression(l,BinaryOperators.MINUS,r); :}
+                  |
+                  expression:l OR expression_p1:r
+                  {: RESULT = new BinaryExpression(l,BinaryOperators.OR,r); :}
+                  |
+                  expression_p1:e
+                  {: RESULT = e; :}
+                  ;
+expression_p1 ::= MINUS expression_p1:e
+                  {: RESULT = new UnaryExpression(UnaryOperators.UNARY_MINUS,e); :}
+                  |
+                  NOT expression_p1:e
+                  {: RESULT = new UnaryExpression(UnaryOperators.NOT,e); :}
+                  |
+                  expression_p2:e
+                  {: RESULT = e; :}
+                  ;
+expression_p2 ::= expression_p2:l TIMES expression_p3:r
+                  {: RESULT = new BinaryExpression(l,BinaryOperators.PRODUCT,r); :}
+                  |
+                  expression_p2:l DIV expression_p3:r
+                  {: RESULT = new BinaryExpression(l,BinaryOperators.DIV,r); :}
+                  |
+                  expression_p2:l MOD expression_p3:r
+                  {: RESULT = new BinaryExpression(l,BinaryOperators.MODULUS,r); :}
+                  |
+                  expression_p2:l AND expression_p3:r
+                  {: RESULT = new BinaryExpression(l,BinaryOperators.AND,r); :}
+                  |
+                  expression_p3:e
+                  {: RESULT = e; :}
+                  ;
+expression_p3 ::= expression_p4:l EXP expression_p3:r
+                  {: RESULT = new BinaryExpression(l,BinaryOperators.EXPONENTIAL,r); :}
+                  |
+                  expression_p4:e
+                  {: RESULT = e; :}
+                  ;
+expression_p4 ::= expression_p4:l GE expression_p5:r
+                  {: RESULT = new BinaryExpression(l,BinaryOperators.GREATER,r); :}
+                  |
+                  expression_p4:l LE expression_p5:r
+                  {: RESULT = new BinaryExpression(l,BinaryOperators.LOWER,r); :}
+                  |
+                  expression_p4:l EQQ expression_p5:r
+                  {: RESULT = new BinaryExpression(l,BinaryOperators.EQUALS,r); :}
+                  |
+                  expression_p5:e
+                  {: RESULT = e; :}
+                  ;
+expression_p5 ::= expression_p6:e PPLUS
+                  {: RESULT = new UnaryExpression(UnaryOperators.PLUS_PLUS,e); :}
+                  |
+                  expression_p6:e MMINUS
+                  {: RESULT = new UnaryExpression(UnaryOperators.MINUS_MINUS,e); :}
+                  |
+                  expression_p6:e
+                  {: RESULT = e; :}
+                  ;
+expression_p6 ::= INT:i {: RESULT = new DummyInteger(i); :}
+                  |
+                  TRUE {: RESULT = new DummyBoolean(new Boolean(true)); :}
+                  |
+                  FALSE {: RESULT = new DummyBoolean(new Boolean(false)); :}
+                  |
+                  IDENT:i
+                  {:
+                      Identifier ident = new Identifier(i);
+                      ident.setRow(ileft);
+                      ident.setColumn(iright);
+                      RESULT = ident;
+                  :}
+                  |
+                  LPAR expression:e RPAR {: RESULT = e; :}
+                  ;
