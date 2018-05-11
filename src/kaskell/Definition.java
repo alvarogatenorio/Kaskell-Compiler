@@ -1,5 +1,5 @@
 package kaskell;
 
-public abstract class Definition {
-	/*Just a dummy class*/
+public interface Definition {
+	/*Just a dummy interface*/
 }

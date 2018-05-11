@@ -14,8 +14,7 @@ public class UnaryExpression implements Expression {
 
 	@Override
 	public boolean checkType() {
-		// TODO Auto-generated method stub
-		return false;
+		return expression.getType() == operator.getType();
 	}
 
 	@Override
@@ -25,7 +24,6 @@ public class UnaryExpression implements Expression {
 
 	@Override
 	public Type getType() {
-		// TODO Auto-generated method stub
-		return null;
+		return operator.getType();
 	}
 }

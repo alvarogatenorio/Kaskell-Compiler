@@ -1,11 +1,13 @@
 package statements;
 
 import expressions.Identifier;
+import kaskell.Definition;
 import kaskell.SymbolTable;
 import types.Type;
 
-public class Declaration extends BasicStatement {
+public class Declaration implements Statement, Definition {
 	private Type type;
+	private Identifier identifier;
 
 	public Declaration(Type type, Identifier identifier) {
 		this.type = type;
@@ -14,8 +16,8 @@ public class Declaration extends BasicStatement {
 
 	@Override
 	public boolean checkType() {
-		// TODO Auto-generated method stub
-		return false;
+		identifier.setType(type);
+		return true;
 	}
 
 	@Override

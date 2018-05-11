@@ -18,6 +18,7 @@ public class Main {
 		Symbol root = p.parse();
 		Program program = (Program) root.value;
 		program.checkIdentifiers();
+		program.checkType();
 		System.out.println("I am the yeast of thoughts and mind!");
 	}
 }

@@ -1,11 +1,9 @@
 package expressions;
 
-import kaskell.SymbolTable;
+import statements.Statement;
 import types.Type;
 
-public interface Expression {
-	public boolean checkType();
-	public boolean checkIdentifiers(SymbolTable symbolTable);
+public interface Expression extends Statement {
 	public Type getType();
-	
+
 }

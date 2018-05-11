@@ -4,7 +4,9 @@ import java.util.List;
 
 import functions.Function;
 
-public class Program extends Definition {
+/*Implements the dummy interface definition so we can insert
+ * instances of program in the symbol table (not really necessary)*/
+public class Program implements Definition {
 	private List<Block> blocks;
 	private List<Function> functions;
 	private SymbolTable symbolTable = new SymbolTable();
@@ -22,15 +24,17 @@ public class Program extends Definition {
 	}
 
 	public boolean checkIdentifiers() {
+		/*The first block is for global identifiers*/
+		symbolTable.startBlock();
 		boolean wellIdentified = true;
 		/* First consider functions, you can call a function from another */
 		if (functions != null) {
-			symbolTable.startBlock();
 			for (int i = 0; i < functions.size(); i++) {
 				wellIdentified = wellIdentified && symbolTable.insertIdentifier(functions.get(i).getIdentifier(), this);
 				wellIdentified = wellIdentified && functions.get(i).checkIdentifiers(symbolTable);
 			}
 		}
+		/*Checks the blocks (there must be at least one)*/
 		for (int i = 0; i < blocks.size(); i++) {
 			symbolTable.startBlock();
 			wellIdentified = wellIdentified && blocks.get(i).checkIdentifiers(symbolTable);
@@ -41,13 +45,15 @@ public class Program extends Definition {
 
 	public boolean checkType() {
 		boolean wellTyped = true;
-		for (int i = 0; i < blocks.size(); i++) {
-			wellTyped = wellTyped && blocks.get(i).checkType();
-		}
+		/*First checks the types of functions*/
 		if (functions != null) {
 			for (int i = 0; i < functions.size(); i++) {
 				wellTyped = wellTyped && functions.get(i).checkType();
 			}
+		}
+		/*Then checks the types of blocks*/
+		for (int i = 0; i < blocks.size(); i++) {
+			wellTyped = wellTyped && blocks.get(i).checkType();
 		}
 		return wellTyped;
 	}

@@ -7,6 +7,7 @@ public class Identifier implements Expression {
 	private String s;
 	private int row;
 	private int column;
+	private Type type;
 
 	public Identifier(String s) {
 		this.s = s;
@@ -30,8 +31,7 @@ public class Identifier implements Expression {
 
 	@Override
 	public boolean checkType() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
@@ -41,8 +41,15 @@ public class Identifier implements Expression {
 
 	@Override
 	public Type getType() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.type;
+	}
+
+	public Type getSimpleType() {
+		return new Type(this.type.getType());
+	}
+
+	public void setType(Type type) {
+		this.type = type;
 	}
 
 	public String toString() {

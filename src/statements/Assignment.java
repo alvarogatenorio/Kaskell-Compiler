@@ -4,8 +4,9 @@ import expressions.Expression;
 import expressions.Identifier;
 import kaskell.SymbolTable;
 
-public class Assignment extends BasicStatement {
+public class Assignment implements BasicStatement {
 	protected Expression expression;
+	protected Identifier identifier;
 
 	public Assignment(Identifier identifier, Expression expression) {
 		this.identifier = identifier;
@@ -13,7 +14,7 @@ public class Assignment extends BasicStatement {
 	}
 
 	public boolean checkType() {
-		return false;
+		return expression.checkType() && (identifier.getType() == expression.getType());
 	}
 
 	@Override

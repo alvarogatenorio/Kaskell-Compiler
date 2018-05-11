@@ -54,9 +54,8 @@ non terminal ReturnBlock      return_block;
 non terminal Expression       return;
 non terminal List<Statement>  statements;
 non terminal Statement        statement;
-non terminal BasicStatement   basic_statement;
+non terminal Statement        basic_statement;
 non terminal Mixed            mixed_basic;
-non terminal Call             function_call;
 non terminal Assignment       assignment;
 non terminal Declaration      declaration;
 non terminal ComplexStatement complex_statement;
@@ -65,8 +64,10 @@ non terminal While            while;
 non terminal For              for;
 non terminal ForTuple         for_tuple;
 non terminal Type             type;
-non terminal List<Integer>    multi_array;
-non terminal Integer          array;
+non terminal List<Expression> multi_array;
+non terminal List<Integer>    multi_array_integer;
+non terminal Expression       array;
+non terminal Integer          array_integer;
 non terminal List<Function>   functions;
 non terminal Function         function;
 non terminal FunctionHead     function_head;
@@ -76,6 +77,7 @@ non terminal Expression       expression, expression_p1, expression_p2,
                               expression_p3, expression_p4, expression_p5,
                               expression_p6;
 non terminal List<Identifier> ident_tuple;
+non terminal List<Expression> expression_tuple;
 
 /*Starting symbol of the program*/
 start with S;
@@ -122,7 +124,7 @@ basic_statement ::= assignment:a    {: RESULT = a; :}
                     |
                     mixed_basic:da  {: RESULT = da; :}
                     |
-                    function_call:f {: RESULT = f; :}
+                    expression:e {: RESULT = e; :}
                     ;
 /*A complex statement is an if, a while, or a for*/
 complex_statement ::= if:i    {: RESULT = i; :}
@@ -142,7 +144,7 @@ declaration ::= type:t IDENT:i
                     
                 :}
                 |
-                multi_array:m type:t IDENT:i
+                multi_array_integer:m type:t IDENT:i
                 {:
                     Identifier ident = new Identifier(i);
                     ident.setRow(ileft);
@@ -178,37 +180,40 @@ mixed_basic ::= type:t IDENT:i EQ expression:e
                     RESULT = new Mixed(t,ident,e);
                 :}
                 ;
-/*A function call is an identifier followed by the arguments of the function*/
-function_call ::= IDENT:i LPAR ident_tuple:ii RPAR
-                  {:
-                      Identifier ident = new Identifier(i);
-                      ident.setRow(ileft);
-                      ident.setColumn(iright);
-                      RESULT = new Call(ident, ii);
-                  :}
-                  |
-                  IDENT:i
-                  {:
-                      Identifier ident = new Identifier(i);
-                      ident.setRow(ileft);
-                      ident.setColumn(iright);
-                      RESULT = new Call(ident, null);
-                  :}
-                  ;
+expression_tuple ::= expression_tuple:ee COMMA expression:e
+                     {: ee.add(e); RESULT = ee; :}
+                     |
+                     expression:e
+                     {:
+                         ArrayList<Expression> ee = new ArrayList<Expression>();
+                         ee.add(e);
+                         RESULT = ee;
+                     :}
+                     ;
 
 /*An array is an integer between brackets*/
-array ::= LBRACK INT:i RBRACK {: RESULT = i; :};
+array ::= LBRACK expression:e RBRACK {: RESULT = e; :};
+array_integer ::= LBRACK INT:i RBRACK {: RESULT = i; :};
 /*A multidimensional array is a sequence of arrays*/
 multi_array ::= multi_array:ii array:i
                 {: ii.add(i); RESULT = ii; :}
                 |
                 array:i
                 {:
-                    ArrayList<Integer> ii = new ArrayList<Integer>();
+                    ArrayList<Expression> ii = new ArrayList<Expression>();
                     ii.add(i);
                     RESULT = ii;
                 :}
                 ;
+multi_array_integer ::= multi_array_integer:ii array_integer:i
+                        {: ii.add(i); RESULT = ii; :}
+                        |
+                        array_integer:i
+                        {:
+                            ArrayList<Integer> ii = new ArrayList<Integer>();
+                            ii.add(i);
+                            RESULT = ii;
+                        :};
 /*There are only two types, integers and booleans*/
 type ::= INTT {: RESULT = new Type(Types.INTEGER); :}
          |
@@ -342,13 +347,13 @@ type_cartesian ::= type_cartesian:tt X type:t
                        RESULT = tt;
                    :}
                    |
-                   type_cartesian:tt X multi_array:m type:t
+                   type_cartesian:tt X multi_array_integer:m type:t
                    {:
                        tt.add(new ArrayType(t.getType(), m));
                        RESULT = tt;
                    :}
                    |
-                   multi_array:m type:t
+                   multi_array_integer:m type:t
                    {:
                        ArrayList<Type> tt = new ArrayList<Type>();
                        tt.add(new ArrayType(t.getType(), m));
@@ -370,75 +375,100 @@ functions ::= functions:ff function:f
   -----Expressions-----
   ---------------------*/
 
-expression ::=    expression:l PLUS expression_p1:r
+expression ::=    /* + */
+                  expression:l PLUS expression_p1:r
                   {: RESULT = new BinaryExpression(l,BinaryOperators.PLUS,r); :}
                   |
+                  /* - */
                   expression:l MINUS expression_p1:r
                   {: RESULT = new BinaryExpression(l,BinaryOperators.MINUS,r); :}
                   |
+                  /* or */
                   expression:l OR expression_p1:r
                   {: RESULT = new BinaryExpression(l,BinaryOperators.OR,r); :}
                   |
+                  /*Next level expression*/
                   expression_p1:e
                   {: RESULT = e; :}
                   ;
-expression_p1 ::= MINUS expression_p1:e
+expression_p1 ::= /* - exp */
+                  MINUS expression_p1:e
                   {: RESULT = new UnaryExpression(UnaryOperators.UNARY_MINUS,e); :}
                   |
+                  /* not exp */
                   NOT expression_p1:e
                   {: RESULT = new UnaryExpression(UnaryOperators.NOT,e); :}
                   |
+                  /*Next level expression*/
                   expression_p2:e
                   {: RESULT = e; :}
                   ;
-expression_p2 ::= expression_p2:l TIMES expression_p3:r
+expression_p2 ::= /* * */
+                  expression_p2:l TIMES expression_p3:r
                   {: RESULT = new BinaryExpression(l,BinaryOperators.PRODUCT,r); :}
                   |
+                  /* / */
                   expression_p2:l DIV expression_p3:r
                   {: RESULT = new BinaryExpression(l,BinaryOperators.DIV,r); :}
                   |
+                  /* mod */
                   expression_p2:l MOD expression_p3:r
                   {: RESULT = new BinaryExpression(l,BinaryOperators.MODULUS,r); :}
                   |
+                  /* and */
                   expression_p2:l AND expression_p3:r
                   {: RESULT = new BinaryExpression(l,BinaryOperators.AND,r); :}
                   |
+                  /*Next level expression*/
                   expression_p3:e
                   {: RESULT = e; :}
                   ;
-expression_p3 ::= expression_p4:l EXP expression_p3:r
+expression_p3 ::= /* ^ */
+                  expression_p4:l EXP expression_p3:r
                   {: RESULT = new BinaryExpression(l,BinaryOperators.EXPONENTIAL,r); :}
                   |
+                  /*Next level expression*/
                   expression_p4:e
                   {: RESULT = e; :}
                   ;
-expression_p4 ::= expression_p4:l GE expression_p5:r
+expression_p4 ::= /* > */
+                  expression_p4:l GE expression_p5:r
                   {: RESULT = new BinaryExpression(l,BinaryOperators.GREATER,r); :}
                   |
+                  /* < */
                   expression_p4:l LE expression_p5:r
                   {: RESULT = new BinaryExpression(l,BinaryOperators.LOWER,r); :}
                   |
+                  /* == */
                   expression_p4:l EQQ expression_p5:r
                   {: RESULT = new BinaryExpression(l,BinaryOperators.EQUALS,r); :}
                   |
+                  /*Next level expression*/
                   expression_p5:e
                   {: RESULT = e; :}
                   ;
-expression_p5 ::= expression_p6:e PPLUS
+expression_p5 ::= /* ++ */
+                  expression_p6:e PPLUS
                   {: RESULT = new UnaryExpression(UnaryOperators.PLUS_PLUS,e); :}
                   |
+                  /* -- */
                   expression_p6:e MMINUS
                   {: RESULT = new UnaryExpression(UnaryOperators.MINUS_MINUS,e); :}
                   |
+                  /*Next level expression*/
                   expression_p6:e
                   {: RESULT = e; :}
                   ;
-expression_p6 ::= INT:i {: RESULT = new DummyInteger(i); :}
+expression_p6 ::= /*Integer*/
+                  INT:i {: RESULT = new DummyInteger(i); :}
                   |
+                  /*True*/
                   TRUE {: RESULT = new DummyBoolean(new Boolean(true)); :}
                   |
+                  /*False*/
                   FALSE {: RESULT = new DummyBoolean(new Boolean(false)); :}
                   |
+                  /*Normal identifier*/
                   IDENT:i
                   {:
                       Identifier ident = new Identifier(i);
@@ -447,5 +477,34 @@ expression_p6 ::= INT:i {: RESULT = new DummyInteger(i); :}
                       RESULT = ident;
                   :}
                   |
+                  /*Function call with arguments*/
+                  IDENT:i LPAR expression_tuple:ee RPAR
+                  {:
+                      Identifier ident = new Identifier(i);
+                      ident.setRow(ileft);
+                      ident.setColumn(iright);
+                      RESULT = new Call(ident, ee);
+                  :}
+                  |
+                  /*Function call without arguments*/
+                  IDENT:i LPAR RPAR
+                  {:
+                      Identifier ident = new Identifier(i);
+                      ident.setRow(ileft);
+                      ident.setColumn(iright);
+                      RESULT = new Call(ident, null);
+                  :}
+                  |
+                  /*Array identifier*/
+                  IDENT:i multi_array:ii
+                  {:
+                      Identifier ident = new ArrayIdentifier(i,ii);
+                      ident.setRow(ileft);
+                      ident.setColumn(iright);
+                      RESULT = ident;
+                  :}
+                  |
+                  /*Expression between brackets*/
                   LPAR expression:e RPAR {: RESULT = e; :}
                   ;
+                

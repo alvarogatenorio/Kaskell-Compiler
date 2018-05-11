@@ -16,14 +16,13 @@ public class BinaryExpression implements Expression {
 
 	@Override
 	public boolean checkType() {
-		// TODO Auto-generated method stub
-		return false;
+		return left.checkType() && right.checkType() && (left.getType() == operator.getLeftType())
+				&& (right.getType() == operator.getRightType());
 	}
 
 	@Override
 	public Type getType() {
-		// TODO Auto-generated method stub
-		return null;
+		return operator.getType();
 	}
 
 	@Override

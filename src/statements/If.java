@@ -3,6 +3,8 @@ package statements;
 import expressions.Expression;
 import kaskell.Block;
 import kaskell.SymbolTable;
+import types.Type;
+import types.Types;
 
 public class If extends ComplexStatement {
 	protected Expression condition;
@@ -14,7 +16,7 @@ public class If extends ComplexStatement {
 
 	@Override
 	public boolean checkType() {
-		return this.condition.checkType() && this.body.checkType();
+		return condition.checkType() && (condition.getType() == new Type(Types.BOOLEAN)) && body.checkType();
 	}
 
 	@Override

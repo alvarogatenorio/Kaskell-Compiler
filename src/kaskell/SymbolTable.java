@@ -8,7 +8,7 @@ import expressions.Identifier;
 
 public class SymbolTable {
 	private List<HashMap<Identifier, Definition>> table;
-
+	
 	public SymbolTable() {
 		table = new ArrayList<HashMap<Identifier, Definition>>();
 	}
@@ -23,7 +23,12 @@ public class SymbolTable {
 
 	public boolean insertIdentifier(Identifier identifier, Definition definition) {
 		/* Return false if the identifier was already defined */
-		return table.get(table.size() - 1).put(identifier, definition) == null ? true : false;
+		boolean wellIdentified = table.get(table.size() - 1).put(identifier, definition) == null ? true : false;
+		if (!wellIdentified) {
+			System.err.println("IDENTIFIER ERROR: line " + (identifier.getRow() + 1) + " column "
+					+ (identifier.getColumn() + 1) + ", " + identifier.toString() + " is duplicated in this scope");
+		}
+		return wellIdentified;
 	}
 
 	public boolean searchIdentifier(Identifier identifier) {
@@ -39,6 +44,9 @@ public class SymbolTable {
 	}
 
 	public boolean searchGlocalIdentifier(Identifier identifier) {
-		return table.get(0).get(identifier) != null;
+		boolean wellIdentified = table.get(0).get(identifier) != null;
+		System.err.println("IDENTIFIER ERROR: line " + (identifier.getRow() + 1) + " column "
+				+ (identifier.getColumn() + 1) + ", " + identifier.toString() + " is not defined in this scope");
+		return wellIdentified;
 	}
 }

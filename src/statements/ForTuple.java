@@ -2,6 +2,8 @@ package statements;
 
 import expressions.Expression;
 import kaskell.SymbolTable;
+import types.Type;
+import types.Types;
 
 public class ForTuple {
 	private BasicStatement initial;
@@ -21,7 +23,8 @@ public class ForTuple {
 	}
 
 	public boolean checkType() {
-		return initial.checkType() && condition.checkType() && loopAssignment.checkType();
+		return initial.checkType() && condition.checkType() && (condition.getType() == new Type(Types.BOOLEAN))
+				&& loopAssignment.checkType();
 	}
 
 	public boolean checkIdentifiers(SymbolTable symbolTable) {

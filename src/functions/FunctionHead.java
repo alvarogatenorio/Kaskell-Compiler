@@ -3,8 +3,6 @@ package functions;
 import java.util.List;
 
 import expressions.Identifier;
-import kaskell.Definition;
-import kaskell.SymbolTable;
 import types.Type;
 
 public class FunctionHead {
@@ -16,6 +14,14 @@ public class FunctionHead {
 		this.identifier = identifier;
 		this.arguments = arguments;
 		this.returnType = returnType;
+	}
+
+	public List<Type> getArguments() {
+		return arguments;
+	}
+
+	public Type getReturnType() {
+		return returnType;
 	}
 
 	public Identifier getIdentifier() {

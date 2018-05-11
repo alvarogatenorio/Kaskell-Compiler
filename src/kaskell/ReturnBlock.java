@@ -16,4 +16,12 @@ public class ReturnBlock extends Block {
 	public boolean checkIdentifiers(SymbolTable symbolTable) {
 		return super.checkIdentifiers(symbolTable) && returnStatement.checkIdentifiers(symbolTable);
 	}
+
+	public boolean checkType() {
+		return super.checkType() && returnStatement.checkType();
+	}
+
+	public Expression getReturnExpression() {
+		return returnStatement;
+	}
 }

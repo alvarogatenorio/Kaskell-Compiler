@@ -1,21 +1,17 @@
-$.-----Kaskell test flight-----.$
-{
-	{
-                kool a;
-                [3][3][3] kinkeger A;
-		A[5][2][0] = 4;
-	}
-}
-{komega(a,b,c);}
-$........$
-$.Krusty.$
-$.
-hjhk
-hghjggj
-hh
-.$
-{kinkeger a= -1++*5^i-7 kod 3 korr 5;}
-f : [6][4][2]kinkeger X kinkeger X kool X kool -> kool
-(a, b, c, d) |->
-{kinkeger s = 10; {kinkeger a=8; khile(3){kool r=0;} kor( kool a=9; b; c=0){kool a=0;}} kreturn s;  }
-f : ->|->{a=8;g;}
+$.-----------------------------
+  -----Kaskell test flight-----
+  -----------------------------.$
+  
+  {
+      {
+          [4][5] kinkeger A;
+          kinkeger a = 8;
+          kool b = krue;
+          kinkeger c = A[komega(a,b)][a+b]-komega(a,b)++;
+      }
+      {
+          kool b = kalse;
+      }
+  }
+  komega : kinkeger X kool -> kinkeger
+           (a,b) |-> { kreturn 8; }

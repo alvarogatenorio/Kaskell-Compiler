@@ -2,12 +2,14 @@ package statements;
 
 import expressions.Expression;
 import expressions.Identifier;
+import kaskell.Definition;
 import kaskell.SymbolTable;
 import types.Type;
 
-public class Mixed extends BasicStatement {
+public class Mixed implements BasicStatement, Definition {
 	private Type type;
 	private Expression expression;
+	private Identifier identifier;
 
 	public Mixed(Type type, Identifier identifier, Expression expression) {
 		this.type = type;
@@ -17,12 +19,15 @@ public class Mixed extends BasicStatement {
 
 	@Override
 	public boolean checkType() {
-		return false;
+		boolean wellTyped = expression.checkType() && (expression.getType() == type);
+		System.err.println("TYPE ERROR: in line " + identifier.getRow() + " column " + identifier.getColumn()
+				+ " types doesn't match");
+		return wellTyped;
 	}
 
 	@Override
 	public boolean checkIdentifiers(SymbolTable symbolTable) {
-		/* The order is important to avoid infinite recursions */
+		/* The order is important! */
 		return expression.checkIdentifiers(symbolTable) && symbolTable.insertIdentifier(identifier, this);
 	}
 }
