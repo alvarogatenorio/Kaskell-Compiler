@@ -11,6 +11,7 @@ public class Identifier implements Expression {
 
 	public Identifier(String s) {
 		this.s = s;
+		type = null;
 	}
 
 	public void setRow(int row) {
@@ -29,14 +30,23 @@ public class Identifier implements Expression {
 		return this.column;
 	}
 
+	/*
+	 * If we reach this point, everything is well identified, so, in particular, all
+	 * identifiers have a type
+	 */
 	@Override
 	public boolean checkType() {
 		return true;
 	}
 
+	/* Just checks itself and get a type if doesn't have one yet */
 	@Override
 	public boolean checkIdentifiers(SymbolTable symbolTable) {
-		return symbolTable.searchIdentifier(this);
+		boolean wellIdentified = symbolTable.searchIdentifier(this);
+		if (wellIdentified && (type == null)) {
+			this.type = symbolTable.searchIdentifierType(this);
+		}
+		return wellIdentified;
 	}
 
 	@Override

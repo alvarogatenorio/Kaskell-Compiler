@@ -1,9 +1,9 @@
 package expressions;
 
-import statements.Statement;
+import statements.BasicStatement;
 import types.Type;
 
-public interface Expression extends Statement {
+public interface Expression extends BasicStatement {
 	public Type getType();
 
 }

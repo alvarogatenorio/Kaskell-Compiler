@@ -11,4 +11,21 @@ public class ArrayType extends Type {
 		this.dimensions = dimensions;
 	}
 
+	public int getSize() {
+		return this.dimensions.size();
+	}
+
+	/*
+	 * We consider two arrays equals in terms of types if both have the same
+	 * dimension size and have the same basic type
+	 */
+	public boolean equals(Type other) {
+		if (other instanceof ArrayType) {
+			ArrayType aux = (ArrayType) other;
+			if ((other.getType() == this.getType()) && (aux.getSize() == this.getSize())) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

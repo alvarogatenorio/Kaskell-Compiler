@@ -10,4 +10,9 @@ public class Type {
 	public Types getType() {
 		return this.type;
 	}
+
+	/* Checks if two types are equal */
+	public boolean equals(Type other) {
+		return other.getType().equals(this.type);
+	}
 }

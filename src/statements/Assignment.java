@@ -13,11 +13,15 @@ public class Assignment implements BasicStatement {
 		this.expression = expression;
 	}
 
+	/*
+	 * Checks the type of the expression and then checks if it equals the type of
+	 * the identifier
+	 */
 	public boolean checkType() {
-		return expression.checkType() && (identifier.getType() == expression.getType());
+		return expression.checkType() && (identifier.getType().equals(expression.getType()));
 	}
 
-	@Override
+	/* Checks the identifier and the expression */
 	public boolean checkIdentifiers(SymbolTable symbolTable) {
 		return identifier.checkIdentifiers(symbolTable) && expression.checkIdentifiers(symbolTable);
 	}

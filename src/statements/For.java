@@ -11,11 +11,13 @@ public class For extends ComplexStatement {
 		this.body = body;
 	}
 
+	/* Just checks conditions and body */
 	@Override
 	public boolean checkType() {
 		return this.conditions.checkType() && this.body.checkType();
 	}
 
+	/* Checks the conditions and the body */
 	@Override
 	public boolean checkIdentifiers(SymbolTable symbolTable) {
 		symbolTable.startBlock();

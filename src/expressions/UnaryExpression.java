@@ -12,11 +12,16 @@ public class UnaryExpression implements Expression {
 		this.expression = expression;
 	}
 
+	/*
+	 * Checks the expression and if the type of the expression equals the type of
+	 * the operator
+	 */
 	@Override
 	public boolean checkType() {
-		return expression.getType() == operator.getType();
+		return expression.checkType() && expression.getType().equals(operator.getType());
 	}
 
+	/* Just checks the expression */
 	@Override
 	public boolean checkIdentifiers(SymbolTable symbolTable) {
 		return expression.checkIdentifiers(symbolTable);

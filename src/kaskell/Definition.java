@@ -1,5 +1,9 @@
 package kaskell;
 
+import types.Type;
+
+/* Just a dummy interface to make things easier with the symbol table */
 public interface Definition {
-	/*Just a dummy interface*/
+	/* Returns null if it is nonsense */
+	public Type getType();
 }

@@ -6,31 +6,35 @@ import types.Type;
 import types.Types;
 
 public class ForTuple {
+	/* In fact we only allow assignments or mixed */
 	private BasicStatement initial;
 	protected Expression condition;
-	protected Assignment loopAssignment;
+	/* In fact we only allow assignments or expressions */
+	protected BasicStatement loopEpilogue;
 
-	public ForTuple(Assignment initialAssignment, Expression condition, Assignment loopAssignment) {
+	/*
+	 * If the above restrictions are not fulfilled a syntax error must have occurred
+	 */
+	public ForTuple(BasicStatement initialAssignment, Expression condition, BasicStatement loopAssignment) {
 		this.initial = initialAssignment;
 		this.condition = condition;
-		this.loopAssignment = loopAssignment;
+		this.loopEpilogue = loopAssignment;
 	}
 
-	public ForTuple(Mixed initialMixed, Expression condition, Assignment loopAssignment) {
-		this.initial = initialMixed;
-		this.condition = condition;
-		this.loopAssignment = loopAssignment;
-	}
-
+	/*
+	 * Just checks the type of each member of the tuple and checks if the condition
+	 * is a boolean expression
+	 */
 	public boolean checkType() {
-		return initial.checkType() && condition.checkType() && (condition.getType() == new Type(Types.BOOLEAN))
-				&& loopAssignment.checkType();
+		return initial.checkType() && condition.checkType() && (condition.getType().equals(new Type(Types.BOOLEAN)))
+				&& loopEpilogue.checkType();
 	}
 
+	/* Checks the initial, the condition and the loop epilogue */
 	public boolean checkIdentifiers(SymbolTable symbolTable) {
 		boolean wellIdentified = initial.checkIdentifiers(symbolTable);
 		wellIdentified = wellIdentified && condition.checkIdentifiers(symbolTable);
-		wellIdentified = wellIdentified && loopAssignment.checkIdentifiers(symbolTable);
+		wellIdentified = wellIdentified && loopEpilogue.checkIdentifiers(symbolTable);
 		return wellIdentified;
 	}
 }

@@ -17,17 +17,29 @@ public class Mixed implements BasicStatement, Definition {
 		this.expression = expression;
 	}
 
+	/* Checks and assign type to the identifier */
 	@Override
 	public boolean checkType() {
-		boolean wellTyped = expression.checkType() && (expression.getType() == type);
-		System.err.println("TYPE ERROR: in line " + identifier.getRow() + " column " + identifier.getColumn()
-				+ " types doesn't match");
+		/* Checks the expression (well typed and type matching) */
+		boolean wellTyped = expression.checkType() && (expression.getType().equals(type));
+		/* Assign type to the identifier */
+		identifier.setType(type);
 		return wellTyped;
 	}
 
+	/*
+	 * A mixed statement is a definition, so it tries to insert in the symbol table,
+	 * but first checks if the expression is well identified
+	 */
 	@Override
 	public boolean checkIdentifiers(SymbolTable symbolTable) {
 		/* The order is important! */
 		return expression.checkIdentifiers(symbolTable) && symbolTable.insertIdentifier(identifier, this);
+	}
+
+	/* Just returns the type */
+	@Override
+	public Type getType() {
+		return this.type;
 	}
 }

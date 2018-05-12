@@ -13,18 +13,20 @@ public class BinaryExpression implements Expression {
 		this.operator = operator;
 		this.right = right;
 	}
-
+	
+	/*Checks the types of the left hand side and of the right hand side*/
 	@Override
 	public boolean checkType() {
-		return left.checkType() && right.checkType() && (left.getType() == operator.getLeftType())
-				&& (right.getType() == operator.getRightType());
+		return left.checkType() && right.checkType() && (left.getType().equals(operator.getLeftType()))
+				&& (right.getType().equals(operator.getRightType()));
 	}
-
+	
 	@Override
 	public Type getType() {
 		return operator.getType();
 	}
 
+	/* Checks identifiers of the left and right hand side */
 	@Override
 	public boolean checkIdentifiers(SymbolTable symbolTable) {
 		return left.checkIdentifiers(symbolTable) && right.checkIdentifiers(symbolTable);

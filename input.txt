@@ -3,15 +3,24 @@ $.-----------------------------
   -----------------------------.$
   
   {
+      kool A;
       {
           [4][5] kinkeger A;
           kinkeger a = 8;
           kool b = krue;
-          kinkeger c = A[komega(a,b)][a+b]-komega(a,b)++;
+          kinkeger c = A[komega(a,b)][a+b][0]-komega(a,b)++;
       }
       {
-          kool b = kalse;
+          A = kalse;
+          A++;
       }
   }
-  komega : kinkeger X kool -> kinkeger
-           (a,b) |-> { kreturn 8; }
+  {
+      kor(kinkeger i = 0; i < 4*9; i++){
+          khile(krue){i++;}
+          kif(kalse kod 5){1;}kelse{0;}
+          i--;
+      }
+  }
+  komega : kinkeger X kool -> kool
+           (a,b) |-> { kreturn krue; }

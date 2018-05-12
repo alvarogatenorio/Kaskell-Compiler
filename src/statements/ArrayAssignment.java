@@ -17,14 +17,25 @@ public class ArrayAssignment extends Assignment {
 	}
 
 	public boolean checkType() {
-		boolean wellTyped = expression.checkType() && (identifier.getSimpleType() == expression.getType());
+		/*
+		 * Checks if the right hand side expression type matches with the identifier
+		 * simple type
+		 */
+		boolean wellTyped = expression.checkType() && (identifier.getSimpleType().equals(expression.getType()));
+		/* Checks the identifier's type */
+		wellTyped = wellTyped && identifier.checkType();
+		/*
+		 * Checks for each expression in the coordinates to be an integer (there is
+		 * always at least one coordinate)
+		 */
 		for (int i = 0; i < coordinates.size(); i++) {
-			wellTyped = wellTyped
-					&& (coordinates.get(i).checkType() && (coordinates.get(i).getType() == new Type(Types.INTEGER)));
+			wellTyped = wellTyped && (coordinates.get(i).checkType()
+					&& (coordinates.get(i).getType().equals(new Type(Types.INTEGER))));
 		}
 		return wellTyped;
 	}
 
+	/* Checks the identifier and the expressions in the coordinates */
 	public boolean checkIdentifiers(SymbolTable symbolTable) {
 		boolean wellIdentified = super.checkIdentifiers(symbolTable);
 		for (int i = 0; i < coordinates.size(); i++) {

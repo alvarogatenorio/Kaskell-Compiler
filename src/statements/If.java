@@ -14,11 +14,16 @@ public class If extends ComplexStatement {
 		this.body = thenBody;
 	}
 
+	/*
+	 * Checks if the condition is a boolean expression and if the condition and the
+	 * body are well typed
+	 */
 	@Override
 	public boolean checkType() {
-		return condition.checkType() && (condition.getType() == new Type(Types.BOOLEAN)) && body.checkType();
+		return condition.checkType() && (condition.getType().equals(new Type(Types.BOOLEAN))) && body.checkType();
 	}
 
+	/* Checks the condition and the body block */
 	@Override
 	public boolean checkIdentifiers(SymbolTable symbolTable) {
 		boolean wellIdentified = condition.checkIdentifiers(symbolTable);

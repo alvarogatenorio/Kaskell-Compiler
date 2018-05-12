@@ -14,11 +14,13 @@ public class While extends ComplexStatement {
 		this.body = body;
 	}
 
+	/* Checks if the condition is well typed and boolean, then checks the body */
 	@Override
 	public boolean checkType() {
-		return condition.checkType() && (condition.getType() == new Type(Types.BOOLEAN)) && body.checkType();
+		return condition.checkType() && (condition.getType().equals(new Type(Types.BOOLEAN))) && body.checkType();
 	}
 
+	/* Just checks the condition and the body block */
 	@Override
 	public boolean checkIdentifiers(SymbolTable symbolTable) {
 		boolean wellIdentified = condition.checkIdentifiers(symbolTable);

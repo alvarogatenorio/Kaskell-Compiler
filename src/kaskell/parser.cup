@@ -238,6 +238,12 @@ for_tuple ::= assignment:a SEMICOLON expression:e SEMICOLON assignment:l
               |
               mixed_basic:da SEMICOLON expression:e SEMICOLON assignment:l
               {: RESULT = new ForTuple(da, e, l); :}
+              |
+              assignment:a SEMICOLON expression:e SEMICOLON expression:l
+              {: RESULT = new ForTuple(a,e,l); :}
+              |
+              mixed_basic:da SEMICOLON expression:e SEMICOLON expression:l
+              {: RESULT = new ForTuple(da,e,l); :}
               ;
 
 /*---------------

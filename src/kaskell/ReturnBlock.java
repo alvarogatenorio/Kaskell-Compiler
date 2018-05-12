@@ -13,10 +13,12 @@ public class ReturnBlock extends Block {
 		this.returnStatement = returnStatement;
 	}
 
+	/* Checks the block itself and the expression (return statement) */
 	public boolean checkIdentifiers(SymbolTable symbolTable) {
 		return super.checkIdentifiers(symbolTable) && returnStatement.checkIdentifiers(symbolTable);
 	}
 
+	/* Checks the block itself and the expression (return statement) */
 	public boolean checkType() {
 		return super.checkType() && returnStatement.checkType();
 	}
