@@ -3,6 +3,7 @@ package types;
 public class Type {
 	protected Types type;
 
+	/* When type is null is a struct type */
 	public Type(Types type) {
 		this.type = type;
 	}

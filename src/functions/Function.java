@@ -17,6 +17,7 @@ public class Function {
 		this.head = head;
 		this.tail = tail;
 		this.tail.setType(head.getReturnType());
+		this.tail.setArguments(head.getArguments());
 	}
 
 	public boolean checkType() {
@@ -95,10 +96,9 @@ public class Function {
 	 * program
 	 */
 	public boolean checkIdentifiers(SymbolTable symbolTable) {
-		/* The tail is the only part with identifiers!! */
 		symbolTable.startBlock();
 		/* Variables are considered to be in the same scope as the body */
-		boolean wellIdentified = tail.checkIdentifiers(symbolTable);
+		boolean wellIdentified = head.checkIdentifiers(symbolTable) && tail.checkIdentifiers(symbolTable);
 		symbolTable.closeBlock();
 		return wellIdentified;
 	}

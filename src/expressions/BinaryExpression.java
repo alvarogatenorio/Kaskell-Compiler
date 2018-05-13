@@ -13,14 +13,22 @@ public class BinaryExpression implements Expression {
 		this.operator = operator;
 		this.right = right;
 	}
-	
-	/*Checks the types of the left hand side and of the right hand side*/
+
+	/* Checks the types of the left hand side and of the right hand side */
 	@Override
 	public boolean checkType() {
-		return left.checkType() && right.checkType() && (left.getType().equals(operator.getLeftType()))
-				&& (right.getType().equals(operator.getRightType()));
+		boolean wellTyped = left.checkType() && right.checkType();
+		Type leftType = left.getType();
+		Type rightType = right.getType();
+		if (left instanceof Identifier) {
+			leftType = ((Identifier) left).getSimpleType();
+		}
+		if (right instanceof Identifier) {
+			rightType = ((Identifier) right).getSimpleType();
+		}
+		return wellTyped && (leftType.equals(operator.getLeftType())) && (rightType.equals(operator.getRightType()));
 	}
-	
+
 	@Override
 	public Type getType() {
 		return operator.getType();
@@ -30,5 +38,15 @@ public class BinaryExpression implements Expression {
 	@Override
 	public boolean checkIdentifiers(SymbolTable symbolTable) {
 		return left.checkIdentifiers(symbolTable) && right.checkIdentifiers(symbolTable);
+	}
+
+	@Override
+	public int getRow() {
+		return this.left.getRow();
+	}
+
+	@Override
+	public int getColumn() {
+		return this.left.getColumn();
 	}
 }

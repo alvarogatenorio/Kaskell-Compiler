@@ -39,7 +39,7 @@ public class Mixed implements BasicStatement, Definition {
 
 	/* Just returns the type */
 	@Override
-	public Type getType() {
+	public Type getDefinitionType() {
 		return this.type;
 	}
 }

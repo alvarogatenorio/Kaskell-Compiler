@@ -66,4 +66,7 @@ public class Identifier implements Expression {
 		return s;
 	}
 
+	public boolean equals(Identifier other) {
+		return this.s.equals(other.toString());
+	}
 }

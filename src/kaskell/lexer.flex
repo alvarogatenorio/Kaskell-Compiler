@@ -55,6 +55,7 @@ import java_cup.runtime.Symbol;
     keywords.put("kreturn", sym.RETURN);
     keywords.put("krue", sym.TRUE);
     keywords.put("kalse", sym.FALSE);
+    keywords.put("struK", sym.STRUCT);
 %init}
 
 /*-----Macros (regular definitions)-----*/
@@ -92,6 +93,7 @@ Comment = "$." [^.] ~".$" | "$." "."+ "$"
     "]"                { System.out.print(" ] "); return symbol(sym.RBRACK); }
     "{"                { System.out.print(" { "); return symbol(sym.LBRACE); }
     "}"                { System.out.print(" } "); return symbol(sym.RBRACE); }
+    "."                { System.out.print(" . "); return symbol(sym.DOT); }
 
     {Integer} { System.out.print(" "+yytext()+" ");
                 return symbol(sym.INT, new Integer(yytext())); }

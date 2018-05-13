@@ -10,12 +10,15 @@ import types.Type;
 
 public class FunctionTail implements Definition {
 	private List<Identifier> variables;
+	private List<Type> arguments;
 	private Block body;
 	private Type type;
-	
+
 	public FunctionTail(List<Identifier> variables, Block body) {
 		this.variables = variables;
 		this.body = body;
+		this.arguments = null;
+		this.type = null;
 	}
 
 	public boolean checkIdentifiers(SymbolTable symbolTable) {
@@ -46,7 +49,16 @@ public class FunctionTail implements Definition {
 	}
 
 	@Override
-	public Type getType() {
+	public Type getDefinitionType() {
 		return type;
 	}
+
+	public void setArguments(List<Type> arguments) {
+		this.arguments = arguments;
+	}
+
+	public List<Type> getArguments() {
+		return this.arguments;
+	}
+
 }

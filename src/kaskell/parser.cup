@@ -41,43 +41,47 @@ parser code {:
 terminal LBRACE, RBRACE, EQ, SEMICOLON, PLUS, MINUS, TIMES, DIV,
          GE, LE, DOTS, VERT, EXP, LPAR, RPAR, LBRACK, RBRACK, COMMA,
          INTT, BOOL, RETURN, X, IF, ELSE, WHILE, FOR, OR, AND, MOD, PPLUS,
-         MMINUS, EQQ, NOT;
+         MMINUS, EQQ, NOT, STRUCT, DOT;
 
 terminal String IDENT; 
 terminal Integer INT;
 terminal Boolean TRUE, FALSE;
 
-non terminal Program          S;
-non terminal List<Block>      blocks;
-non terminal Block            block;
-non terminal ReturnBlock      return_block;
-non terminal Expression       return;
-non terminal List<Statement>  statements;
-non terminal Statement        statement;
-non terminal Statement        basic_statement;
-non terminal Mixed            mixed_basic;
-non terminal Assignment       assignment;
-non terminal Declaration      declaration;
-non terminal ComplexStatement complex_statement;
-non terminal If               if;
-non terminal While            while;
-non terminal For              for;
-non terminal ForTuple         for_tuple;
-non terminal Type             type;
-non terminal List<Expression> multi_array;
-non terminal List<Integer>    multi_array_integer;
-non terminal Expression       array;
-non terminal Integer          array_integer;
-non terminal List<Function>   functions;
-non terminal Function         function;
-non terminal FunctionHead     function_head;
-non terminal FunctionTail     function_tail;
-non terminal List<Type>       type_cartesian;
-non terminal Expression       expression, expression_p1, expression_p2,
-                              expression_p3, expression_p4, expression_p5,
-                              expression_p6;
-non terminal List<Identifier> ident_tuple;
-non terminal List<Expression> expression_tuple;
+non terminal Program           S;
+non terminal List<Block>       blocks;
+non terminal Block             block;
+non terminal ReturnBlock       return_block;
+non terminal Expression        return;
+non terminal List<Statement>   statements;
+non terminal Statement         statement;
+non terminal Statement         basic_statement;
+non terminal Mixed             mixed_basic;
+non terminal Assignment        assignment;
+non terminal Declaration       declaration;
+non terminal ComplexStatement  complex_statement;
+non terminal If                if;
+non terminal While             while;
+non terminal For               for;
+non terminal ForTuple          for_tuple;
+non terminal Type              type;
+non terminal List<Expression>  multi_array;
+non terminal List<Integer>     multi_array_integer;
+non terminal Expression        array;
+non terminal Integer           array_integer;
+non terminal List<Function>    functions;
+non terminal Function          function;
+non terminal FunctionHead      function_head;
+non terminal FunctionTail      function_tail;
+non terminal List<Type>        type_cartesian;
+non terminal Expression        expression, expression_p1, expression_p2,
+                               expression_p3, expression_p4, expression_p5,
+                               expression_p6;
+non terminal List<Identifier>  ident_tuple;
+non terminal List<Expression>  expression_tuple;
+non terminal List<StructType>  structs;
+non terminal StructType        struct;
+non terminal List<Declaration> declarations;
+non terminal List<Identifier>  struct_member;
 
 /*Starting symbol of the program*/
 start with S;
@@ -88,9 +92,13 @@ start with S;
 
 /*A program is a sequence of blocks or a sequence of blocks followed by a sequence
   of functions (maybe we should revert the order)*/
-S ::= blocks:bs              {: RESULT = new Program(bs); :}
+S ::= structs:ss blocks:bs              {: RESULT = new Program(bs, null, ss); :}
       |
-      blocks:bs functions:fs {: RESULT = new Program(bs, fs); :}
+      structs:ss blocks:bs functions:fs {: RESULT = new Program(bs, fs, ss); :}
+      |
+      blocks:bs                         {: RESULT = new Program(bs, null, null); :}
+      |
+      blocks:bs functions:fs            {: RESULT = new Program(bs, fs, null); :}
       ;
 
 /*--------------------
@@ -151,6 +159,22 @@ declaration ::= type:t IDENT:i
                     ident.setColumn(iright);
                     RESULT = new Declaration(new ArrayType(t.getType(),m), ident);
                 :}
+                |
+                IDENT:s IDENT:i
+                {:
+                    //identifier
+                    Identifier ident = new Identifier(i);
+                    ident.setRow(ileft);
+                    ident.setColumn(iright);
+                    //type
+                    Identifier str = new Identifier(s);
+                    ident.setRow(sleft);
+                    ident.setColumn(sright);
+                    //result
+                    RESULT = new Declaration(str,ident);
+                :}
+                |
+                multi_array_integer:m IDENT:s IDENT:i
                 ;
 /*An assignment is an identifier followed (or not) by a multidimensional array an 
   equals symbol and an expression*/
@@ -160,6 +184,12 @@ assignment ::= IDENT:i multi_array:ii EQ expression:e
                    ident.setRow(ileft);
                    ident.setColumn(iright);
                    RESULT = new ArrayAssignment(ident,ii,e);
+               :}
+               |
+               struct_member:s EQ expression:e
+               {:
+                   StructMember m = new StructMember(s);
+                   RESULT = new StructAssignment(m,e);
                :}
                |
                IDENT:i EQ expression:e
@@ -219,6 +249,37 @@ type ::= INTT {: RESULT = new Type(Types.INTEGER); :}
          |
          BOOL {: RESULT = new Type(Types.BOOLEAN); :}
          ;
+
+declarations ::= declarations:dd declaration:d SEMICOLON
+                 {: dd.add(d); RESULT = dd; :}
+                 |
+                 declaration:d SEMICOLON
+                 {:
+                     ArrayList<Declaration> dd = new ArrayList<Declaration>();
+                     dd.add(d);
+                     RESULT = dd;
+                 :}
+                 ;
+                 
+struct ::= IDENT:i DOTS EQ STRUCT LBRACE declarations:dd RBRACE
+           {:
+               Identifier ident = new Identifier(i);
+               ident.setRow(ileft);
+               ident.setColumn(iright);
+               RESULT = new StructType(ident, dd);
+           :}
+           ;
+
+structs ::= structs:ss struct:s
+            {: ss.add(s); RESULT = ss; :}
+            |
+            struct:s
+            {:
+                ArrayList<StructType> ss = new ArrayList<StructType>();
+                ss.add(s);
+                RESULT = ss;
+            :}
+            ;
 
 /*-----Complex statements-----*/
 if ::= IF LPAR expression:e RPAR block:b
@@ -365,6 +426,25 @@ type_cartesian ::= type_cartesian:tt X type:t
                        tt.add(new ArrayType(t.getType(), m));
                        RESULT = tt;
                    :}
+                   |
+                   type_cartesian:tt X IDENT:i
+                   {:
+                       Identifier ident = new Identifier(i);
+                       ident.setRow(ileft);
+                       ident.setColumn(iright);
+                       tt.add(new StructType(ident));
+                       RESULT = tt;
+                   :}
+                   |
+                   IDENT:i
+                   {:
+                       Identifier ident = new Identifier(i);
+                       ident.setRow(ileft);
+                       ident.setColumn(iright);
+                       ArrayList<Type> tt = new ArrayList<Type>();
+                       tt.add(new StructType(ident));
+                       RESULT = tt;
+                   :}
                    ;
 functions ::= functions:ff function:f
               {: ff.add(f); RESULT = ff; :}
@@ -380,6 +460,72 @@ functions ::= functions:ff function:f
 /*---------------------
   -----Expressions-----
   ---------------------*/
+
+struct_member ::= struct_member:mm DOT IDENT:i
+                  {:
+                      Identifier ident = new Identifier(i);
+                      ident.setRow(ileft);
+                      ident.setColumn(iright);
+                      mm.add(ident);
+                      RESULT = mm;
+                  :}
+                  |
+                  IDENT:a DOT IDENT:b
+                  {:
+                      Identifier ident1 = new Identifier(a);
+                      ident1.setRow(aleft);
+                      ident1.setColumn(aright);
+                      Identifier ident2 = new Identifier(b);
+                      ident2.setRow(bleft);
+                      ident2.setColumn(bright);
+                      ArrayList<Identifier> ii = new ArrayList<Identifier>();
+                      ii.add(ident1);
+                      ii.add(ident2);
+                      RESULT = ii;
+                  :}
+                  |
+                  IDENT:a multi_array:m DOT IDENT:b
+                  {:
+                      ArrayIdentifier ident1 = new ArrayIdentifier(a,m);
+                      ident1.setRow(aleft);
+                      ident1.setColumn(aright);
+                      Identifier ident2 = new Identifier(b);
+                      ident2.setRow(bleft);
+                      ident2.setColumn(bright);
+                      ArrayList<Identifier> ii = new ArrayList<Identifier>();
+                      ii.add(ident1);
+                      ii.add(ident2);
+                      RESULT = ii;
+                  :}
+                  |
+                  IDENT:a DOT IDENT:b multi_array:m
+                  {:
+                      Identifier ident1 = new Identifier(a);
+                      ident1.setRow(aleft);
+                      ident1.setColumn(aright);
+                      ArrayIdentifier ident2 = new ArrayIdentifier(b,m);
+                      ident2.setRow(bleft);
+                      ident2.setColumn(bright);
+                      ArrayList<Identifier> ii = new ArrayList<Identifier>();
+                      ii.add(ident1);
+                      ii.add(ident2);
+                      RESULT = ii;
+                  :}
+                  |
+                  IDENT:a multi_array:m DOT IDENT:b multi_array:n
+                  {:
+                      ArrayIdentifier ident1 = new ArrayIdentifier(a,m);
+                      ident1.setRow(aleft);
+                      ident1.setColumn(aright);
+                      ArrayIdentifier ident2 = new ArrayIdentifier(b,n);
+                      ident2.setRow(bleft);
+                      ident2.setColumn(bright);
+                      ArrayList<Identifier> ii = new ArrayList<Identifier>();
+                      ii.add(ident1);
+                      ii.add(ident2);
+                      RESULT = ii;
+                  :}
+                  ;
 
 expression ::=    /* + */
                   expression:l PLUS expression_p1:r
@@ -466,13 +612,31 @@ expression_p5 ::= /* ++ */
                   {: RESULT = e; :}
                   ;
 expression_p6 ::= /*Integer*/
-                  INT:i {: RESULT = new DummyInteger(i); :}
+                  INT:i
+                  {:  
+                      DummyInteger integ = new DummyInteger(i);
+                      integ.setRow(ileft);
+                      integ.setColumn(iright);
+                      RESULT = integ;
+                  :}
                   |
                   /*True*/
-                  TRUE {: RESULT = new DummyBoolean(new Boolean(true)); :}
+                  TRUE:i
+                  {:
+                      DummyBoolean b = new DummyBoolean(true);
+                      b.setRow(ileft);
+                      b.setColumn(iright);
+                      RESULT = b;
+                  :}
                   |
                   /*False*/
-                  FALSE {: RESULT = new DummyBoolean(new Boolean(false)); :}
+                  FALSE:i
+                  {:
+                      DummyBoolean b = new DummyBoolean(false);
+                      b.setRow(ileft);
+                      b.setColumn(iright);
+                      RESULT = b;
+                  :}
                   |
                   /*Normal identifier*/
                   IDENT:i
@@ -499,6 +663,11 @@ expression_p6 ::= /*Integer*/
                       ident.setRow(ileft);
                       ident.setColumn(iright);
                       RESULT = new Call(ident, null);
+                  :}
+                  |
+                  struct_member:m
+                  {:
+                      RESULT = new StructMember(m);
                   :}
                   |
                   /*Array identifier*/

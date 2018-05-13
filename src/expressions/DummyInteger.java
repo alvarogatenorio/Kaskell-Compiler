@@ -6,6 +6,8 @@ import types.Types;
 
 public class DummyInteger implements Expression {
 	private Integer i;
+	private int row;
+	private int column;
 
 	public DummyInteger(Integer i) {
 		this.i = i;
@@ -24,5 +26,23 @@ public class DummyInteger implements Expression {
 	@Override
 	public boolean checkIdentifiers(SymbolTable symbolTable) {
 		return true;
+	}
+
+	public void setRow(int row) {
+		this.row = row;
+	}
+
+	public void setColumn(int column) {
+		this.column = column;
+	}
+
+	@Override
+	public int getRow() {
+		return this.row;
+	}
+
+	@Override
+	public int getColumn() {
+		return this.column;
 	}
 }

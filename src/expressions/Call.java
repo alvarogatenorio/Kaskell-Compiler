@@ -7,16 +7,26 @@ import types.Type;
 
 public class Call implements Expression {
 	private Identifier identifier;
-	private List<Expression> arguments;
+	private List<Expression> variables;
+	private List<Type> arguments;
 	private Type type;
 
 	public Call(Identifier identifier, List<Expression> arguments) {
 		this.identifier = identifier;
-		this.arguments = arguments;
+		this.variables = arguments;
+		this.type = null;
+		this.arguments = null;
 	}
 
 	@Override
 	public boolean checkType() {
+		if (variables.size() == arguments.size()) {
+			for (int i = 0; i < variables.size(); i++) {
+				if (variables.get(i).checkType() && !(variables.get(i).getType().equals(arguments.get(i)))) {
+					return false;
+				}
+			}
+		}
 		return true;
 	}
 
@@ -26,14 +36,15 @@ public class Call implements Expression {
 	 */
 	@Override
 	public boolean checkIdentifiers(SymbolTable symbolTable) {
-		boolean wellIdentified = symbolTable.searchGlocalIdentifier(identifier);
-		if (arguments != null) {
-			for (int i = 0; i < arguments.size(); i++) {
-				wellIdentified = wellIdentified && arguments.get(i).checkIdentifiers(symbolTable);
+		boolean wellIdentified = symbolTable.searchFunctionIdentifier(identifier);
+		if (variables != null) {
+			for (int i = 0; i < variables.size(); i++) {
+				wellIdentified = wellIdentified && variables.get(i).checkIdentifiers(symbolTable);
 			}
 		}
-		if (wellIdentified && (type == null)) {
+		if (wellIdentified && (type == null) && (arguments == null)) {
 			type = symbolTable.searchCallType(identifier);
+			arguments = symbolTable.searchCallArguments(identifier);
 		}
 		return wellIdentified;
 	}
@@ -41,5 +52,15 @@ public class Call implements Expression {
 	@Override
 	public Type getType() {
 		return type;
+	}
+
+	@Override
+	public int getRow() {
+		return this.identifier.getRow();
+	}
+
+	@Override
+	public int getColumn() {
+		return this.identifier.getColumn();
 	}
 }

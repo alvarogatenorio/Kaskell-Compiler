@@ -3,6 +3,8 @@ package functions;
 import java.util.List;
 
 import expressions.Identifier;
+import kaskell.SymbolTable;
+import types.StructType;
 import types.Type;
 
 public class FunctionHead {
@@ -26,5 +28,20 @@ public class FunctionHead {
 
 	public Identifier getIdentifier() {
 		return this.identifier;
+	}
+
+	public boolean checkIdentifiers(SymbolTable symbolTable) {
+		for (int i = 0; i < arguments.size(); i++) {
+			if (arguments.get(i) instanceof StructType) {
+				Identifier id = ((StructType) (arguments.get(i))).getIdentifier();
+				Type type = symbolTable.searchStructType(id);
+				if (type != null) {
+					arguments.set(i, type);
+				} else {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 }

@@ -44,4 +44,8 @@ public class ArrayIdentifier extends Identifier {
 		}
 		return wellTyped;
 	}
+
+	public int getSize() {
+		return this.coordinates.size();
+	}
 }

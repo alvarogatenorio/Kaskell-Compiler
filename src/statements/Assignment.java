@@ -21,8 +21,8 @@ public class Assignment implements BasicStatement {
 		return expression.checkType() && (identifier.getType().equals(expression.getType()));
 	}
 
-	/* Checks the identifier and the expression */
+	/* Checks the expression and the identifier (order matters) */
 	public boolean checkIdentifiers(SymbolTable symbolTable) {
-		return identifier.checkIdentifiers(symbolTable) && expression.checkIdentifiers(symbolTable);
+		return expression.checkIdentifiers(symbolTable) && identifier.checkIdentifiers(symbolTable);
 	}
 }

@@ -18,7 +18,12 @@ public class UnaryExpression implements Expression {
 	 */
 	@Override
 	public boolean checkType() {
-		return expression.checkType() && expression.getType().equals(operator.getType());
+		boolean wellTyped = expression.checkType();
+		Type type = expression.getType();
+		if (expression instanceof Identifier) {
+			type = ((Identifier) expression).getSimpleType();
+		}
+		return wellTyped && (type.equals(operator.getType()));
 	}
 
 	/* Just checks the expression */
@@ -30,5 +35,15 @@ public class UnaryExpression implements Expression {
 	@Override
 	public Type getType() {
 		return operator.getType();
+	}
+
+	@Override
+	public int getRow() {
+		return this.expression.getRow();
+	}
+
+	@Override
+	public int getColumn() {
+		return this.expression.getColumn();
 	}
 }
