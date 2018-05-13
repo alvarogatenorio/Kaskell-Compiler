@@ -26,8 +26,14 @@ public class ForTuple {
 	 * is a boolean expression
 	 */
 	public boolean checkType() {
-		return initial.checkType() && condition.checkType() && (condition.getType().equals(new Type(Types.BOOLEAN)))
-				&& loopEpilogue.checkType();
+		if(!condition.getType().equals(new Type(Types.BOOLEAN))) {
+			System.err.println("TYPE ERROR: in line " + (this.condition.getRow() + 1) + " column "
+					+ (this.condition.getColumn() + 1)
+					+ " fatal error the condition is not Koolean type!");
+			return false;
+		}
+		
+		return initial.checkType() && condition.checkType() && loopEpilogue.checkType();
 	}
 
 	/* Checks the initial, the condition and the loop epilogue */

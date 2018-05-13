@@ -21,7 +21,13 @@ public class ArrayAssignment extends Assignment {
 		 * Checks if the right hand side expression type matches with the identifier
 		 * simple type
 		 */
-		boolean wellTyped = expression.checkType() && (identifier.getSimpleType().equals(expression.getType()));
+		boolean wellTyped = expression.checkType();
+		if(!identifier.getSimpleType().equals(expression.getType())) {
+			System.err.println("TYPE ERROR: in line " + (this.identifier.getRow() + 1) + " column "
+					+ (this.identifier.getColumn() + 1)
+					+ " the right type of the assignment does not match with the left type of assigment!");
+			return false;
+		}
 		/* Checks the identifier's type */
 		wellTyped = wellTyped && identifier.checkType();
 		/*
@@ -29,8 +35,13 @@ public class ArrayAssignment extends Assignment {
 		 * always at least one coordinate)
 		 */
 		for (int i = 0; i < coordinates.size(); i++) {
-			wellTyped = wellTyped && (coordinates.get(i).checkType()
-					&& (coordinates.get(i).getType().equals(new Type(Types.INTEGER))));
+			if(!coordinates.get(i).checkType()
+					&& (coordinates.get(i).getType().equals(new Type(Types.INTEGER)))) {
+				System.err.println("TYPE ERROR: in line " + (this.identifier.getRow() + 1) + " column "
+						+ (this.identifier.getColumn() + 1)
+						+ " fatal error cause by the type of the identifier coordinate!");
+				return false;
+			}
 		}
 		return wellTyped;
 	}

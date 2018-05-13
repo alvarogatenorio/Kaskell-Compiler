@@ -40,6 +40,9 @@ public class ArrayIdentifier extends Identifier {
 						&& coordinates.get(i).getType().equals(new Type(Types.INTEGER));
 			}
 		} else {
+			System.err.println("TYPE ERROR: in line " + (this.getRow() + 1) + " column "
+					+ (this.getColumn() + 1)
+					+ " the number of coordinates dosen't match with the number in the original declaration!");
 			return false;
 		}
 		return wellTyped;

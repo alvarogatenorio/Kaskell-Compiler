@@ -32,23 +32,41 @@ public class StructMember extends Identifier implements Expression {
 						/* Both types have to be of the same dimension */
 						if (((ArrayType) (matchedTypes.get(i)))
 								.getSize() != ((ArrayIdentifier) (identifiers.get(i + 1))).getSize()) {
+							int num= i+1;
+							System.err.println("TYPE ERROR: in line " + (this.identifiers.get(i + 1).getRow() + 1) + " column "
+									+ (this.identifiers.get(i + 1).getColumn() + 1)
+									+ " fatal error cause by identifier size number "+num+"!");
 							return false;
 							/* Everything is well typed */
 						} else if (!((ArrayIdentifier) (identifiers.get(i + 1))).checkType()) {
+							int num= i+1;
+							System.err.println("TYPE ERROR: in line " + (this.identifiers.get(i + 1).getRow() + 1) + " column "
+									+ (this.identifiers.get(i + 1).getColumn() + 1)
+									+ " fatal error cause by identifier type number "+num+"!");
 							return false;
 						}
 					} else {
+						System.err.println("TYPE ERROR: in line " + (this.identifiers.get(i + 1).getRow() + 1) + " column "
+								+ (this.getColumn() + 1)
+								+ " fatal error cause by declaration member!");
 						return false;
 					}
 				} else {
 					/* The last is special */
 					if (matchedTypes.get(i) instanceof ArrayType && i != matchedTypes.size() - 1) {
+						int num= i+1;
+						System.err.println("TYPE ERROR: in line " + (this.getRow() + 1) + " column "
+								+ (this.getColumn() + 1)
+								+ " fatal error cause by identifier type number "+num+"!");
 						return false;
 					}
 				}
 			}
 			return true;
 		}
+		System.err.println("TYPE ERROR: in line " + (this.getRow() + 1) + " column "
+				+ (this.getColumn() + 1)
+				+ " fatal error cause by diferent number between identifiers and declarations!");
 		return false;
 	}
 

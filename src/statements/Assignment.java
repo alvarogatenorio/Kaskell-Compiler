@@ -18,7 +18,14 @@ public class Assignment implements BasicStatement {
 	 * the identifier
 	 */
 	public boolean checkType() {
-		return expression.checkType() && (identifier.getType().equals(expression.getType()));
+		boolean wellTyped = expression.checkType();
+		if(!identifier.getSimpleType().equals(expression.getType())) {
+			System.err.println("TYPE ERROR: in line " + (this.identifier.getRow() + 1) + " column "
+					+ (this.identifier.getColumn() + 1)
+					+ " the right type of the assignment does not match with the left type of assigment!");
+			return false;
+		}
+		return wellTyped;
 	}
 
 	/* Checks the expression and the identifier (order matters) */

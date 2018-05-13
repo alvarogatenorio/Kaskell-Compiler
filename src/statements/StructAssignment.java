@@ -3,6 +3,8 @@ package statements;
 import expressions.Expression;
 import expressions.StructMember;
 import kaskell.SymbolTable;
+import types.Type;
+import types.Types;
 
 public class StructAssignment extends Assignment {
 	private StructMember member;
@@ -13,8 +15,15 @@ public class StructAssignment extends Assignment {
 	}
 
 	public boolean checkType() {
-		return this.member.checkType() && this.expression.checkType()
-				&& (this.member.getType().equals(this.member.getType()));
+		
+		if(!this.member.getType().equals(this.expression.getType())) {
+			System.err.println("TYPE ERROR: in line " + (this.member.getRow() + 1) + " column "
+					+ (this.member.getColumn() + 1)
+					+ " fatal error the expression isn't typed as the struct member in this assignment!");
+			return false;
+		}
+		
+		return this.member.checkType() && this.expression.checkType();
 	}
 
 	/* Checks the expression and the identifiers (order matters) */

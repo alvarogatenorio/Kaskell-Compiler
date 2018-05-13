@@ -5,6 +5,7 @@ import expressions.Identifier;
 import kaskell.Definition;
 import kaskell.SymbolTable;
 import types.Type;
+import types.Types;
 
 public class Mixed implements BasicStatement, Definition {
 	private Type type;
@@ -20,8 +21,14 @@ public class Mixed implements BasicStatement, Definition {
 	/* Checks and assign type to the identifier */
 	@Override
 	public boolean checkType() {
+		if(!expression.getType().equals(type)) {
+			System.err.println("TYPE ERROR: in line " + (this.expression.getRow() + 1) + " column "
+					+ (this.expression.getColumn() + 1)
+					+ " fatal error the expression typed wrong for this place!");
+			return false;
+		}
 		/* Checks the expression (well typed and type matching) */
-		boolean wellTyped = expression.checkType() && (expression.getType().equals(type));
+		boolean wellTyped = expression.checkType();
 		/* Assign type to the identifier */
 		identifier.setType(type);
 		return wellTyped;

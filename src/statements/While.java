@@ -17,7 +17,15 @@ public class While extends ComplexStatement {
 	/* Checks if the condition is well typed and boolean, then checks the body */
 	@Override
 	public boolean checkType() {
-		return condition.checkType() && (condition.getType().equals(new Type(Types.BOOLEAN))) && body.checkType();
+		
+		if(!condition.getType().equals(new Type(Types.BOOLEAN))) {
+			System.err.println("TYPE ERROR: in line " + (this.condition.getRow() + 1) + " column "
+					+ (this.condition.getColumn() + 1)
+					+ " fatal error the condition is not Koolean type!");
+			return false;
+		}
+		
+		return condition.checkType() && body.checkType();
 	}
 
 	/* Just checks the condition and the body block */

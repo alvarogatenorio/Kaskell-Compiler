@@ -26,7 +26,20 @@ public class BinaryExpression implements Expression {
 		if (right instanceof Identifier) {
 			rightType = ((Identifier) right).getSimpleType();
 		}
-		return wellTyped && (leftType.equals(operator.getLeftType())) && (rightType.equals(operator.getRightType()));
+		if(!leftType.equals(operator.getLeftType())) {
+			System.err.println("TYPE ERROR: in line " + (this.getRow() + 1) + " column "
+					+ (this.getColumn() + 1)
+					+ " the left type of the expresion does not match with the left type of the operator!");
+			return false;
+		}
+		if(!rightType.equals(operator.getRightType())) {
+			System.err.println("TYPE ERROR: in line " + (this.getRow() + 1) + " column "
+					+ (this.getColumn() + 1)
+					+ " the right type of the expresion does not match with the right type of the operator!");
+			return false;
+		}
+		
+		return wellTyped;
 	}
 
 	@Override
