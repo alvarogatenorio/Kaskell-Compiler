@@ -1,13 +1,14 @@
-$.-----------------------------
-  -----Kaskell test flight-----
-  -----------------------------.$
-  
-  AA := struK {[8]kinkeger s; kool d;}
-  BB := struK {AA a; kool f;}
-  
-  {
-      AA a;
-      komega(1,krue,a);
-  }
-  komega : kinkeger X kool X AA -> kool
-           (a,b,c) |-> { kreturn krue; }
+B := struK {
+               kinkeger array;
+               kinkeger counter;
+           }
+
+A := struK {
+               [3][4]B array;
+               kinkeger counter;
+           }
+{
+    A test;
+    [6]kinkeger a;
+    a[test.array[0][0].array] = 12;
+}

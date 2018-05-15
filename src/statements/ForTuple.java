@@ -26,14 +26,22 @@ public class ForTuple {
 	 * is a boolean expression
 	 */
 	public boolean checkType() {
-		if(!condition.getType().equals(new Type(Types.BOOLEAN))) {
+		Type conditionType;
+		//if (!condition.checkType()) {
+			//return false;
+		//}
+		//if (condition instanceof ArrayIdentifier) {
+			//conditionType = ((ArrayIdentifier) (condition)).getSimpleType();
+		//} else {
+			conditionType = condition.getType();
+		//}
+		if ((conditionType == null) || (!conditionType.equals(new Type(Types.BOOLEAN)))) {
 			System.err.println("TYPE ERROR: in line " + (this.condition.getRow() + 1) + " column "
-					+ (this.condition.getColumn() + 1)
-					+ " fatal error the condition is not Koolean type!");
+					+ (this.condition.getColumn() + 1) + " fatal error the condition is not kool type!");
 			return false;
 		}
-		
-		return initial.checkType() && condition.checkType() && loopEpilogue.checkType();
+
+		return condition.checkType() && initial.checkType() && loopEpilogue.checkType();
 	}
 
 	/* Checks the initial, the condition and the loop epilogue */

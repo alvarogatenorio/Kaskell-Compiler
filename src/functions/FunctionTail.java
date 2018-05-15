@@ -23,10 +23,18 @@ public class FunctionTail implements Definition {
 
 	public boolean checkIdentifiers(SymbolTable symbolTable) {
 		boolean wellIdentified = true;
-		/* Insert the new indentifiers */
+		/* Insert the new identifiers */
 		if (variables != null) {
 			for (int i = 0; i < variables.size(); i++) {
 				wellIdentified = wellIdentified && symbolTable.insertIdentifier(variables.get(i), this);
+			}
+		}
+		/* Setting types */
+		if (arguments != null && variables != null) {
+			if (variables.size() == arguments.size()) {
+				for (int i = 0; i < variables.size(); i++) {
+					variables.get(i).setType(arguments.get(i));
+				}
 			}
 		}
 		/* Check the block itself (it could be a return block, no problem) */

@@ -20,21 +20,21 @@ public class Call implements Expression {
 
 	@Override
 	public boolean checkType() {
-		if (variables.size() == arguments.size()) {
+		if ((variables != null && arguments != null) && (variables.size() == arguments.size())) {
 			for (int i = 0; i < variables.size(); i++) {
 				if (variables.get(i).checkType() && !(variables.get(i).getType().equals(arguments.get(i)))) {
-					int num=i+1;
+					int num = i + 1;
 					System.err.println("TYPE ERROR: in line " + (this.getRow() + 1) + " column "
-							+ (this.getColumn() + 1)
-							+ " the variable type number"+ num + "does not match with the argument type number"+ num +"!");
+							+ (this.getColumn() + 1) + " the variable type number " + num
+							+ " does not match with the argument type number " + num + "!");
 					return false;
 				}
 			}
 			return true;
-		}
-		else {
-			System.err.println("TYPE ERROR: in line " + (this.getRow() + 1) + " column "
-					+ (this.getColumn() + 1)
+		} else if (variables == null && arguments == null) {
+			return true;
+		} else {
+			System.err.println("TYPE ERROR: in line " + (this.getRow() + 1) + " column " + (this.getColumn() + 1)
 					+ " the size of the call variables and the arguments doesn't match!");
 			return false;
 		}

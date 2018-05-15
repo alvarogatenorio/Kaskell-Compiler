@@ -1,13 +1,15 @@
 package expressions;
 
 import kaskell.SymbolTable;
+import types.ArrayType;
+import types.StructType;
 import types.Type;
 
 public class Identifier implements Expression {
 	private String s;
 	private int row;
 	private int column;
-	private Type type;
+	protected Type type;
 
 	public Identifier(String s) {
 		this.s = s;
@@ -55,6 +57,18 @@ public class Identifier implements Expression {
 	}
 
 	public Type getSimpleType() {
+		/* The type is really null */
+		if (this.type == null) {
+			return null;
+		}
+		/* The type is an struct */
+		if (this.type instanceof StructType) {
+			return this.type;
+		}
+		/* The type is array of structs */
+		if (this.type instanceof ArrayType && (this.type.getType() == null)) {
+			return ((ArrayType) this.type).getComplex();
+		}
 		return new Type(this.type.getType());
 	}
 

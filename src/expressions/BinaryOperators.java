@@ -37,4 +37,9 @@ public enum BinaryOperators {
 	public Type getRightType() {
 		return this.right;
 	}
+	
+	public void setEqualsSidesTypes(Type types) {
+		this.left = types;
+		this.right = types;
+	}
 }

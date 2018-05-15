@@ -35,15 +35,17 @@ public class StructType extends Type implements Definition {
 	/* Structural type equivalence */
 	public boolean equals(Type other) {
 		if (other.getType() == null) {
-			StructType aux = (StructType) (other);
-			if (aux.getDeclarations().size() == this.declarations.size()) {
-				for (int i = 0; i < this.declarations.size(); i++) {
-					if (this.declarations.get(i).getDefinitionType() != aux.getDeclarations().get(i)
-							.getDefinitionType()) {
-						return false;
+			if (!(other instanceof ArrayType)) {
+				StructType aux = (StructType) (other);
+				if (aux.getDeclarations().size() == this.declarations.size()) {
+					for (int i = 0; i < this.declarations.size(); i++) {
+						if (this.declarations.get(i).getDefinitionType() != aux.getDeclarations().get(i)
+								.getDefinitionType()) {
+							return false;
+						}
 					}
+					return true;
 				}
-				return true;
 			}
 		}
 		return false;

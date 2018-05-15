@@ -28,7 +28,7 @@ public class ArrayType extends Type {
 	}
 
 	public StructType getComplex() {
-		return this.getComplex();
+		return this.complex;
 	}
 
 	public boolean equals(Type other) {

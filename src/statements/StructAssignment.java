@@ -3,8 +3,6 @@ package statements;
 import expressions.Expression;
 import expressions.StructMember;
 import kaskell.SymbolTable;
-import types.Type;
-import types.Types;
 
 public class StructAssignment extends Assignment {
 	private StructMember member;

@@ -22,6 +22,12 @@ public class StructMember extends Identifier implements Expression {
 
 	@Override
 	public boolean checkType() {
+		if (!(identifiers.get(0) instanceof ArrayIdentifier) && (identifiers.get(0).getType() instanceof ArrayType)) {
+			System.err.println("TYPE ERROR: in line " + (this.identifiers.get(0).getRow() + 1) + " column "
+					+ (this.identifiers.get(0).getColumn() + 1) + " fatal error cause by identifier type number " + 0
+					+ "!");
+			return false;
+		}
 		/* We need to be well identified */
 		if ((identifiers.size() - 1) == matchedTypes.size()) {
 			/* Check for each identifier in the list */
@@ -32,40 +38,37 @@ public class StructMember extends Identifier implements Expression {
 						/* Both types have to be of the same dimension */
 						if (((ArrayType) (matchedTypes.get(i)))
 								.getSize() != ((ArrayIdentifier) (identifiers.get(i + 1))).getSize()) {
-							int num= i+1;
-							System.err.println("TYPE ERROR: in line " + (this.identifiers.get(i + 1).getRow() + 1) + " column "
-									+ (this.identifiers.get(i + 1).getColumn() + 1)
-									+ " fatal error cause by identifier size number "+num+"!");
+							int num = i + 1;
+							System.err.println("TYPE ERROR: in line " + (this.identifiers.get(i + 1).getRow() + 1)
+									+ " column " + (this.identifiers.get(i + 1).getColumn() + 1)
+									+ " fatal error cause by identifier size number " + num + "!");
 							return false;
 							/* Everything is well typed */
 						} else if (!((ArrayIdentifier) (identifiers.get(i + 1))).checkType()) {
-							int num= i+1;
-							System.err.println("TYPE ERROR: in line " + (this.identifiers.get(i + 1).getRow() + 1) + " column "
-									+ (this.identifiers.get(i + 1).getColumn() + 1)
-									+ " fatal error cause by identifier type number "+num+"!");
+							int num = i + 1;
+							System.err.println("TYPE ERROR: in line " + (this.identifiers.get(i + 1).getRow() + 1)
+									+ " column " + (this.identifiers.get(i + 1).getColumn() + 1)
+									+ " fatal error cause by identifier type number " + num + "!");
 							return false;
 						}
 					} else {
-						System.err.println("TYPE ERROR: in line " + (this.identifiers.get(i + 1).getRow() + 1) + " column "
-								+ (this.getColumn() + 1)
-								+ " fatal error cause by declaration member!");
+						System.err.println("TYPE ERROR: in line " + (this.identifiers.get(i + 1).getRow() + 1)
+								+ " column " + (this.getColumn() + 1) + " fatal error cause by declaration member!");
 						return false;
 					}
 				} else {
 					/* The last is special */
 					if (matchedTypes.get(i) instanceof ArrayType && i != matchedTypes.size() - 1) {
-						int num= i+1;
+						int num = i + 1;
 						System.err.println("TYPE ERROR: in line " + (this.getRow() + 1) + " column "
-								+ (this.getColumn() + 1)
-								+ " fatal error cause by identifier type number "+num+"!");
+								+ (this.getColumn() + 1) + " fatal error cause by identifier type number " + num + "!");
 						return false;
 					}
 				}
 			}
 			return true;
 		}
-		System.err.println("TYPE ERROR: in line " + (this.getRow() + 1) + " column "
-				+ (this.getColumn() + 1)
+		System.err.println("TYPE ERROR: in line " + (this.getRow() + 1) + " column " + (this.getColumn() + 1)
 				+ " fatal error cause by diferent number between identifiers and declarations!");
 		return false;
 	}
@@ -81,10 +84,23 @@ public class StructMember extends Identifier implements Expression {
 				 * For each identifier in the chain a.b. ... .c, checks if matches with an
 				 * identifier of the corresponding struct
 				 */
-				wellIdentified = wellIdentified && checkIdentifiersAux(
-						/* The previous was an struct type */
-						(ArrayList<Declaration>) ((StructType) (identifiers.get(i - 1).getType())).getDeclarations(),
-						identifiers.get(i));
+				if (identifiers.get(i - 1).getType() instanceof StructType) {
+					/* The previous was an struct type */
+					wellIdentified = wellIdentified && checkIdentifiersAux(
+							(ArrayList<Declaration>) ((StructType) (identifiers.get(i - 1).getType()))
+									.getDeclarations(),
+							identifiers.get(i));
+				} else if (identifiers.get(i - 1).getType() instanceof ArrayType) {
+					StructType typeAux = ((ArrayType) identifiers.get(i - 1).getType()).getComplex();
+					if (typeAux != null) {
+						wellIdentified = wellIdentified && checkIdentifiersAux(
+								(ArrayList<Declaration>) (typeAux.getDeclarations()), identifiers.get(i));
+					} else {
+						return false;
+					}
+				} else {
+					return false;
+				}
 			}
 		}
 		return wellIdentified;
@@ -107,7 +123,8 @@ public class StructMember extends Identifier implements Expression {
 	@Override
 	public Type getType() {
 		if (matchedTypes.size() == identifiers.size() - 1) {
-			return this.matchedTypes.get(matchedTypes.size() - 1);
+			this.type = this.matchedTypes.get(matchedTypes.size() - 1);
+			return this.type;
 		}
 		return null;
 	}

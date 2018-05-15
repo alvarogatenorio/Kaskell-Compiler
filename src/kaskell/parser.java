@@ -867,7 +867,18 @@ class CUP$parser$actions {
 		int ileft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
 		int iright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		String i = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
-
+		
+                    //identifier
+                    Identifier ident = new Identifier(i);
+                    ident.setRow(ileft);
+                    ident.setColumn(iright);
+                    //type
+                    Identifier str = new Identifier(s);
+                    ident.setRow(sleft);
+                    ident.setColumn(sright);
+                    //result
+                    RESULT = new Declaration(str,m,ident);
+                
               CUP$parser$result = parser.getSymbolFactory().newSymbol("declaration",10, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;

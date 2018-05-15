@@ -62,6 +62,18 @@ public class SymbolTable {
 	public Type searchIdentifierType(Identifier identifier) {
 		Definition definition = this.searchDefinitionFromIdentifier(identifier);
 		if (definition != null) {
+			if (definition instanceof FunctionTail) {
+				/*
+				 * This will have a better performance if we previously insert every variable in
+				 * a hashmap (to do in the future)
+				 */
+				List<Identifier> aux = ((FunctionTail) definition).getVariables();
+				for (int i = 0; i < aux.size(); i++) {
+					if (aux.get(i).toString().equals(identifier.toString())) {
+						return aux.get(i).getType();
+					}
+				}
+			}
 			return definition.getDefinitionType();
 		}
 		System.err.println("IDENTIFIER ERROR: line " + (identifier.getRow() + 1) + " column "

@@ -36,12 +36,16 @@ public class ArrayIdentifier extends Identifier {
 		ArrayType type = (ArrayType) (this.getType());
 		if (type.getSize() == coordinates.size()) {
 			for (int i = 0; i < coordinates.size(); i++) {
-				wellTyped = wellTyped && coordinates.get(i).checkType()
-						&& coordinates.get(i).getType().equals(new Type(Types.INTEGER));
+				wellTyped = wellTyped && coordinates.get(i).checkType();
+				if (!(coordinates.get(i).getType().equals(new Type(Types.INTEGER)))) {
+					System.err.println("TYPE ERROR: in line " + (coordinates.get(i).getRow() + 1) + " column "
+							+ (coordinates.get(i).getColumn() + 1)
+							+ " the expression must be integer!");
+					return false;
+				}
 			}
 		} else {
-			System.err.println("TYPE ERROR: in line " + (this.getRow() + 1) + " column "
-					+ (this.getColumn() + 1)
+			System.err.println("TYPE ERROR: in line " + (this.getRow() + 1) + " column " + (this.getColumn() + 1)
 					+ " the number of coordinates dosen't match with the number in the original declaration!");
 			return false;
 		}

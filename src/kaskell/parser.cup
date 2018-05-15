@@ -175,6 +175,18 @@ declaration ::= type:t IDENT:i
                 :}
                 |
                 multi_array_integer:m IDENT:s IDENT:i
+                {:
+                    //identifier
+                    Identifier ident = new Identifier(i);
+                    ident.setRow(ileft);
+                    ident.setColumn(iright);
+                    //type
+                    Identifier str = new Identifier(s);
+                    ident.setRow(sleft);
+                    ident.setColumn(sright);
+                    //result
+                    RESULT = new Declaration(str,m,ident);
+                :}
                 ;
 /*An assignment is an identifier followed (or not) by a multidimensional array an 
   equals symbol and an expression*/

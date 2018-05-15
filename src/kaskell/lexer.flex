@@ -83,7 +83,7 @@ Comment = "$." [^.] ~".$" | "$." "."+ "$"
     ">"                { System.out.print(" > "); return symbol(sym.GE); }
     "<"                { System.out.print(" < "); return symbol(sym.LE); }
     "="                { System.out.print(" = "); return symbol(sym.EQ); }
-    "=="               { System.out.print(" : "); return symbol(sym.EQQ); }
+    "=="               { System.out.print(" == "); return symbol(sym.EQQ); }
     ":"                { System.out.print(" : "); return symbol(sym.DOTS); }
     "|"                { System.out.print(" | "); return symbol(sym.VERT); }
     "^"                { System.out.print(" ^ "); return symbol(sym.EXP); }

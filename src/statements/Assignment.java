@@ -1,8 +1,10 @@
 package statements;
 
+import expressions.ArrayIdentifier;
 import expressions.Expression;
 import expressions.Identifier;
 import kaskell.SymbolTable;
+import types.Type;
 
 public class Assignment implements BasicStatement {
 	protected Expression expression;
@@ -19,7 +21,17 @@ public class Assignment implements BasicStatement {
 	 */
 	public boolean checkType() {
 		boolean wellTyped = expression.checkType();
-		if(!identifier.getSimpleType().equals(expression.getType())) {
+		Type identifierType = identifier.getSimpleType();
+		Type expressionType;
+		if (expression instanceof ArrayIdentifier) {
+			expressionType = ((ArrayIdentifier) (expression)).getSimpleType();
+		} else {
+			expressionType = expression.getType();
+		}
+		if (identifierType == null) {
+			return false;
+		}
+		if (!identifierType.equals(expressionType)) {
 			System.err.println("TYPE ERROR: in line " + (this.identifier.getRow() + 1) + " column "
 					+ (this.identifier.getColumn() + 1)
 					+ " the right type of the assignment does not match with the left type of assigment!");

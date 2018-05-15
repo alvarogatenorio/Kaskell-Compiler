@@ -20,25 +20,37 @@ public class BinaryExpression implements Expression {
 		boolean wellTyped = left.checkType() && right.checkType();
 		Type leftType = left.getType();
 		Type rightType = right.getType();
+		if (leftType == null) {
+			System.err.println("TYPE ERROR: in line " + (left.getRow() + 1) + " column " + (left.getColumn() + 1)
+					+ " the left type of the expression is void!");
+			return false;
+		}
+		if (rightType == null) {
+			System.err.println("TYPE ERROR: in line " + (right.getRow() + 1) + " column " + (right.getColumn() + 1)
+					+ " the left type of the expression is void!");
+			return false;
+		}
 		if (left instanceof Identifier) {
 			leftType = ((Identifier) left).getSimpleType();
 		}
 		if (right instanceof Identifier) {
 			rightType = ((Identifier) right).getSimpleType();
 		}
-		if(!leftType.equals(operator.getLeftType())) {
-			System.err.println("TYPE ERROR: in line " + (this.getRow() + 1) + " column "
-					+ (this.getColumn() + 1)
+		/* Equals is an special case */
+		if (this.operator == BinaryOperators.EQUALS) {
+			this.operator.setEqualsSidesTypes(leftType);
+		}
+		if (!leftType.equals(operator.getLeftType())) {
+			System.err.println("TYPE ERROR: in line " + (this.getRow() + 1) + " column " + (this.getColumn() + 1)
 					+ " the left type of the expresion does not match with the left type of the operator!");
 			return false;
 		}
-		if(!rightType.equals(operator.getRightType())) {
-			System.err.println("TYPE ERROR: in line " + (this.getRow() + 1) + " column "
-					+ (this.getColumn() + 1)
+		if (!rightType.equals(operator.getRightType())) {
+			System.err.println("TYPE ERROR: in line " + (this.getRow() + 1) + " column " + (this.getColumn() + 1)
 					+ " the right type of the expresion does not match with the right type of the operator!");
 			return false;
 		}
-		
+
 		return wellTyped;
 	}
 

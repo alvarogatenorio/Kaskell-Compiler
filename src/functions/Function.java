@@ -27,13 +27,8 @@ public class Function {
 
 		/* When we have a "normal" function */
 		if (arguments != null && variables != null) {
-			if (arguments.size() == variables.size()) {
-				for (int i = 0; i < arguments.size(); i++) {
-					/* Setting the types of the variables (arguments are types) */
-					variables.get(i).setType(arguments.get(i));
-				}
-				/* If arguments and variables does not match */
-			} else {
+			/* If arguments and variables does not match */
+			if (arguments.size() != variables.size()) {
 				System.err.println("TYPE ERROR: in line " + (head.getIdentifier().getRow() + 1) + " column "
 						+ (head.getIdentifier().getColumn() + 1)
 						+ " the number of arguments and identifiers is not the same!");
@@ -54,6 +49,12 @@ public class Function {
 		/* Get the return type and the block */
 		Type returnType = head.getReturnType();
 		Block returnBlock = tail.getBlock();
+
+		/* If the body is wrongly typed */
+		if (!returnBlock.checkType()) {
+			return false;
+		}
+
 		boolean isReturnBlock = returnBlock instanceof ReturnBlock;
 		/* If we have an out type */
 		if (returnType != null) {
@@ -83,10 +84,6 @@ public class Function {
 						+ " we don't have an out type but we have a return statement!");
 				return false;
 			}
-		}
-		/* Finally if the body is wrongly typed */
-		if (!returnBlock.checkType()) {
-			return false;
 		}
 		return true;
 	}
