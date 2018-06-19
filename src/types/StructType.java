@@ -76,9 +76,12 @@ public class StructType extends Type implements Definition {
 		return this;
 	}
 
-	@Override
-	public int getAddress() {
-		return 0;
+	public int getSize() {
+		int size = 0;
+		for (int i = 0; i < this.declarations.size(); i++) {
+			size += declarations.get(i).getSize();
+		}
+		return size;
 	}
 
 }

@@ -20,7 +20,16 @@ public class ArrayType extends Type {
 	}
 
 	public int getSize() {
-		return this.dimensions.size();
+		/* Just applying the formula */
+		int size = 1;
+		for (int i = 0; i < this.dimensions.size(); i++) {
+			size *= dimensions.get(i);
+		}
+		/* Is a normal type */
+		if (complex != null) {
+			size*=complex.getSize();
+		}
+		return size;
 	}
 
 	public List<Integer> getDimensions() {

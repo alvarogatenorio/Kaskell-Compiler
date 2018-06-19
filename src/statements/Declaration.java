@@ -12,10 +12,16 @@ import types.Type;
 public class Declaration implements BasicStatement, Definition {
 	private Type type;
 	private Identifier identifier;
-
 	private Identifier structIdentifier;
+
+	/*
+	 * Here we store the dimensions of an array of structs, we need to store this,
+	 * because we explicitly create the type here, when working with normal arrays,
+	 * the type was created previously
+	 */
 	private List<Integer> structDimensions;
 
+	/* Something like "kinkeger a" or "[4][1]kinkeger" */
 	public Declaration(Type type, Identifier identifier) {
 		this.type = type;
 		this.identifier = identifier;
@@ -23,6 +29,7 @@ public class Declaration implements BasicStatement, Definition {
 		this.structDimensions = null;
 	}
 
+	/* Something like "A a" being "A" a previously defined struct */
 	public Declaration(Identifier structIdentifier, Identifier identifier) {
 		this.identifier = identifier;
 		this.structIdentifier = structIdentifier;
@@ -30,6 +37,7 @@ public class Declaration implements BasicStatement, Definition {
 		this.structDimensions = null;
 	}
 
+	/* Something like "[7][5][8]A a" being "A" a previously defined struct */
 	public Declaration(Identifier structIdentifier, List<Integer> structDimensions, Identifier identifier) {
 		this.identifier = identifier;
 		this.structIdentifier = structIdentifier;
@@ -76,8 +84,11 @@ public class Declaration implements BasicStatement, Definition {
 		return this.identifier;
 	}
 
-	@Override
-	public int getAddress() {
-		return 0;
+	public int getSize() {
+		return type.getSize();
+	}
+
+	public int getAddress(SymbolTable symbolTable) {
+		return 5 + symbolTable.getAccumulation() - this.getSize();
 	}
 }
