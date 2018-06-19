@@ -57,4 +57,9 @@ public class Mixed implements BasicStatement, Definition {
 	public Type getDefinitionType() {
 		return this.type;
 	}
+
+	@Override
+	public int getAddress() {
+		return 0;
+	}
 }

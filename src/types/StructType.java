@@ -76,4 +76,9 @@ public class StructType extends Type implements Definition {
 		return this;
 	}
 
+	@Override
+	public int getAddress() {
+		return 0;
+	}
+
 }

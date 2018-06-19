@@ -75,4 +75,9 @@ public class Declaration implements BasicStatement, Definition {
 	public Identifier getIdentifier() {
 		return this.identifier;
 	}
+
+	@Override
+	public int getAddress() {
+		return 0;
+	}
 }
