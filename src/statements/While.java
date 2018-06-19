@@ -1,5 +1,7 @@
 package statements;
 
+import java.io.BufferedWriter;
+
 import expressions.Expression;
 import kaskell.Block;
 import kaskell.SymbolTable;
@@ -37,5 +39,11 @@ public class While extends ComplexStatement {
 			symbolTable.closeBlock();
 		}
 		return wellIdentified;
+	}
+
+	@Override
+	public void generateCode(BufferedWriter bw) {
+		// TODO Auto-generated method stub
+		
 	}
 }

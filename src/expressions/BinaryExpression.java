@@ -1,5 +1,7 @@
 package expressions;
 
+import java.io.BufferedWriter;
+
 import kaskell.SymbolTable;
 import types.Type;
 
@@ -73,5 +75,48 @@ public class BinaryExpression implements Expression {
 	@Override
 	public int getColumn() {
 		return this.left.getColumn();
+	}
+
+	@Override
+	public void generateCode(BufferedWriter bw) throws Exception {
+		left.generateCode(bw);
+		right.generateCode(bw);
+		
+		switch (operator) {
+		case AND:
+			bw.write(" and ");
+			break;
+		case DIV:
+			bw.write(" div ");
+			break;
+		case EQUALS:
+			bw.write(" equ ");
+			break;
+		case EXPONENTIAL: /* A little party here */
+			break;
+		case GREATER:
+			bw.write(" grt ");
+			break;
+		case LOWER:
+			bw.write(" les ");
+			break;
+		case MINUS:
+			bw.write(" sub ");
+			break;
+		case OR:
+			bw.write(" or ");
+			break;
+		case PLUS:
+			bw.write(" add ");
+			break;
+		case PRODUCT:
+			bw.write(" mul ");
+			break;
+		case MODULUS: /* Another little party */
+			bw.write("  ");
+			break;
+		default:
+			break;
+		}
 	}
 }

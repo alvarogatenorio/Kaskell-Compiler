@@ -1,5 +1,7 @@
 package expressions;
 
+import java.io.BufferedWriter;
+
 import kaskell.SymbolTable;
 import types.Type;
 import types.Types;
@@ -44,5 +46,11 @@ public class DummyInteger implements Expression {
 	@Override
 	public int getColumn() {
 		return this.column;
+	}
+
+	@Override
+	public void generateCode(BufferedWriter bw) {
+		// TODO Auto-generated method stub
+		
 	}
 }

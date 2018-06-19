@@ -1,5 +1,6 @@
 package statements;
 
+import java.io.BufferedWriter;
 import java.util.List;
 
 import expressions.Identifier;
@@ -90,5 +91,11 @@ public class Declaration implements BasicStatement, Definition {
 
 	public int getAddress(SymbolTable symbolTable) {
 		return 5 + symbolTable.getAccumulation() - this.getSize();
+	}
+
+	@Override
+	public void generateCode(BufferedWriter bw) {
+		// TODO Auto-generated method stub
+		
 	}
 }

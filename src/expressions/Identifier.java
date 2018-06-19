@@ -1,5 +1,7 @@
 package expressions;
 
+import java.io.BufferedWriter;
+
 import kaskell.SymbolTable;
 import types.ArrayType;
 import types.StructType;
@@ -82,5 +84,11 @@ public class Identifier implements Expression {
 
 	public boolean equals(Identifier other) {
 		return this.s.equals(other.toString());
+	}
+
+	@Override
+	public void generateCode(BufferedWriter bw) {
+		// TODO Auto-generated method stub
+		
 	}
 }

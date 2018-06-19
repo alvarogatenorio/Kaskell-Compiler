@@ -18,6 +18,7 @@ public class SymbolTable {
 
 	public SymbolTable() {
 		table = new ArrayList<HashMap<String, Definition>>();
+		accumulator = new ArrayList<Integer>();
 	}
 
 	/*-----Basic operations-----*/

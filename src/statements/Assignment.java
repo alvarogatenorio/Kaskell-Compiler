@@ -1,10 +1,13 @@
 package statements;
 
+import java.io.BufferedWriter;
+
 import expressions.ArrayIdentifier;
 import expressions.Expression;
 import expressions.Identifier;
 import kaskell.SymbolTable;
 import types.Type;
+import types.Types;
 
 public class Assignment implements BasicStatement {
 	protected Expression expression;
@@ -43,5 +46,18 @@ public class Assignment implements BasicStatement {
 	/* Checks the expression and the identifier (order matters) */
 	public boolean checkIdentifiers(SymbolTable symbolTable) {
 		return expression.checkIdentifiers(symbolTable) && identifier.checkIdentifiers(symbolTable);
+	}
+
+	@Override
+	public void generateCode(BufferedWriter bw) throws Exception {
+		identifier.generateCode(bw);
+		expression.generateCode(bw);
+		String typeModifier;
+		if (expression.getType().equals(new Type(Types.INTEGER))) {
+			typeModifier = "i";
+		} else {
+			typeModifier = "b";
+		}
+		bw.write("sto " + typeModifier + "\n");
 	}
 }

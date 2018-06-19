@@ -1,5 +1,7 @@
 package expressions;
 
+import java.io.BufferedWriter;
+
 import kaskell.SymbolTable;
 import types.Type;
 
@@ -53,5 +55,11 @@ public class UnaryExpression implements Expression {
 	@Override
 	public int getColumn() {
 		return this.expression.getColumn();
+	}
+
+	@Override
+	public void generateCode(BufferedWriter bw) {
+		// TODO Auto-generated method stub
+		
 	}
 }

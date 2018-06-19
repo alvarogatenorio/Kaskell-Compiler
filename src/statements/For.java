@@ -1,5 +1,7 @@
 package statements;
 
+import java.io.BufferedWriter;
+
 import kaskell.Block;
 import kaskell.SymbolTable;
 
@@ -24,5 +26,11 @@ public class For extends ComplexStatement {
 		boolean wellIdentified = conditions.checkIdentifiers(symbolTable) && body.checkIdentifiers(symbolTable);
 		symbolTable.closeBlock();
 		return wellIdentified;
+	}
+
+	@Override
+	public void generateCode(BufferedWriter bw) {
+		// TODO Auto-generated method stub
+		
 	}
 }

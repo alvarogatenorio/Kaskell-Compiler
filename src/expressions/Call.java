@@ -1,5 +1,6 @@
 package expressions;
 
+import java.io.BufferedWriter;
 import java.util.List;
 
 import kaskell.SymbolTable;
@@ -72,5 +73,11 @@ public class Call implements Expression {
 	@Override
 	public int getColumn() {
 		return this.identifier.getColumn();
+	}
+
+	@Override
+	public void generateCode(BufferedWriter bw) {
+		// TODO Auto-generated method stub
+		
 	}
 }

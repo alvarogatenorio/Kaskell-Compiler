@@ -1,5 +1,6 @@
 package types;
 
+import java.io.BufferedWriter;
 import java.util.List;
 
 import expressions.Identifier;
@@ -83,5 +84,8 @@ public class StructType extends Type implements Definition {
 		}
 		return size;
 	}
-
+	
+	public void generateCode(BufferedWriter bw) {
+		
+	}
 }

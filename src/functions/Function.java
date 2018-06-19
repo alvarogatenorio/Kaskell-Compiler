@@ -1,5 +1,6 @@
 package functions;
 
+import java.io.BufferedWriter;
 import java.util.List;
 
 import expressions.Expression;
@@ -107,4 +108,9 @@ public class Function {
 	public FunctionTail getTail() {
 		return this.tail;
 	}
+
+	public void generateCode(BufferedWriter bw) {
+
+	}
+
 }

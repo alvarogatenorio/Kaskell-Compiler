@@ -1,6 +1,1 @@
-A := struK{kinkeger aa;}
-B := struK{A aa;}
-
-{
-     B b;
-}
+{1--;}

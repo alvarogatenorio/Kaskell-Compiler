@@ -1,5 +1,7 @@
 package statements;
 
+import java.io.BufferedWriter;
+
 import expressions.Expression;
 import expressions.Identifier;
 import kaskell.Definition;
@@ -64,5 +66,11 @@ public class Mixed implements BasicStatement, Definition {
 
 	public int getSize() {
 		return type.getSize();
+	}
+
+	@Override
+	public void generateCode(BufferedWriter bw) {
+		// TODO Auto-generated method stub
+		
 	}
 }

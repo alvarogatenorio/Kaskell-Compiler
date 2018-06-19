@@ -75,20 +75,25 @@ public class Program {
 		}
 		return wellTyped;
 	}
-/*
+
 	public void generateCode() {
-		
+
 		File pMachinInput;
 		try {
 			pMachinInput = new File("inputMaquinaP");
 			BufferedWriter bw = new BufferedWriter(new FileWriter(pMachinInput));
-			for(int i=0; i< structs.size(); i++) {
-				structs.get(i).generateCode(bw);
+			if (structs != null) {
+				for (int i = 0; i < structs.size(); i++) {
+					structs.get(i).generateCode(bw);
+				}
 			}
-			for(int i=0; i< functions.size(); i++) {
-				functions.get(i).generateCode(bw);
+			if (functions != null) {
+				for (int i = 0; i < functions.size(); i++) {
+					functions.get(i).generateCode(bw);
+				}
 			}
-			for(int i=0; i< structs.size(); i++) {
+			/*Blocks is never null!!*/
+			for (int i = 0; i < blocks.size(); i++) {
 				blocks.get(i).generateCode(bw);
 			}
 			bw.write("stp\n");
@@ -96,8 +101,6 @@ public class Program {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		
+
 	}
-	*/
 }
