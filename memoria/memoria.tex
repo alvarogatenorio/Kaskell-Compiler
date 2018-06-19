@@ -30,14 +30,53 @@
 	
 	Para poder analizar las palabras reservadas, nos ayudamos de un HashMap que tiene las palabras reservadas en el mismo, y al encontrar un identificador, comprobamos si es palabra reservada o no, viendo si está en el HashMap.
 	
+	El resto de identificadores tienen una pequeña restricción de que solo pueden empezar por letras mayúsculas o minúsculas.
+	
+	Y los comentarios de este lenguaje se escribe entre \$. comentario .\$.
+	
 	\section{Sintáctico}
 	Continuemos con el análisis sintáctico del compilador.
 	\subsection{Cup}
-	El archivo Cup, consiste en la gramática de atributos que analiza la sintaxis del lenguaje, por tanto en vez de detallar la gramática, que esta ya presente en los archivos del compilador en el archivo "parser.cup". Vemos más conveniente, comentar la sintaxis del lenguaje.
+	El archivo Cup, consiste en la gramática de atributos que analiza la sintaxis del lenguaje, por tanto en vez de detallar la gramática, que esta ya presente en los archivos del compilador en el archivo "parser.cup". Vemos más conveniente, comentar informalmente la sintaxis del lenguaje.
 	
-	Comencemos por las declaraciones. Hay 4 tipos de declaraciones: declaracion de tipo simple e identificador.
+	Comencemos por las declaraciones. Hay 4 tipos de declaraciones: declaracion de tipo simple e identificador, array de tipo simple e identificador, tipo "complejo" (tipo ya declarado, por ejemplo un registro) e identificador o array de tipo complejo e identificador.
+	La sintaxis de estas cuatro declaraciones es:
+	tipoSimple identificador, [tam 1º componente]...[tam i componente]...[tam n componente] tipoSimple identificador, IdentificadorTipoComplejo identificador, [tam 1º componente]...[tam i componente]...[tam n componente] IdentificadorTipoComplejo identificador. 
+
+	Aclaremos que el tipo simple son kinkeger o kool.	
 	
-	La declaración se realiza de la siguiente manera: identificador := struk { declaraciones }
+	Solo tenemos un tipo complejo que es la declaracion de los registros que es de la siguiente manera: identificador := struk { declaraciones }.
+	
+	Veamos ahora las instrucciones: tenemos las instrucciones simples, complejas, y los bloques.
+	
+	Un bloque se escribe de la siguiente manera: { instrucciones }.
+	
+	Las instrucciones simples son las asignaciones, las declaraciones, y las declaraciones con asignaciones. Todas las instrucciones terminan con un ";".	Las declaraciones ya las hemos aclarado antes, veamos como son las asignaciones y las declaraciones mixtas. 
+	
+	Las asignaciones son al igual que en los lenguajes tipo c++ o java, es decir identificador = expresión, identificador[i][j] = expresión, identRegistro.member = expresión.
+	
+	Y las declaraciones mixtas, consisten en la declaración de un tipo simple y una asignación, es decir, tipoSimple identificador = expresión.
+	
+	Veamos por último las instrucciones complejas. Estas son el if, el while y el for.
+	
+	El if: kif (expresión) {bloque} o kif (expresión) {bloque1} kelse {bloque2}.
+	
+	El while: khile (expresión) {bloque}.
+	
+	El for: kor (declaración mixta o asignación; expresión, asignación o expresión) {bloque}.
+	
+	Las funciones se declaran de la siguiente manera:	
+	 
+	 La cabeza de la función:
+	identificador : tipoArgumento1 X ... X tipoArgumentoN -> tipoRetorno. Recordemos que los argumentos y el retorno pueden no existir y por tanto se declararía como identificador :->.
+
+	Y la cola de la función:
+	(identificador1, ...,identificadorN) -> {bloque o bloque retorno}.
+	
+	Los bloques retorno son igual que los bloques normales con la salvedad de que tienen al final la instrucción kreturn indent/expresión/....
+	
+	Además contamos con una gramática de expresiones aritméticas y lógicas, con las respectivas prioridades de operadores. La gramática de expresiones viene detalla en cup. Destacaremos que ciertas prioridades son distintas a lo habitual por ejemplo las de las comparaciones.
+	
 	\subsection{Árbol Sintáctico}
 	 \section{Identificadores}
 	 \section{Tipos}

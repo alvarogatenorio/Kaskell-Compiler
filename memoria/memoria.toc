@@ -4,8 +4,10 @@
 \contentsline {chapter}{\chapternumberline {2}Estructura del compilador}{3}{chapter.2}
 \contentsline {section}{\numberline {2.1}L\IeC {\'e}xico}{3}{section.2.1}
 \contentsline {section}{\numberline {2.2}Sint\IeC {\'a}ctico}{3}{section.2.2}
-\contentsline {section}{\numberline {2.3}Identificadores}{3}{section.2.3}
-\contentsline {section}{\numberline {2.4}Tipos}{3}{section.2.4}
-\contentsline {section}{\numberline {2.5}Generaci\IeC {\'o}n C\IeC {\'o}digo de la M\IeC {\'a}quina-P}{3}{section.2.5}
-\contentsline {section}{\numberline {2.6}Errores}{3}{section.2.6}
-\contentsline {section}{\numberline {2.7}Ejemplo de C\IeC {\'o}digo}{3}{section.2.7}
+\contentsline {subsection}{Cup}{3}{section*.2}
+\contentsline {subsection}{\IeC {\'A}rbol Sint\IeC {\'a}ctico}{4}{section*.3}
+\contentsline {section}{\numberline {2.3}Identificadores}{4}{section.2.3}
+\contentsline {section}{\numberline {2.4}Tipos}{4}{section.2.4}
+\contentsline {section}{\numberline {2.5}Generaci\IeC {\'o}n C\IeC {\'o}digo de la M\IeC {\'a}quina-P}{4}{section.2.5}
+\contentsline {section}{\numberline {2.6}Errores}{4}{section.2.6}
+\contentsline {section}{\numberline {2.7}Ejemplo de C\IeC {\'o}digo}{4}{section.2.7}
