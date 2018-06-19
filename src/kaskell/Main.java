@@ -19,6 +19,7 @@ public class Main {
 		Program program = (Program) root.value;
 		program.checkIdentifiers();
 		program.checkType();
+		program.generateCode();
 		System.out.println("I am the yeast of thoughts and mind!");
 	}
 }

@@ -1,5 +1,8 @@
 package kaskell;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 import functions.Function;
@@ -71,5 +74,19 @@ public class Program {
 			wellTyped = wellTyped && blocks.get(i).checkType();
 		}
 		return wellTyped;
+	}
+
+	public void generateCode() {
+		
+		FileOutputStream pMachinInput;
+		try {
+			pMachinInput = new FileOutputStream("inputMaquinaP");
+			
+			pMachinInput.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
 	}
 }
