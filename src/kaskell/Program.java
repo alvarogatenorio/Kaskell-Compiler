@@ -1,8 +1,8 @@
 package kaskell;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.util.List;
 
 import functions.Function;
@@ -75,18 +75,29 @@ public class Program {
 		}
 		return wellTyped;
 	}
-
+/*
 	public void generateCode() {
 		
-		FileOutputStream pMachinInput;
+		File pMachinInput;
 		try {
-			pMachinInput = new FileOutputStream("inputMaquinaP");
-			
-			pMachinInput.close();
+			pMachinInput = new File("inputMaquinaP");
+			BufferedWriter bw = new BufferedWriter(new FileWriter(pMachinInput));
+			for(int i=0; i< structs.size(); i++) {
+				structs.get(i).generateCode(bw);
+			}
+			for(int i=0; i< functions.size(); i++) {
+				functions.get(i).generateCode(bw);
+			}
+			for(int i=0; i< structs.size(); i++) {
+				blocks.get(i).generateCode(bw);
+			}
+			bw.write("stp\n");
+			bw.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
 		
 	}
+	*/
 }
