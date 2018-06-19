@@ -1,0 +1,11 @@
+\babel@toc {spanish}{}
+\contentsline {chapter}{\'{I}ndice general}{1}{section*.1}
+\contentsline {chapter}{\chapternumberline {1}Introducci\IeC {\'o}n}{2}{chapter.1}
+\contentsline {chapter}{\chapternumberline {2}Estructura del compilador}{3}{chapter.2}
+\contentsline {section}{\numberline {2.1}L\IeC {\'e}xico}{3}{section.2.1}
+\contentsline {section}{\numberline {2.2}Sint\IeC {\'a}ctico}{3}{section.2.2}
+\contentsline {section}{\numberline {2.3}Identificadores}{3}{section.2.3}
+\contentsline {section}{\numberline {2.4}Tipos}{3}{section.2.4}
+\contentsline {section}{\numberline {2.5}Generaci\IeC {\'o}n C\IeC {\'o}digo de la M\IeC {\'a}quina-P}{3}{section.2.5}
+\contentsline {section}{\numberline {2.6}Errores}{3}{section.2.6}
+\contentsline {section}{\numberline {2.7}Ejemplo de C\IeC {\'o}digo}{3}{section.2.7}
