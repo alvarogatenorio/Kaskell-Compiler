@@ -6,12 +6,15 @@ import java.util.List;
 
 import expressions.Identifier;
 import functions.FunctionTail;
+import statements.Declaration;
+import statements.Mixed;
 import types.StructType;
 import types.Type;
 
 /*All the identifier error management is done here*/
 public class SymbolTable {
 	private List<HashMap<String, Definition>> table;
+	private List<Integer> accumulator;
 
 	public SymbolTable() {
 		table = new ArrayList<HashMap<String, Definition>>();
@@ -21,10 +24,12 @@ public class SymbolTable {
 
 	public void startBlock() {
 		table.add(new HashMap<String, Definition>());
+		accumulator.add(0);
 	}
 
 	public void closeBlock() {
 		table.remove(table.size() - 1);
+		accumulator.remove(accumulator.size() - 1);
 	}
 
 	public boolean insertIdentifier(Identifier identifier, Definition definition) {
@@ -35,7 +40,19 @@ public class SymbolTable {
 			System.err.println("IDENTIFIER ERROR: line " + (identifier.getRow() + 1) + " column "
 					+ (identifier.getColumn() + 1) + ", " + identifier.toString() + " is duplicated in this scope");
 		}
+		/* Updates the accumulation */
+		if (definition instanceof Declaration) {
+			accumulator.set(accumulator.size() - 1,
+					accumulator.get(accumulator.size() - 1) + ((Declaration) (definition)).getSize());
+		} else if (definition instanceof Mixed) {
+			accumulator.set(accumulator.size() - 1,
+					accumulator.get(accumulator.size() - 1) + ((Mixed) (definition)).getSize());
+		}
 		return wellIdentified;
+	}
+
+	public int getAccumulation() {
+		return this.accumulator.get(this.accumulator.size() - 1);
 	}
 
 	/*-----Weird operations-----*/

@@ -1,14 +1,6 @@
-B := struK {
-               kinkeger array;
-               kinkeger counter;
-           }
+A := struK{kinkeger aa;}
+B := struK{A aa;}
 
-A := struK {
-               [3][4]B array;
-               kinkeger counter;
-           }
 {
-    A test;
-    [6]kinkeger a;
-    a[test.array[0][0].array] = 12;
+     B b;
 }

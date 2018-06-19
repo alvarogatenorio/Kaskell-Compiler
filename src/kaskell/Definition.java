@@ -6,6 +6,4 @@ import types.Type;
 public interface Definition {
 	/* Returns null if it is nonsense */
 	public Type getDefinitionType();
-	
-	public int getAddress();
 }

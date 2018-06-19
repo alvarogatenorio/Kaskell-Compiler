@@ -16,4 +16,8 @@ public class Type {
 	public boolean equals(Type other) {
 		return other.getType().equals(this.type);
 	}
+	
+	public int getSize() {
+		return 1;
+	}
 }

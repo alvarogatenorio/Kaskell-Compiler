@@ -69,9 +69,4 @@ public class FunctionTail implements Definition {
 		return this.arguments;
 	}
 
-	@Override
-	public int getAddress() {
-		return 0;
-	}
-
 }

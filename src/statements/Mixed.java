@@ -58,8 +58,11 @@ public class Mixed implements BasicStatement, Definition {
 		return this.type;
 	}
 
-	@Override
-	public int getAddress() {
-		return 0;
+	public int getAddress(SymbolTable symbolTable) {
+		return 5 + symbolTable.getAccumulation() - this.getSize();
+	}
+
+	public int getSize() {
+		return type.getSize();
 	}
 }
