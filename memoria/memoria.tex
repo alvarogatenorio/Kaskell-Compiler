@@ -43,7 +43,7 @@
 	La sintaxis de estas cuatro declaraciones es:
 	tipoSimple identificador, [tam 1º componente]...[tam i componente]...[tam n componente] tipoSimple identificador, IdentificadorTipoComplejo identificador, [tam 1º componente]...[tam i componente]...[tam n componente] IdentificadorTipoComplejo identificador. 
 
-	Aclaremos que el tipo simple son kinkeger o kool.	
+	Aclaremos que los tipos simples son kinkeger o kool.	
 	
 	Solo tenemos un tipo complejo que es la declaracion de los registros que es de la siguiente manera: identificador := struk { declaraciones }.
 	
@@ -78,8 +78,42 @@
 	Además contamos con una gramática de expresiones aritméticas y lógicas, con las respectivas prioridades de operadores. La gramática de expresiones viene detalla en cup. Destacaremos que ciertas prioridades son distintas a lo habitual por ejemplo las de las comparaciones.
 	
 	\subsection{Árbol Sintáctico}
+	Expliquemos ahora como esta organizado el árbol sintáctico.
+		Como es de suponer tenemos varias clases java, que son lexer, cup, sym generadas por el léxico y cup que forman parte del compilador pero no son estrictamente pertenecientes al "árbol sintáctico", al igual que el main, que es la clase central del compilador.
+		
+	Primero tenemos una clase global que es la que "contiene" todo el árbol que genera cup, que se trata de la clase programa, la cual contiene unos bloques, structs y funciones, además de la tabla de símbolos del programa, la cual tiene "almacenados" los identificadores, con la ayuda de una interfaz medianamente importante que es Definition, para así de esta manera, poder saber en que ámbito del programa de se definen (funciones, structs o variables).
+	
+	Como es lógico tenemos 3 clases que configuran lo que es cada parte del programa, veamos un poco cada una de ellas.
+	
+	La clase function  tiene la cabeza y la cola de la función como dos atributos de clase, ya que ambas son una clase por ellas mismas y estas 3 juntas forman el paquete de las funciones, cabe destacar que la cola, implementa la interfaz Definition, ya que como necesitamos saber en que ámbito esta definida la función, lo tenemos por la ayuda de la tabla de símbolos, aunque se podría haber hecho que function fuera la que lo implementara en vez de solo la cola, escogimos la cola por comodidad.
+	
+	Veamos ahora el struct y el resto de los tipos, dado que struct forma parte del programa y consiste en la definición de un tipo nuevo, hemos considerado que StructType implemente Definition también, y además extiende de Types. El resto de clases en el paquete types, son lo que su propio nombre indica, los arrays que extienden de Types, la clase Type, que engloba los tipos simples, y los complejos indirectamente al extender de ella, y el enumerado Types de los tipos simples. 
+	
+	También como es de esperar, una parte del árbol, esta formada por la gramática de expresiones que ya comentamos antes en la parte de cup. 
+	Tenemos una interfaz Expression, que nos sirve para englobar los distintos tipos de terminales con ciertas operaciones de control que tienen todos para poder determinar en que fila y columna están, además del tipo que tienen: los kinkegers en DummyInteger, los kools en DummyBoolean, los identificadores en Identifier y los arrays en ArrayIdentifier, los struk o registros en StructMember y por último las llamadas a funciones, pues en una expresión que devuelva un tipo, se puede poner en una expresión de ese tipo.
+	Además tenemos dos enumerados que son los operadores binarios (BinaryOperatos) y unarios (UnaryOperators) que los "manejan" las clases BinaryExpression y UnaryExpression, respectivamente.  
+	
+	Vayamos ahora con la parte extensa del árbol, que son los bloques o instrucciones, pues al fin y al cabo, un bloque es una instrucción.
+	
+	Por tanto hemos creado una interfaz llamada Statement que contiene los métodos que deben poseer todas las instrucciones, que es el chequeo de tipos y de identificadores. 
+	Con esto, consideramos que los bloques son una lista de staments, es decir, de instrucciones unas seguidas d otras. Y con ello el ReturnBlock, es una clase que extiende de Blocks que lo único que añade es la expresión de tipo simple del return de una función, por tanto dicho ReturnBlock solo estará en funciones.
+	
+	Veamos ahora como son las instrucciones, de la interfaz Statement, de ella surgen dos clases, BasicStatement y ComplexStatement, una interfaz por extensión y una abstracta por implementación, respectivamente. 
+	
+	La interfaz BasicStatement, sirve para aclarar un poco la comprensión del código pues no añade nada más, y de ella heredaran las clases que implementarán las instrucciones simples, que son la asignación, la declaración de variables, y las mixtas (declaración y asignación).
+	La asignación de registros o struk, se trata de una manera distinta y por tanto se usa una clase aparte llamada StructAssignment pero sigue siendo una extensión de la clase Assigment que es la de la asignación.
+	
+	Por otro lado, la clase abstracta ComplexStatement, nos permite añadir un atributo que consiste en un bloque, con esto, basta darse cuenta que las instrucciones que pueden tener un bloque, son el while, el for, el if y el if else. Tenemos para el manejo del for, una clase auxiliar que se llama ForTuple, para manejar la tupla de la sintaxis del for ya mencionada en la parte de cup.
+			
 	 \section{Identificadores}
+	 La parte de los identificadores, básicamente consiste en comprobar si el código tiene los identificadores correctos a lo largo del programa, es decir, si no hay identificadores usandose de variables sin declarar, o de variables declaradas después del uso.
+	 
+	 La manera para comprobar esto, es con la ayuda de la tabla de símbolos que ya hemos mencionado anteriormente, para ello se procede de manera estructural, en la que cada estructura le pide su chequeo de identificadores a cada una de sus componentes más pequeñas, hasta que finalmente ella ya es una unidad mínima, la cual devuelve su correspondiente valor del chequeo de identificadores, que en el caso de ser un identificador, lo comprobará en la tabla, pero si es una constante, devolverá true.
+	 
 	 \section{Tipos}
+	 La parte de tipos, consiste en si toda instrucción esta bien "tipada", es decir, en una asignación, el tipo de la izquierda y de la derecha coinciden, en una expresión igual, etc..
+	 
+	 Por tanto la manera de proceder en este caso, es completamente análoga a la de identificadores, pues consiste en proceder de la misma manera estructural, solo que en determinadas situaciones, por ejemplo en una expresión, hay que comprobar que ambos lados de la expresión tienen el mismo y además el tipo que soporte el operador asociado, y además ambas partes deben estar bien tipadas, por lo que sus componentes lo deben estar. 
 	 \section{Generación Código de la Máquina-P}
 	 \section{Errores}
 	 \section{Ejemplo de Código}
