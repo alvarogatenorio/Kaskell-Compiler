@@ -1,8 +1,10 @@
 package statements;
 
-import java.io.BufferedWriter;
+import java.util.List;
 
+import expressions.Expression;
 import kaskell.Block;
+import kaskell.Instructions;
 import kaskell.SymbolTable;
 
 public class For extends ComplexStatement {
@@ -22,15 +24,25 @@ public class For extends ComplexStatement {
 	/* Checks the conditions and the body */
 	@Override
 	public boolean checkIdentifiers(SymbolTable symbolTable) {
-		symbolTable.startBlock();
-		boolean wellIdentified = conditions.checkIdentifiers(symbolTable) && body.checkIdentifiers(symbolTable);
-		symbolTable.closeBlock();
+		boolean wellIdentified = conditions.checkIdentifiers(symbolTable);
+		if (wellIdentified) {
+			symbolTable.startBlock();
+			wellIdentified = body.checkIdentifiers(symbolTable);
+			symbolTable.closeBlock();
+		}
 		return wellIdentified;
 	}
 
 	@Override
-	public void generateCode(BufferedWriter bw) {
-		// TODO Auto-generated method stub
-		
+	public void generateCode(Instructions instructions) {
+		instructions.addComment("{ For loop }\n");
+		conditions.getInitial().generateCode(instructions);
+		List<Statement> aux = this.body.getStatements();
+		aux.add(conditions.getLoopEpilogue());
+		Block auxBody = new Block(aux);
+		While auxLoop = new While((Expression) conditions.getCondition(), auxBody);
+		auxLoop.generateCode(instructions);
+		instructions.addComment("{ End for loop }\n");
 	}
+
 }

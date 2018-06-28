@@ -8,9 +8,9 @@ import types.Types;
 public class ForTuple {
 	/* In fact we only allow assignments or mixed */
 	private BasicStatement initial;
-	protected Expression condition;
+	private Expression condition;
 	/* In fact we only allow assignments or expressions */
-	protected BasicStatement loopEpilogue;
+	private BasicStatement loopEpilogue;
 
 	/*
 	 * If the above restrictions are not fulfilled a syntax error must have occurred
@@ -27,14 +27,14 @@ public class ForTuple {
 	 */
 	public boolean checkType() {
 		Type conditionType;
-		//if (!condition.checkType()) {
-			//return false;
-		//}
-		//if (condition instanceof ArrayIdentifier) {
-			//conditionType = ((ArrayIdentifier) (condition)).getSimpleType();
-		//} else {
-			conditionType = condition.getType();
-		//}
+		// if (!condition.checkType()) {
+		// return false;
+		// }
+		// if (condition instanceof ArrayIdentifier) {
+		// conditionType = ((ArrayIdentifier) (condition)).getSimpleType();
+		// } else {
+		conditionType = condition.getType();
+		// }
 		if ((conditionType == null) || (!conditionType.equals(new Type(Types.BOOLEAN)))) {
 			System.err.println("TYPE ERROR: in line " + (this.condition.getRow() + 1) + " column "
 					+ (this.condition.getColumn() + 1) + " fatal error the condition is not kool type!");
@@ -50,5 +50,17 @@ public class ForTuple {
 		wellIdentified = wellIdentified && condition.checkIdentifiers(symbolTable);
 		wellIdentified = wellIdentified && loopEpilogue.checkIdentifiers(symbolTable);
 		return wellIdentified;
+	}
+
+	public BasicStatement getInitial() {
+		return initial;
+	}
+
+	public BasicStatement getCondition() {
+		return condition;
+	}
+
+	public BasicStatement getLoopEpilogue() {
+		return loopEpilogue;
 	}
 }

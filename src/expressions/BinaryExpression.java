@@ -1,7 +1,6 @@
 package expressions;
 
-import java.io.BufferedWriter;
-
+import kaskell.Instructions;
 import kaskell.SymbolTable;
 import types.Type;
 
@@ -56,6 +55,7 @@ public class BinaryExpression implements Expression {
 		return wellTyped;
 	}
 
+	/* Returns the type of the expression, is never null */
 	@Override
 	public Type getType() {
 		return operator.getType();
@@ -77,43 +77,63 @@ public class BinaryExpression implements Expression {
 		return this.left.getColumn();
 	}
 
-	@Override
-	public void generateCode(BufferedWriter bw) throws Exception {
-		left.generateCode(bw);
-		right.generateCode(bw);
-		
+	public void generateCode(Instructions instructions) {
+		/* Generate code for the operator */
 		switch (operator) {
 		case AND:
-			bw.write(" and ");
+			left.generateCode(instructions);
+			right.generateCode(instructions);
+			instructions.add("and;\n");
 			break;
 		case DIV:
-			bw.write(" div ");
+			left.generateCode(instructions);
+			right.generateCode(instructions);
+			instructions.add("div;\n");
 			break;
 		case EQUALS:
-			bw.write(" equ ");
-			break;
-		case EXPONENTIAL: /* A little party here */
+			left.generateCode(instructions);
+			right.generateCode(instructions);
+			instructions.add("equ;\n");
 			break;
 		case GREATER:
-			bw.write(" grt ");
+			left.generateCode(instructions);
+			right.generateCode(instructions);
+			instructions.add("grt;\n");
 			break;
 		case LOWER:
-			bw.write(" les ");
+			left.generateCode(instructions);
+			right.generateCode(instructions);
+			instructions.add("les;\n");
 			break;
 		case MINUS:
-			bw.write(" sub ");
+			left.generateCode(instructions);
+			right.generateCode(instructions);
+			instructions.add("sub;\n");
 			break;
 		case OR:
-			bw.write(" or ");
+			left.generateCode(instructions);
+			right.generateCode(instructions);
+			instructions.add("or;\n");
 			break;
 		case PLUS:
-			bw.write(" add ");
+			left.generateCode(instructions);
+			right.generateCode(instructions);
+			instructions.add("add;\n");
 			break;
 		case PRODUCT:
-			bw.write(" mul ");
+			left.generateCode(instructions);
+			right.generateCode(instructions);
+			instructions.add("mul;\n");
 			break;
-		case MODULUS: /* Another little party */
-			bw.write("  ");
+		/*-----Non simple cases-----*/
+		case EXPONENTIAL:
+			// PARTY
+			break;
+		case MODULUS:
+			BinaryExpression q = new BinaryExpression(left, BinaryOperators.DIV, right);
+			BinaryExpression dq = new BinaryExpression(right, BinaryOperators.PRODUCT, q);
+			BinaryExpression aux = new BinaryExpression(left, BinaryOperators.MINUS, dq);
+			aux.generateCode(instructions);
 			break;
 		default:
 			break;

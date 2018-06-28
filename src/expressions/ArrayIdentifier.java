@@ -1,7 +1,9 @@
 package expressions;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import kaskell.Instructions;
 import kaskell.SymbolTable;
 import types.ArrayType;
 import types.Type;
@@ -20,6 +22,11 @@ public class ArrayIdentifier extends Identifier {
 	 * coordinates
 	 */
 	public boolean checkIdentifiers(SymbolTable symbolTable) {
+		/*
+		 * Calls to its super, so here the ArrayIdentifier gets its type and its
+		 * address, notice it will be the address of the beginning of the array, it will
+		 * be modified later
+		 */
 		boolean wellIdentified = super.checkIdentifiers(symbolTable);
 		for (int i = 0; i < coordinates.size(); i++) {
 			wellIdentified = wellIdentified && coordinates.get(i).checkIdentifiers(symbolTable);
@@ -39,8 +46,7 @@ public class ArrayIdentifier extends Identifier {
 				wellTyped = wellTyped && coordinates.get(i).checkType();
 				if (!(coordinates.get(i).getType().equals(new Type(Types.INTEGER)))) {
 					System.err.println("TYPE ERROR: in line " + (coordinates.get(i).getRow() + 1) + " column "
-							+ (coordinates.get(i).getColumn() + 1)
-							+ " the expression must be integer!");
+							+ (coordinates.get(i).getColumn() + 1) + " the expression must be integer!");
 					return false;
 				}
 			}
@@ -54,5 +60,33 @@ public class ArrayIdentifier extends Identifier {
 
 	public int getSize() {
 		return this.coordinates.size();
+	}
+
+	/* Just follows the scheme, first compute the auxiliary quantities */
+	@Override
+	public void generateCode(Instructions instructions) {
+		/* Computing auxiliary stuff */
+		List<Integer> dimensions = ((ArrayType) (this.getType())).getDimensions();
+		int g = this.getSimpleType().getSize();
+		/* Initializing the list (probably there is a better way) */
+		List<Integer> d = new ArrayList<Integer>();
+		for (int i = 0; i < dimensions.size(); i++) {
+			d.add(0);
+		}
+		d.set(d.size() - 1, 1);
+		for (int i = dimensions.size() - 2; i >= 0; i--) {
+			d.set(i, (dimensions.get(i + 1) + 1) * d.get(i + 1));
+		}
+		/* Generating actual code */
+		//instructions.add("ldc " + this.address + ";\n");
+		instructions.add("lda " + this.deltaDepth + " " + this.address + ";\n");
+		for (int i = 0; i < coordinates.size(); i++) {
+			/* Generates code for coordinate expression */
+			coordinates.get(i).generateCode(instructions);
+			/* Our lower bound is always 0 */
+			instructions.add("chk 0 " + dimensions.get(i) + ";\n");
+			instructions.add("ixa " + g * d.get(i) + ";\n");
+		}
+		instructions.add("ind;\n");
 	}
 }

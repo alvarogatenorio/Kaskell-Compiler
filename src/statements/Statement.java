@@ -1,7 +1,6 @@
 package statements;
 
-import java.io.BufferedWriter;
-
+import kaskell.Instructions;
 import kaskell.SymbolTable;
 
 public interface Statement {
@@ -9,5 +8,5 @@ public interface Statement {
 
 	public boolean checkIdentifiers(SymbolTable symbolTable);
 
-	public void generateCode(BufferedWriter bw) throws Exception;
+	public void generateCode(Instructions instructions);
 }

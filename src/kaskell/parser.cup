@@ -192,7 +192,7 @@ declaration ::= type:t IDENT:i
   equals symbol and an expression*/
 assignment ::= IDENT:i multi_array:ii EQ expression:e
                {:
-                   Identifier ident = new Identifier(i);
+                   ArrayIdentifier ident = new ArrayIdentifier(i,ii);
                    ident.setRow(ileft);
                    ident.setColumn(iright);
                    RESULT = new ArrayAssignment(ident,ii,e);

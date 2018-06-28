@@ -46,6 +46,7 @@ public class Program {
 		}
 		/* Checks the blocks (there must be at least one) */
 		for (int i = 0; i < blocks.size(); i++) {
+			/* The superficial blocks have depth 0 */
 			symbolTable.startBlock();
 			wellIdentified = wellIdentified && blocks.get(i).checkIdentifiers(symbolTable);
 			symbolTable.closeBlock();
@@ -77,26 +78,31 @@ public class Program {
 	}
 
 	public void generateCode() {
-
-		File pMachinInput;
+		File pMachineInput;
 		try {
-			pMachinInput = new File("inputMaquinaP");
-			BufferedWriter bw = new BufferedWriter(new FileWriter(pMachinInput));
-			if (structs != null) {
-				for (int i = 0; i < structs.size(); i++) {
-					structs.get(i).generateCode(bw);
-				}
-			}
+			/* Creates the P-code file and a buffer to write in it */
+			pMachineInput = new File("inputMaquinaP");
+			BufferedWriter bw = new BufferedWriter(new FileWriter(pMachineInput));
+			/*
+			 * Creates a list of strings, representing each string a P-machine instruction,
+			 * this will store temporally the program, it is necessary to make easy the tags
+			 * and constants calculation
+			 */
+			Instructions instructions = new Instructions();
 			if (functions != null) {
 				for (int i = 0; i < functions.size(); i++) {
-					functions.get(i).generateCode(bw);
+					functions.get(i).generateCode(instructions);
 				}
 			}
-			/*Blocks is never null!!*/
+			/* Blocks is never null!! */
 			for (int i = 0; i < blocks.size(); i++) {
-				blocks.get(i).generateCode(bw);
+				blocks.get(i).generateCode(instructions);
 			}
-			bw.write("stp\n");
+			instructions.add("stp;\n");
+			/* Writes the instructions in the file */
+			for (int i = 0; i < instructions.size(); i++) {
+				bw.write(instructions.get(i));
+			}
 			bw.close();
 		} catch (Exception e) {
 			e.printStackTrace();

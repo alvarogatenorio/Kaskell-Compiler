@@ -2,8 +2,9 @@ package statements;
 
 import java.util.List;
 
+import expressions.ArrayIdentifier;
 import expressions.Expression;
-import expressions.Identifier;
+import kaskell.Instructions;
 import kaskell.SymbolTable;
 import types.ArrayType;
 import types.Type;
@@ -13,7 +14,7 @@ public class ArrayAssignment extends Assignment {
 	private List<Expression> coordinates;
 	private Type type;
 
-	public ArrayAssignment(Identifier identifier, List<Expression> coordinates, Expression expression) {
+	public ArrayAssignment(ArrayIdentifier identifier, List<Expression> coordinates, Expression expression) {
 		super(identifier, expression);
 		this.coordinates = coordinates;
 	}
@@ -41,9 +42,10 @@ public class ArrayAssignment extends Assignment {
 		 * Checks for each expression in the coordinates to be an integer (there is
 		 * always at least one coordinate)
 		 */
-		if (type instanceof ArrayType && ((ArrayType) type).getSize() == coordinates.size()) {
+		if (type instanceof ArrayType && ((ArrayType) type).getDimensions().size() == coordinates.size()) {
 			for (int i = 0; i < coordinates.size(); i++) {
-				if ((!coordinates.get(i).checkType()) || !(coordinates.get(i).getType().equals(new Type(Types.INTEGER)))) {
+				if ((!coordinates.get(i).checkType())
+						|| !(coordinates.get(i).getType().equals(new Type(Types.INTEGER)))) {
 					System.err.println("TYPE ERROR: in line " + (this.identifier.getRow() + 1) + " column "
 							+ (this.identifier.getColumn() + 1)
 							+ " fatal error cause by the type of the identifier coordinate!");
@@ -67,4 +69,16 @@ public class ArrayAssignment extends Assignment {
 		}
 		return wellIdentified;
 	}
+
+	/* Generates code for an array assignment */
+	public void generateCode(Instructions instructions) {
+		instructions.addComment("{ Array assignment }\n");
+		identifier.generateCode(instructions);
+		/* Just removing the final IND instruction */
+		instructions.remove(instructions.size() - 1);
+		expression.generateCode(instructions);
+		instructions.add("sto;\n");
+		instructions.addComment("{ End of array assignment }\n");
+	}
+
 }

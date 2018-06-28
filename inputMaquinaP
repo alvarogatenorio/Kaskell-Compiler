@@ -1,1 +1,109 @@
-stp
+{ StructType assignment }
+{0} lda 0 9;
+{1} inc 0;
+{2} lda 0 5;
+{3} inc 0;
+{4} ind;
+{5} lda 0 7;
+{6} inc 0;
+{7} ind;
+{8} add;
+{9} lda 0 9;
+{10} inc 0;
+{11} ind;
+{12} add;
+{13} ldc 7;
+{14} add;
+{15} sto;
+{ End of StructType assignment }
+{ Simple assignment }
+{16} lda 0 13;
+{17} ldc 0;
+{18} sto;
+{ End of simple assignment }
+{ While }
+{19} lda 0 13;
+{20} ind;
+{21} ldc 9;
+{22} equ;
+{23} fjp 38;
+{ One-branch if }
+{24} lda 0 7;
+{25} inc 1;
+{26} ind;
+{27} ldc false;
+{28} equ;
+{29} fjp 34;
+{ StructType assignment }
+{30} lda 0 9;
+{31} inc 0;
+{32} ldc 9;
+{33} sto;
+{ End of StructType assignment }
+{ End of one-branch if }
+{ Simple assignment }
+{34} lda 1 13;
+{35} ldc 9;
+{36} sto;
+{ End of simple assignment }
+{37} ujp 19;
+{ End of while }
+{ Simple assignment }
+{38} lda 0 13;
+{39} lda 0 13;
+{40} ind;
+{41} ldc 1;
+{42} add;
+{43} sto;
+{ End of simple assignment }
+{ Simple assignment }
+{44} lda 0 13;
+{45} lda 0 13;
+{46} ind;
+{47} lda 0 9;
+{48} inc 0;
+{49} ind;
+{50} add;
+{51} ldc 1;
+{52} add;
+{53} sto;
+{ End of simple assignment }
+{ Simple assignment }
+{54} lda 0 13;
+{55} ldc 78;
+{56} sto;
+{ End of simple assignment }
+{57} lda 0 13;
+{58} ind;
+{59} lda 0 13;
+{60} ind;
+{61} add;
+{ For loop }
+{ Simple assignment }
+{62} lda 0 14;
+{63} ldc 7;
+{64} sto;
+{ End of simple assignment }
+{ While }
+{65} lda 0 14;
+{66} ind;
+{67} ldc 7;
+{68} les;
+{69} fjp 80;
+{ Simple assignment }
+{70} lda 0 5;
+{71} ldc 0;
+{72} sto;
+{ End of simple assignment }
+{ Simple assignment }
+{73} lda 0 14;
+{74} lda 0 14;
+{75} ind;
+{76} ldc 1;
+{77} add;
+{78} sto;
+{ End of simple assignment }
+{79} ujp 65;
+{ End of while }
+{ End for loop }
+{80} stp;

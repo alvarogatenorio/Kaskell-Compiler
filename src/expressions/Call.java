@@ -1,8 +1,8 @@
 package expressions;
 
-import java.io.BufferedWriter;
 import java.util.List;
 
+import kaskell.Instructions;
 import kaskell.SymbolTable;
 import types.Type;
 
@@ -43,7 +43,7 @@ public class Call implements Expression {
 
 	/*
 	 * Checks if the function identifier is defined, and also checks if the list of
-	 * expressions (arguments) is well identified
+	 * expressions (arguments) is well identified and fill the types
 	 */
 	@Override
 	public boolean checkIdentifiers(SymbolTable symbolTable) {
@@ -53,7 +53,7 @@ public class Call implements Expression {
 				wellIdentified = wellIdentified && variables.get(i).checkIdentifiers(symbolTable);
 			}
 		}
-		if (wellIdentified && (type == null) && (arguments == null)) {
+		if (wellIdentified) {
 			type = symbolTable.searchCallType(identifier);
 			arguments = symbolTable.searchCallArguments(identifier);
 		}
@@ -76,7 +76,7 @@ public class Call implements Expression {
 	}
 
 	@Override
-	public void generateCode(BufferedWriter bw) {
+	public void generateCode(Instructions instructions) {
 		// TODO Auto-generated method stub
 		
 	}

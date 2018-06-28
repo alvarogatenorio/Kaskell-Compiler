@@ -1,11 +1,11 @@
 package functions;
 
-import java.io.BufferedWriter;
 import java.util.List;
 
 import expressions.Expression;
 import expressions.Identifier;
 import kaskell.Block;
+import kaskell.Instructions;
 import kaskell.ReturnBlock;
 import kaskell.SymbolTable;
 import types.Type;
@@ -109,7 +109,7 @@ public class Function {
 		return this.tail;
 	}
 
-	public void generateCode(BufferedWriter bw) {
+	public void generateCode(Instructions instructions) {
 
 	}
 

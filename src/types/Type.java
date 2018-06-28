@@ -14,9 +14,14 @@ public class Type {
 
 	/* Checks if two types are equal */
 	public boolean equals(Type other) {
-		return other.getType().equals(this.type);
+		/*
+		 * Since getType returns an enumerate, it doesn't matter if we don't use equals
+		 * instead of ==, in fact == is null-safe, so better for our purposes
+		 */
+		return other.getType() == this.type;
 	}
-	
+
+	/* In our P-Machine version, a simple type always is 1-sized */
 	public int getSize() {
 		return 1;
 	}

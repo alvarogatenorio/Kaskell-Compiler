@@ -1,6 +1,5 @@
 package types;
 
-import java.io.BufferedWriter;
 import java.util.List;
 
 import expressions.Identifier;
@@ -8,20 +7,25 @@ import kaskell.Definition;
 import kaskell.SymbolTable;
 import statements.Declaration;
 
-/*Structs are like tuples, order matters*/
+/* StructTypes are like tuples, order matters
+ * ----- Invariant: The "types" attribute is always null -----*/
 public class StructType extends Type implements Definition {
 	private Identifier identifier;
 	private List<Declaration> declarations;
 
 	public StructType(Identifier identifier, List<Declaration> declaration) {
-		super(null);
+		super(null); // love the invariant
 		this.identifier = identifier;
 		this.declarations = declaration;
+		/* Setting the declarations as inside of structTypes */
+		for (int i = 0; i < declarations.size(); i++) {
+			declarations.get(i).setInsideStructType(true);
+		}
 	}
 
-	/* Provisional constructor for functions with struct arguments */
+	/* Provisional constructor for functions with StructType arguments */
 	public StructType(Identifier identifier) {
-		super(null);
+		super(null); // love the invariant
 		this.identifier = identifier;
 	}
 
@@ -35,13 +39,20 @@ public class StructType extends Type implements Definition {
 
 	/* Structural type equivalence */
 	public boolean equals(Type other) {
+		/* If the "types" of the other is not null, then is not a StructType */
 		if (other.getType() == null) {
+			/* If the other is an ArrayType, then is not a StructType */
 			if (!(other instanceof ArrayType)) {
+				/* Here, the other type is for sure a StructType */
 				StructType aux = (StructType) (other);
+				/*
+				 * Two StructTypes are equals if and only if have the same type declarations in
+				 * the same order
+				 */
 				if (aux.getDeclarations().size() == this.declarations.size()) {
 					for (int i = 0; i < this.declarations.size(); i++) {
-						if (this.declarations.get(i).getDefinitionType() != aux.getDeclarations().get(i)
-								.getDefinitionType()) {
+						if (!this.declarations.get(i).getDefinitionType()
+								.equals(aux.getDeclarations().get(i).getDefinitionType())) {
 							return false;
 						}
 					}
@@ -54,6 +65,7 @@ public class StructType extends Type implements Definition {
 
 	/* Checks each declaration */
 	public boolean checkIdentifiers(SymbolTable symbolTable) {
+		/* The temporary opened block is always the 0th block */
 		symbolTable.startBlock();
 		boolean wellIdentified = true;
 		for (int i = 0; i < declarations.size(); i++) {
@@ -83,9 +95,5 @@ public class StructType extends Type implements Definition {
 			size += declarations.get(i).getSize();
 		}
 		return size;
-	}
-	
-	public void generateCode(BufferedWriter bw) {
-		
 	}
 }

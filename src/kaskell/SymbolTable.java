@@ -13,6 +13,12 @@ import types.Type;
 
 /*All the identifier error management is done here*/
 public class SymbolTable {
+
+	/*
+	 * The list will always have at least three hash maps, the first one for the
+	 * StructTypes identifiers, the second one for the functions identifiers, and
+	 * the rest for the visible blocks at each moment
+	 */
 	private List<HashMap<String, Definition>> table;
 	private List<Integer> accumulator;
 
@@ -23,16 +29,29 @@ public class SymbolTable {
 
 	/*-----Basic operations-----*/
 
+	/*
+	 * Adds a new hash map to the list and its corresponding accumulator for
+	 * computing addresses
+	 */
 	public void startBlock() {
 		table.add(new HashMap<String, Definition>());
 		accumulator.add(0);
 	}
 
+	/* Removes the last hash map and its corresponding accumulator */
 	public void closeBlock() {
 		table.remove(table.size() - 1);
 		accumulator.remove(accumulator.size() - 1);
 	}
 
+	public int getDepth() {
+		return table.size() - 1;
+	}
+
+	/*
+	 * Tries to insert an identifier in the last hash map and updates the
+	 * accumulator
+	 */
 	public boolean insertIdentifier(Identifier identifier, Definition definition) {
 		/* Return false if the identifier was already defined */
 		boolean wellIdentified = table.get(table.size() - 1).put(identifier.toString(), definition) == null ? true
@@ -40,23 +59,30 @@ public class SymbolTable {
 		if (!wellIdentified) {
 			System.err.println("IDENTIFIER ERROR: line " + (identifier.getRow() + 1) + " column "
 					+ (identifier.getColumn() + 1) + ", " + identifier.toString() + " is duplicated in this scope");
-		}
-		/* Updates the accumulation */
-		if (definition instanceof Declaration) {
-			accumulator.set(accumulator.size() - 1,
-					accumulator.get(accumulator.size() - 1) + ((Declaration) (definition)).getSize());
-		} else if (definition instanceof Mixed) {
-			accumulator.set(accumulator.size() - 1,
-					accumulator.get(accumulator.size() - 1) + ((Mixed) (definition)).getSize());
+		} else {
+			/* Updates the accumulation */
+			if (definition instanceof Declaration) { // declaration
+				accumulator.set(accumulator.size() - 1,
+						accumulator.get(accumulator.size() - 1) + ((Declaration) (definition)).getSize());
+			} else if (definition instanceof Mixed) { // mixed
+				accumulator.set(accumulator.size() - 1,
+						accumulator.get(accumulator.size() - 1) + ((Mixed) (definition)).getSize());
+			}
 		}
 		return wellIdentified;
 	}
 
+	/* Gets the value of the last accumulator */
 	public int getAccumulation() {
 		return this.accumulator.get(this.accumulator.size() - 1);
 	}
 
 	/*-----Weird operations-----*/
+
+	public Type searchStructFieldType(Identifier field) {
+		return table.get(1).get(field.toString()).getDefinitionType();
+	}
+
 	public List<Type> searchCallArguments(Identifier call) {
 		FunctionTail tail = this.searchFunctionTailFromCall(call);
 		if (tail != null) {
@@ -77,6 +103,10 @@ public class SymbolTable {
 		return null;
 	}
 
+	/*
+	 * Returns the type of the parameter identifier if it is visible in the symbol
+	 * table, if not, it returns null
+	 */
 	public Type searchIdentifierType(Identifier identifier) {
 		Definition definition = this.searchDefinitionFromIdentifier(identifier);
 		if (definition != null) {
@@ -99,6 +129,10 @@ public class SymbolTable {
 		return null;
 	}
 
+	/*
+	 * Returns the StructType of the parameter identifier, which is supposed to be
+	 * an StructType identifier, so stored in the first hash map of the list
+	 */
 	public Type searchStructType(Identifier identifier) {
 		StructType type = (StructType) (table.get(0).get(identifier.toString()));
 		if (type != null) {
@@ -111,10 +145,10 @@ public class SymbolTable {
 
 	/*-----Auxiliary functions-----*/
 
-	/* Returns the definition of an identifier, id not defined, returns null */
+	/* Returns the definition of an identifier, if not defined, returns null */
 	private Definition searchDefinitionFromIdentifier(Identifier identifier) {
 		Definition definition = null;
-		/* Don't look at the first two levels! */
+		/* Don't look at the first two levels, reserved for StructTypes and functions */
 		for (int i = table.size() - 1; i > 1; i--) {
 			definition = table.get(i).get(identifier.toString());
 			if (definition != null) {
@@ -159,5 +193,33 @@ public class SymbolTable {
 					+ (identifier.getColumn() + 1) + ", " + identifier.toString() + " is not defined in this scope");
 		}
 		return wellIdentified;
+	}
+
+	public int searchIdentifierAddress(Identifier identifier) {
+		/* First we get the definition from the identifier */
+		Definition def = searchDefinitionFromIdentifier(identifier);
+		/* Then we get the actual address */
+		if (def instanceof Declaration) {
+			return ((Declaration) def).getAddress(this);
+		} else if (def instanceof Mixed) {
+			return ((Mixed) def).getAddress();
+		}
+		/*
+		 * Be careful, it returns -1 when the identifier is not induced by a Declaration
+		 * or a Mixed
+		 */
+		return -1;
+	}
+
+	public int searchDefinitionDepth(Identifier identifier) {
+		/* Don't look at the first two levels, reserved for StructTypes and functions */
+		for (int i = table.size() - 1; i > 1; i--) {
+			Definition definition = table.get(i).get(identifier.toString());
+			if (definition != null) {
+				return i;
+			}
+		}
+		/* This will never reach this point */
+		return -1;
 	}
 }

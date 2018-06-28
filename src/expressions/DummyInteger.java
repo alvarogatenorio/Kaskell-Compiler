@@ -1,7 +1,6 @@
 package expressions;
 
-import java.io.BufferedWriter;
-
+import kaskell.Instructions;
 import kaskell.SymbolTable;
 import types.Type;
 import types.Types;
@@ -49,8 +48,8 @@ public class DummyInteger implements Expression {
 	}
 
 	@Override
-	public void generateCode(BufferedWriter bw) {
-		// TODO Auto-generated method stub
-		
+	public void generateCode(Instructions instructions) {
+		instructions.add("ldc " + i + ";\n");
 	}
+
 }

@@ -897,7 +897,7 @@ class CUP$parser$actions {
 		int eright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
 		Expression e = (Expression)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
-                   Identifier ident = new Identifier(i);
+                   ArrayIdentifier ident = new ArrayIdentifier(i,ii);
                    ident.setRow(ileft);
                    ident.setColumn(iright);
                    RESULT = new ArrayAssignment(ident,ii,e);

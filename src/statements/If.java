@@ -1,9 +1,8 @@
 package statements;
 
-import java.io.BufferedWriter;
-
 import expressions.Expression;
 import kaskell.Block;
+import kaskell.Instructions;
 import kaskell.SymbolTable;
 import types.Type;
 import types.Types;
@@ -44,9 +43,16 @@ public class If extends ComplexStatement {
 	}
 
 	@Override
-	public void generateCode(BufferedWriter bw) {
-		// TODO Auto-generated method stub
-		
+	public void generateCode(Instructions instructions) {
+		instructions.addComment("{ One-branch if }\n");
+		condition.generateCode(instructions);
+		/* Just a dummy entry to be filled later with the label info */
+		int jumpFrom = instructions.size();
+		instructions.add("");
+		body.generateCode(instructions);
+		int jumpTo = instructions.getCounter() + 1;
+		instructions.set(jumpFrom, instructions.get(jumpFrom) + "fjp " + jumpTo + ";\n");
+		instructions.addComment("{ End of one-branch if }\n");
 	}
 
 }

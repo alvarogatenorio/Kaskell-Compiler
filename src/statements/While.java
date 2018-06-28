@@ -1,9 +1,8 @@
 package statements;
 
-import java.io.BufferedWriter;
-
 import expressions.Expression;
 import kaskell.Block;
+import kaskell.Instructions;
 import kaskell.SymbolTable;
 import types.Type;
 import types.Types;
@@ -42,8 +41,18 @@ public class While extends ComplexStatement {
 	}
 
 	@Override
-	public void generateCode(BufferedWriter bw) {
-		// TODO Auto-generated method stub
-		
+	public void generateCode(Instructions instructions) {
+		instructions.addComment("{ While }\n");
+		int jumpTo1 = instructions.getCounter() + 1;
+		condition.generateCode(instructions);
+		int jumpFrom2 = instructions.size();
+		instructions.add("");
+		body.generateCode(instructions);
+		int jumpFrom1 = instructions.size();
+		instructions.add("");
+		int jumpTo2 = instructions.getCounter() + 1;
+		instructions.addComment("{ End of while }\n");
+		instructions.set(jumpFrom1, instructions.get(jumpFrom1) + "ujp " + jumpTo1 + ";\n");
+		instructions.set(jumpFrom2, instructions.get(jumpFrom2) + "fjp " + jumpTo2 + ";\n");
 	}
 }

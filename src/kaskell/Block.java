@@ -1,6 +1,5 @@
 package kaskell;
 
-import java.io.BufferedWriter;
 import java.util.List;
 
 import statements.Statement;
@@ -11,6 +10,10 @@ public class Block implements Statement {
 
 	public Block(List<Statement> statements) {
 		this.statements = statements;
+	}
+
+	public List<Statement> getStatements() {
+		return this.statements;
 	}
 
 	/* Checks each statement identifier */
@@ -44,10 +47,10 @@ public class Block implements Statement {
 		return wellTyped;
 	}
 
-	public void generateCode(BufferedWriter bw) throws Exception {
-		//apilar marco??
+	/* Generates the code of each block */
+	public void generateCode(Instructions instructions) {
 		for (int i = 0; i < statements.size(); i++) {
-			statements.get(i).generateCode(bw);
+			statements.get(i).generateCode(instructions);
 		}
 	}
 }

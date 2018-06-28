@@ -2,6 +2,7 @@ package statements;
 
 import expressions.Expression;
 import kaskell.Block;
+import kaskell.Instructions;
 import kaskell.SymbolTable;
 
 public class IfElse extends If {
@@ -11,8 +12,8 @@ public class IfElse extends If {
 		super(condition, thenBody);
 		this.elseBody = elseBody;
 	}
-	
-	/*Checks the if-then part and the else block*/
+
+	/* Checks the if-then part and the else block */
 	public boolean checkType() {
 		return super.checkType() && this.elseBody.checkType();
 	}
@@ -26,6 +27,24 @@ public class IfElse extends If {
 			symbolTable.closeBlock();
 		}
 		return wellIdentified;
+	}
+
+	public void generateCode(Instructions instructions) {
+		instructions.addComment("{ Two-branch if }\n");
+		this.condition.generateCode(instructions);
+		/* Dummy entry to be filled with label information */
+		int jumpFrom1 = instructions.size();
+		instructions.add("");
+		this.body.generateCode(instructions);
+		/* Dummy entry to be filled with label information */
+		int jumpFrom2 = instructions.size();
+		instructions.add("");
+		int jumpTo1 = instructions.getCounter() + 1;
+		this.elseBody.generateCode(instructions);
+		int jumpTo2 = instructions.getCounter() + 1;
+		instructions.addComment("{ End of two-branch if }\n");
+		instructions.set(jumpFrom1, instructions.get(jumpFrom1) + "fjp " + jumpTo1 + ";\n");
+		instructions.set(jumpFrom2, instructions.get(jumpFrom2) + "ujp " + jumpTo2 + ";\n");
 	}
 
 }
