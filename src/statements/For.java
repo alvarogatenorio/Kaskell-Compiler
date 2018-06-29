@@ -20,6 +20,10 @@ public class For extends ComplexStatement {
 	public boolean checkType() {
 		return this.conditions.checkType() && this.body.checkType();
 	}
+	
+	public ForTuple getForTuple() {
+		return conditions;
+	}
 
 	/*
 	 * Checks the conditions and the body of its equivalent while, this is necessary

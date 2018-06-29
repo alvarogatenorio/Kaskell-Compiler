@@ -2,12 +2,27 @@ package functions;
 
 import java.util.List;
 
+import expressions.BinaryExpression;
+import expressions.DummyBoolean;
+import expressions.DummyInteger;
 import expressions.Expression;
 import expressions.Identifier;
+import expressions.UnaryExpression;
 import kaskell.Block;
 import kaskell.Instructions;
 import kaskell.ReturnBlock;
 import kaskell.SymbolTable;
+import statements.ArrayAssignment;
+import statements.Assignment;
+import statements.BasicStatement;
+import statements.Declaration;
+import statements.For;
+import statements.If;
+import statements.IfElse;
+import statements.Mixed;
+import statements.Statement;
+import statements.StructAssignment;
+import statements.While;
 import types.Type;
 
 public class Function {
@@ -112,10 +127,16 @@ public class Function {
 	}
 
 	public void generateCode(Instructions instructions) {
+		int numMarc = staticMarc();
+		int lengthPExp = lengthPileExpressions();
 		instructions.addComment("{ Function code }\n");
-		instructions.add("ssp " + "\n;"); // parte estatica marco activacion
+		instructions.add("ssp " + numMarc + "\n;"); // parte estatica marco activacion
 		this.address = instructions.size();
-		instructions.add("sep " + "\n;"); // longitud pila expresiones
+		instructions.add("sep " + lengthPExp + "\n;"); // longitud pila expresiones
+		int jumpFrom = instructions.size();
+		instructions.add("");
+		int jumpTo = instructions.getCounter() + 1;
+		instructions.set(jumpFrom, instructions.get(jumpFrom) + "ujp " + jumpTo + ";\n");
 		tail.getBlock().generateCode(instructions);
 		if (head.getReturnType() != null) {
 			instructions.add("retf;\n");
@@ -123,6 +144,151 @@ public class Function {
 			instructions.add("retp;\n");
 		}
 		instructions.addComment("{ End funtion code }\n");
+	}
+	
+	private int staticMarc() {
+		int parameters=0, localVar=0;
+		Block block = tail.getBlock();
+		//Arguments, as de complex type (structs and arrays) are passed by reference, their size is 1, 
+		//and the others are integers or bools, so their size is also 1. 
+		parameters = head.getArguments().size();
+		
+		//For the local variables, we need to go through all the block recursively, looking for the declarations, or the mixed one's,.
+		localVar = calculateBlockLocalVar(block);
+		
+		// We add 5 that correspond to the 5 values of the organizations cells of the data area.
+		return 5 + parameters + localVar; 
+	}
+	
+	private int calculateBlockLocalVar(Block block) {
+		int max=0, maxAux=0, num=0;
+		List<Statement> statements = block.getStatements();
+		
+		for (int i = 0; i < statements.size(); i++) {
+			if(statements.get(i) instanceof Block) {
+				maxAux = calculateBlockLocalVar((Block) statements.get(i));
+				if (maxAux > max) {
+					max = maxAux;
+				}
+			}
+			else if (statements.get(i) instanceof Declaration){
+				num = num + (((Declaration) statements.get(i)).getSize()); 
+			}
+			else if (statements.get(i) instanceof Mixed) {
+				num = num + (((Mixed) statements.get(i)).getSize()); 
+			}
+			else if (statements.get(i) instanceof For) {
+				BasicStatement init = ((For) statements.get(i)).getForTuple().getInitial();
+				if (init instanceof Mixed) {
+					num = num + (((Mixed) init).getSize());
+				}
+			}
+		}
+		//We add the max of the nested blocks, because, we get the max of the size of the nested blocks of the same level.
+		num = num + max;
+		return num;
+	}
+	
+	private int lengthPileExpressions() {
+		int max=0, maxAux=0;
+		List<Statement> statements = tail.getBlock().getStatements();
+		
+		for (int i = 0; i < statements.size(); i++) {
+			if(statements.get(i) instanceof Assignment) {
+				Expression exp = ((Assignment) statements.get(i)).getExpression();
+				maxAux = calculateExpSubTree(exp);
+			}
+			else if (statements.get(i) instanceof Mixed) {
+				Expression exp = ((Mixed) statements.get(i)).getExpression();
+				maxAux = calculateExpSubTree(exp);
+			}
+			else if (statements.get(i) instanceof For) {
+				int maxAux1=0,maxAux2=0,maxAux3=0;
+				//1º Componet of the fortuple
+				BasicStatement init = ((For) statements.get(i)).getForTuple().getInitial();
+				if(init instanceof Assignment) {
+					Expression exp = ((Assignment) init).getExpression();
+					maxAux1 = calculateExpSubTree(exp);
+				}
+				else if (init instanceof Mixed) {
+					Expression exp = ((Mixed) init).getExpression();
+					maxAux1 = calculateExpSubTree(exp);
+				}
+				
+				//2º component of the fortuple
+				Expression condition = (Expression) ((For) statements.get(i)).getForTuple().getCondition();
+				maxAux2 = calculateExpSubTree(condition);
+						
+				//3º component of the fortuple
+				BasicStatement loopEpilogue = ((For) statements.get(i)).getForTuple().getLoopEpilogue();
+				if(loopEpilogue instanceof Assignment) {
+					Expression exp = ((Assignment) loopEpilogue).getExpression();
+					maxAux3 = calculateExpSubTree(exp);
+				}
+				else if (loopEpilogue instanceof Expression) {
+					maxAux3 = calculateExpSubTree((Expression) loopEpilogue);
+				}
+				
+				maxAux = Math.max(maxAux1, Math.max(maxAux2,maxAux3));
+			}
+			else if (statements.get(i) instanceof If) {
+				Expression condition = ((If) statements.get(i)).getCondition();
+				maxAux = calculateExpSubTree(condition);
+			}
+			else if (statements.get(i) instanceof IfElse) {
+				Expression condition = ((IfElse) statements.get(i)).getCondition();
+				maxAux = calculateExpSubTree(condition);
+			}
+			else if (statements.get(i) instanceof While) {
+				Expression condition = ((While) statements.get(i)).getCondition();
+				maxAux = calculateExpSubTree(condition);
+			}
+			else if (statements.get(i) instanceof ArrayAssignment) {
+				Expression exp = ((ArrayAssignment) statements.get(i)).getExpression();
+				maxAux = calculateExpSubTree(exp);
+			}
+			else if (statements.get(i) instanceof StructAssignment) {
+				Expression exp = ((StructAssignment) statements.get(i)).getExpression();
+				maxAux = calculateExpSubTree(exp);
+			}
+			Math.max(max, maxAux);
+		}
+		
+		return max;
+	}
+	
+	private int calculateExpSubTree(Expression exp) {
+		int num=0;
+		if (exp instanceof DummyInteger) {
+			num=1;
+		}
+		else if (exp instanceof DummyBoolean) {
+			num=1;
+		}
+		else if (exp instanceof Identifier) {
+			num=1;
+		}
+		else if (exp instanceof UnaryExpression) {
+			Expression nextExp = ((UnaryExpression) exp).getExpression();
+			num=calculateExpSubTree(nextExp);
+			if(((UnaryExpression) exp).isMinusMinusOrIsPlusPlus()) {
+				num=num+1;
+			}
+		}
+		else if (exp instanceof BinaryExpression) {
+			if(((BinaryExpression) exp).isExponentialOrModulus()) {
+				//ESTO ALVARO TE LO DEJO PARA TI CARIÑO, Y ASI PRUEBAS TU SUPERIORIDAD INTELECTUAL.
+			}
+			else {
+				Expression leftExp = ((BinaryExpression) exp).getLeftExpression();
+				Expression rightExp =((BinaryExpression) exp).getRightExpression();
+				int leftNum,rightNum;
+				leftNum = calculateExpSubTree(leftExp);
+				rightNum = calculateExpSubTree(rightExp);
+				num = Math.max(leftNum, rightNum)+1;
+			}
+		}
+		return num;
 	}
 
 	public int getAddress() {

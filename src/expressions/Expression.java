@@ -14,4 +14,5 @@ public interface Expression extends BasicStatement {
 	public int getColumn();
 
 	public void generateCode(Instructions instructions);
+	
 }

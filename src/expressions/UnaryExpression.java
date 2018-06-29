@@ -98,4 +98,12 @@ public class UnaryExpression implements Expression {
 			break;
 		}
 	}
+
+	public boolean isMinusMinusOrIsPlusPlus(){
+		return this.operator==UnaryOperators.PLUS_PLUS || this.operator==UnaryOperators.MINUS_MINUS;
+	}
+	
+	public Expression getExpression() {
+		return this.expression;
+	}
 }

@@ -56,4 +56,8 @@ public class Assignment implements BasicStatement {
 		instructions.add("sto;\n");
 		instructions.addComment("{ End of simple assignment }\n");
 	}
+	
+	public Expression getExpression() {
+		return this.expression;
+	}
 }

@@ -88,6 +88,9 @@ public class Mixed implements BasicStatement, Definition {
 		return type.getSize();
 	}
 
+	public Expression getExpression() {
+		return this.expression;
+	}
 	@Override
 	public void generateCode(Instructions instructions) {
 		/*

@@ -2,6 +2,7 @@ package expressions;
 
 import java.util.List;
 
+import functions.Function;
 import kaskell.Instructions;
 import kaskell.SymbolTable;
 import types.Type;
@@ -11,6 +12,7 @@ public class Call implements Expression {
 	private List<Expression> variables;
 	private List<Type> arguments;
 	private Type type;
+	private Function funct;
 
 	public Call(Identifier identifier, List<Expression> arguments) {
 		this.identifier = identifier;
@@ -88,8 +90,7 @@ public class Call implements Expression {
 				variables.get(i).generateCode(instructions);
 			}
 		}
-		/* falta obtener la dirección del procedimiento */
-		instructions.add("cup " + ";\n");
+		instructions.add("cup " + arguments.size() + funct.getAddress() + ";\n");
 		/* maybe and ind here?? */
 		instructions.addComment("{ End function call }\n");
 	}

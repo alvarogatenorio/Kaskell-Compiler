@@ -41,6 +41,10 @@ public class If extends ComplexStatement {
 		}
 		return wellIdentified;
 	}
+	
+	public Expression getCondition() {
+		return this.condition;
+	}
 
 	@Override
 	public void generateCode(Instructions instructions) {

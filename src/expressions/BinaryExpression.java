@@ -139,4 +139,16 @@ public class BinaryExpression implements Expression {
 			break;
 		}
 	}
+	
+	public Boolean isExponentialOrModulus(){
+		return this.operator==BinaryOperators.MODULUS || this.operator==BinaryOperators.EXPONENTIAL;
+	}
+	
+	public Expression getRightExpression() {
+		return this.right;
+	}
+	
+	public Expression getLeftExpression() {
+		return this.left;
+	}
 }
