@@ -15,7 +15,6 @@ import kaskell.SymbolTable;
 import statements.ArrayAssignment;
 import statements.Assignment;
 import statements.BasicStatement;
-import statements.Declaration;
 import statements.For;
 import statements.If;
 import statements.IfElse;
@@ -161,42 +160,13 @@ public class Function {
 		 * For the local variables, we need to go through all the block recursively,
 		 * looking for the declarations, or the mixed ones
 		 */
-		localVar = calculateBlockLocalVar(block);
+		localVar = block.calculateBlockLocalVar();
 
 		/*
 		 * We add 5 that correspond to the 5 values of the organizations cells of the
 		 * data area
 		 */
 		return 5 + parameters + localVar;
-	}
-
-	private int calculateBlockLocalVar(Block block) {
-		int max = 0, maxAux = 0, num = 0;
-		List<Statement> statements = block.getStatements();
-
-		for (int i = 0; i < statements.size(); i++) {
-			if (statements.get(i) instanceof Block) {
-				maxAux = calculateBlockLocalVar((Block) statements.get(i));
-				if (maxAux > max) {
-					max = maxAux;
-				}
-			} else if (statements.get(i) instanceof Declaration) {
-				num = num + (((Declaration) statements.get(i)).getSize());
-			} else if (statements.get(i) instanceof Mixed) {
-				num = num + (((Mixed) statements.get(i)).getSize());
-			} else if (statements.get(i) instanceof For) {
-				BasicStatement init = ((For) statements.get(i)).getForTuple().getInitial();
-				if (init instanceof Mixed) {
-					num = num + (((Mixed) init).getSize());
-				}
-			}
-		}
-		/*
-		 * We add the max of the nested blocks, because, we get the max of the size of
-		 * the nested blocks of the same level
-		 */
-		num = num + max;
-		return num;
 	}
 
 	private int lengthStackExpressions() {

@@ -89,6 +89,16 @@ public class Program {
 			 * and constants calculation
 			 */
 			Instructions instructions = new Instructions();
+
+			/* Calculating some stuff */
+			int max = 0;
+			for (int i = 0; i < blocks.size(); i++) {
+				max = Math.max(max, blocks.get(i).calculateBlockLocalVar());
+			}
+			instructions.addComment("{ Initialization of SP and EP }\n");
+			instructions.add("ssp " + (5 + max) + ";\n");
+			instructions.addComment("{ End initialization of SP and EP }\n");
+
 			if (functions != null) {
 				for (int i = 0; i < functions.size(); i++) {
 					functions.get(i).generateCode(instructions);
