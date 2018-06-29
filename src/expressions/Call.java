@@ -2,7 +2,7 @@ package expressions;
 
 import java.util.List;
 
-import functions.Function;
+import functions.FunctionTail;
 import kaskell.Instructions;
 import kaskell.SymbolTable;
 import types.Type;
@@ -12,13 +12,14 @@ public class Call implements Expression {
 	private List<Expression> variables;
 	private List<Type> arguments;
 	private Type type;
-	private Function funct;
+	private FunctionTail address;
 
 	public Call(Identifier identifier, List<Expression> arguments) {
 		this.identifier = identifier;
 		this.variables = arguments;
 		this.type = null;
 		this.arguments = null;
+		this.address = null;
 	}
 
 	@Override
@@ -58,6 +59,8 @@ public class Call implements Expression {
 		if (wellIdentified) {
 			type = symbolTable.searchCallType(identifier);
 			arguments = symbolTable.searchCallArguments(identifier);
+			address = symbolTable.searchFunctionTailFromCall(identifier);
+			identifier.setDeltaDepth(symbolTable.getDepth()-1);
 		}
 		return wellIdentified;
 	}
@@ -80,7 +83,7 @@ public class Call implements Expression {
 	@Override
 	public void generateCode(Instructions instructions) {
 		instructions.addComment("{ Function call }\n");
-		instructions.add("mst " + identifier.deltaDepth + ";\n");
+		instructions.add("mst " + identifier.getDeltaDepth() + ";\n");
 		for (int i = 0; i < arguments.size(); i++) {
 			/* Non simple types are passed by reference */
 			if (arguments.get(i).getType() == null) {
@@ -90,7 +93,7 @@ public class Call implements Expression {
 				variables.get(i).generateCode(instructions);
 			}
 		}
-		instructions.add("cup " + arguments.size() + funct.getAddress() + ";\n");
+		instructions.add("cup " + arguments.size() + " " + this.address.getAddress() + ";\n");
 		/* maybe and ind here?? */
 		instructions.addComment("{ End function call }\n");
 	}

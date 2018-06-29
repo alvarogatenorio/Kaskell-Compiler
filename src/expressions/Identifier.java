@@ -141,4 +141,12 @@ public class Identifier implements Expression {
 		instructions.add("ind;\n");
 	}
 
+	/* Used in function calls */
+	public void setDeltaDepth(int d) {
+		this.deltaDepth = d;
+	}
+
+	public int getDeltaDepth() {
+		return this.deltaDepth;
+	}
 }

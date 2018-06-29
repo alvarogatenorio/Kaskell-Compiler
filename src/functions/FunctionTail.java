@@ -13,12 +13,14 @@ public class FunctionTail implements Definition {
 	private List<Type> arguments;
 	private Block body;
 	private Type type;
+	private int address;
 
 	public FunctionTail(List<Identifier> variables, Block body) {
 		this.variables = variables;
 		this.body = body;
 		this.arguments = null;
 		this.type = null;
+		this.address = 0;
 	}
 
 	public boolean checkIdentifiers(SymbolTable symbolTable) {
@@ -69,4 +71,13 @@ public class FunctionTail implements Definition {
 		return this.arguments;
 	}
 
+	/* Used when generating the code of the function */
+	public void setAddress(int a) {
+		this.address = a;
+	}
+
+	/* Used when generating the code of the call */
+	public int getAddress() {
+		return this.address;
+	}
 }

@@ -2,6 +2,7 @@ package kaskell;
 
 import java.util.List;
 
+import expressions.Call;
 import expressions.Expression;
 import expressions.UnaryExpression;
 import statements.Statement;
@@ -50,17 +51,23 @@ public class Block implements Statement {
 	}
 
 	/*
-	 * Generates the code of each block TO DO, take into account function calls as
-	 * well
+	 * Generates the code of each block, taking into account lonely expressions
 	 */
 	public void generateCode(Instructions instructions) {
 		for (int i = 0; i < statements.size(); i++) {
-			/* Only generate lonely expressions code if is something like i++ or i-- */
+			/*
+			 * Only generate lonely expressions code if is something like i++ or i-- or
+			 * function calls
+			 */
 			if (statements.get(i) instanceof Expression) {
 				if (statements.get(i) instanceof UnaryExpression) {
-					if (((UnaryExpression) statements.get(i)).expressionIsIdentifier()) {
+					if (((UnaryExpression) statements.get(i)).expressionIsIdentifier()
+							&& ((UnaryExpression) statements.get(i)).isMinusMinusOrIsPlusPlus()) {
 						statements.get(i).generateCode(instructions);
 					}
+				}
+				if (statements.get(i) instanceof Call) {
+					statements.get(i).generateCode(instructions);
 				}
 			} else {
 				statements.get(i).generateCode(instructions);

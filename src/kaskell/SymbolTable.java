@@ -158,7 +158,7 @@ public class SymbolTable {
 		return definition;
 	}
 
-	private FunctionTail searchFunctionTailFromCall(Identifier call) {
+	public FunctionTail searchFunctionTailFromCall(Identifier call) {
 		return (FunctionTail) (table.get(1).get(call.toString()));
 	}
 

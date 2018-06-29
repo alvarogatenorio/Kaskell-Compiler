@@ -26,5 +26,12 @@ C := struK {
    k+k;
    kor (kinkeger i = 7; i < 7; i++) {
      kinkeger g = 0;
+     f(11,krue);
+   }
+   {
+   f(22,kalse);
    }
 }
+
+f: kinkeger X kool -> kinkeger
+   (a,b)|->{kinkeger c;{kinkeger d;}{kinkeger e;}kreturn a;}
