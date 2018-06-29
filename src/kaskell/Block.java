@@ -2,6 +2,8 @@ package kaskell;
 
 import java.util.List;
 
+import expressions.Expression;
+import expressions.UnaryExpression;
 import statements.Statement;
 
 /*Remember a block is also a statement!*/
@@ -47,10 +49,22 @@ public class Block implements Statement {
 		return wellTyped;
 	}
 
-	/* Generates the code of each block */
+	/*
+	 * Generates the code of each block TO DO, take into account function calls as
+	 * well
+	 */
 	public void generateCode(Instructions instructions) {
 		for (int i = 0; i < statements.size(); i++) {
-			statements.get(i).generateCode(instructions);
+			/* Only generate lonely expressions code if is something like i++ or i-- */
+			if (statements.get(i) instanceof Expression) {
+				if (statements.get(i) instanceof UnaryExpression) {
+					if (((UnaryExpression) statements.get(i)).expressionIsIdentifier()) {
+						statements.get(i).generateCode(instructions);
+					}
+				}
+			} else {
+				statements.get(i).generateCode(instructions);
+			}
 		}
 	}
 }

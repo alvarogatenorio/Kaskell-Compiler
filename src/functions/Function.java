@@ -13,12 +13,14 @@ import types.Type;
 public class Function {
 	private FunctionHead head;
 	private FunctionTail tail;
+	private int address;
 
 	public Function(FunctionHead head, FunctionTail tail) {
 		this.head = head;
 		this.tail = tail;
 		this.tail.setType(head.getReturnType());
 		this.tail.setArguments(head.getArguments());
+		this.address = 0;
 	}
 
 	public boolean checkType() {
@@ -90,8 +92,8 @@ public class Function {
 	}
 
 	/*
-	 * Just checks the tail, the function identifier was inserted early in the
-	 * program
+	 * Just checks the tail, the function identifier was inserted earlier in the
+	 * program. All the constants must be computed here
 	 */
 	public boolean checkIdentifiers(SymbolTable symbolTable) {
 		symbolTable.startBlock();
@@ -110,7 +112,20 @@ public class Function {
 	}
 
 	public void generateCode(Instructions instructions) {
-
+		instructions.addComment("{ Function code }\n");
+		instructions.add("ssp " + "\n;"); // parte estatica marco activacion
+		this.address = instructions.size();
+		instructions.add("sep " + "\n;"); // longitud pila expresiones
+		tail.getBlock().generateCode(instructions);
+		if (head.getReturnType() != null) {
+			instructions.add("retf;\n");
+		} else {
+			instructions.add("retp;\n");
+		}
+		instructions.addComment("{ End funtion code }\n");
 	}
 
+	public int getAddress() {
+		return this.address;
+	}
 }

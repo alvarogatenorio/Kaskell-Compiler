@@ -21,13 +21,19 @@ public class For extends ComplexStatement {
 		return this.conditions.checkType() && this.body.checkType();
 	}
 
-	/* Checks the conditions and the body */
+	/*
+	 * Checks the conditions and the body of its equivalent while, this is necessary
+	 * for a good calculation of the deltaDepth of the condition variables
+	 */
 	@Override
 	public boolean checkIdentifiers(SymbolTable symbolTable) {
 		boolean wellIdentified = conditions.checkIdentifiers(symbolTable);
 		if (wellIdentified) {
 			symbolTable.startBlock();
-			wellIdentified = body.checkIdentifiers(symbolTable);
+			List<Statement> aux = this.body.getStatements();
+			aux.add(conditions.getLoopEpilogue());
+			Block auxBody = new Block(aux);
+			wellIdentified = auxBody.checkIdentifiers(symbolTable);
 			symbolTable.closeBlock();
 		}
 		return wellIdentified;

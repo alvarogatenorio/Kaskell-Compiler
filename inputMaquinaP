@@ -73,37 +73,40 @@
 {55} ldc 78;
 {56} sto;
 { End of simple assignment }
-{57} lda 0 13;
-{58} ind;
-{59} lda 0 13;
-{60} ind;
-{61} add;
 { For loop }
 { Simple assignment }
-{62} lda 0 14;
-{63} ldc 7;
-{64} sto;
+{57} lda 0 14;
+{58} ldc 7;
+{59} sto;
 { End of simple assignment }
 { While }
-{65} lda 0 14;
-{66} ind;
-{67} ldc 7;
-{68} les;
-{69} fjp 80;
+{60} lda 0 14;
+{61} ind;
+{62} ldc 7;
+{63} les;
+{64} fjp 81;
 { Simple assignment }
-{70} lda 0 5;
-{71} ldc 0;
-{72} sto;
+{65} lda 0 5;
+{66} ldc 0;
+{67} sto;
 { End of simple assignment }
 { Simple assignment }
-{73} lda 0 14;
-{74} lda 0 14;
-{75} ind;
-{76} ldc 1;
-{77} add;
-{78} sto;
+{68} lda 1 14;
+{69} lda 1 14;
+{70} ind;
+{71} ldc 1;
+{72} add;
+{73} sto;
 { End of simple assignment }
-{79} ujp 65;
+{ Simple assignment }
+{74} lda 1 14;
+{75} lda 1 14;
+{76} ind;
+{77} ldc 1;
+{78} add;
+{79} sto;
+{ End of simple assignment }
+{80} ujp 60;
 { End of while }
 { End for loop }
-{80} stp;
+{81} stp;

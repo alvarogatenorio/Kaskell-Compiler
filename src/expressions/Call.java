@@ -77,7 +77,20 @@ public class Call implements Expression {
 
 	@Override
 	public void generateCode(Instructions instructions) {
-		// TODO Auto-generated method stub
-		
+		instructions.addComment("{ Function call }\n");
+		instructions.add("mst " + identifier.deltaDepth + ";\n");
+		for (int i = 0; i < arguments.size(); i++) {
+			/* Non simple types are passed by reference */
+			if (arguments.get(i).getType() == null) {
+				variables.get(i).generateCode(instructions);
+				instructions.remove(instructions.size() - 1);
+			} else {
+				variables.get(i).generateCode(instructions);
+			}
+		}
+		/* falta obtener la dirección del procedimiento */
+		instructions.add("cup " + ";\n");
+		/* maybe and ind here?? */
+		instructions.addComment("{ End function call }\n");
 	}
 }

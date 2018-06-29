@@ -23,5 +23,17 @@ public class Main {
 				System.out.println("I am the yeast of thoughts and mind!");
 			}
 		}
+
+		/*
+		 * Por hacer calculo de diversas constantes para procedimientos, jugar con la
+		 * tabla de símbolos
+		 * 
+		 * actualmente si estamos en un procedimiento, todo lo hacemos igual que en un
+		 * bloque normal, motivo por el cual se generarán errores al compilar cosas que
+		 * contengan parametros por referencia
+		 * 
+		 * las calls pueden ser expresiones solitarias y conviene que su codigo se
+		 * genere
+		 */
 	}
 }

@@ -127,7 +127,7 @@ public class BinaryExpression implements Expression {
 			break;
 		/*-----Non simple cases-----*/
 		case EXPONENTIAL:
-			// PARTY
+			// STILL A PARTY
 			break;
 		case MODULUS:
 			BinaryExpression q = new BinaryExpression(left, BinaryOperators.DIV, right);

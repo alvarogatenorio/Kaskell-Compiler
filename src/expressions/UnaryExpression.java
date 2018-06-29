@@ -58,6 +58,10 @@ public class UnaryExpression implements Expression {
 		return this.expression.getColumn();
 	}
 
+	public boolean expressionIsIdentifier() {
+		return (expression instanceof Identifier);
+	}
+
 	public void generateCode(Instructions instructions) {
 		switch (operator) {
 		case NOT:
