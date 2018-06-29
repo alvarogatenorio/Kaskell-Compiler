@@ -39,4 +39,8 @@ public class StructAssignment extends Assignment {
 		instructions.add("sto;\n");
 		instructions.addComment("{ End of StructType assignment }\n");
 	}
+	
+	public StructMember getMember() {
+		return this.member;
+	}
 }

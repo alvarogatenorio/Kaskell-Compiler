@@ -89,4 +89,8 @@ public class ArrayIdentifier extends Identifier {
 		}
 		instructions.add("ind;\n");
 	}
+	
+	public List<Expression> getCoordinates(){
+		return this.coordinates;
+	}
 }

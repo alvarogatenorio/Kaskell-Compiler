@@ -184,4 +184,6 @@ public class StructMember extends Identifier implements Expression {
 		instructions.add("inc " + offset + ";\n");
 		instructions.add("ind;\n");
 	}
+	
+	
 }

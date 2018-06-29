@@ -2,12 +2,14 @@ package kaskell;
 
 import java.util.List;
 
+import expressions.ArrayIdentifier;
 import expressions.BinaryExpression;
 import expressions.Call;
 import expressions.DummyBoolean;
 import expressions.DummyInteger;
 import expressions.Expression;
 import expressions.Identifier;
+import expressions.StructMember;
 import expressions.UnaryExpression;
 import statements.ArrayAssignment;
 import statements.Assignment;
@@ -94,19 +96,38 @@ public class Block implements Statement {
 
 		for (int i = 0; i < statements.size(); i++) {
 			if (statements.get(i) instanceof Block) {
+				
 				maxAux = ((Block) statements.get(i)).calculateBlockLocalVar();
-				if (maxAux > max) {
-					max = maxAux;
-				}
+				Math.max(max, maxAux);
+				
 			} else if (statements.get(i) instanceof Declaration) {
+				
 				num = num + (((Declaration) statements.get(i)).getSize());
+				
 			} else if (statements.get(i) instanceof Mixed) {
+				
 				num = num + (((Mixed) statements.get(i)).getSize());
+				
 			} else if (statements.get(i) instanceof For) {
+				
 				BasicStatement init = ((For) statements.get(i)).getForTuple().getInitial();
 				if (init instanceof Mixed) {
 					num = num + (((Mixed) init).getSize());
 				}
+				num = num + ((For) statements.get(i)).getBody().calculateBlockLocalVar();
+				
+			} else if (statements.get(i) instanceof If) {
+				
+				num = num + ((If)statements.get(i)).getBody().calculateBlockLocalVar();
+				
+			} else if (statements.get(i) instanceof IfElse) {
+				
+				num = num + ((IfElse)statements.get(i)).getBody().calculateBlockLocalVar() +((IfElse)statements.get(i)).getElseBody().calculateBlockLocalVar();
+				
+			} else if (statements.get(i) instanceof While) {
+				
+				num = num + ((While)statements.get(i)).getBody().calculateBlockLocalVar();
+				
 			}
 		}
 		/*
@@ -121,13 +142,19 @@ public class Block implements Statement {
 		int max = 0, maxAux = 0;
 		/* Checks each statement */
 		for (int i = 0; i < statements.size(); i++) {
+			maxAux=0;
 			if (statements.get(i) instanceof Assignment) {
+				
 				Expression exp = ((Assignment) statements.get(i)).getExpression();
 				maxAux = calculateExpSubTree(exp);
+				
 			} else if (statements.get(i) instanceof Mixed) {
+				
 				Expression exp = ((Mixed) statements.get(i)).getExpression();
 				maxAux = calculateExpSubTree(exp);
+				
 			} else if (statements.get(i) instanceof For) {
+				
 				int maxAux1 = 0, maxAux2 = 0, maxAux3 = 0, maxAux4 = 0;
 
 				/* first component of the for tuple */
@@ -154,30 +181,69 @@ public class Block implements Statement {
 				}
 
 				maxAux4 = ((For) statements.get(i)).getBody().lengthStackExpressions();
+				
 				maxAux = Math.max(maxAux1, Math.max(maxAux2, Math.max(maxAux3, maxAux4)));
+				
 			} else if (statements.get(i) instanceof If) {
+				
 				int maxAux1 = 0, maxAux2 = 0;
 				Expression condition = ((If) statements.get(i)).getCondition();
-				maxAux = calculateExpSubTree(condition);
+			
+				maxAux1 = calculateExpSubTree(condition);
+				maxAux2 = ((If)statements.get(i)).getBody().lengthStackExpressions();
+				
+				maxAux = Math.max(maxAux1, maxAux2);
+				
 			} else if (statements.get(i) instanceof IfElse) {
+				
 				int maxAux1 = 0, maxAux2 = 0, maxAux3 = 0;
 				Expression condition = ((IfElse) statements.get(i)).getCondition();
-				maxAux = calculateExpSubTree(condition);
+				
+				maxAux1 = calculateExpSubTree(condition);
+				maxAux2 = ((IfElse)statements.get(i)).getBody().lengthStackExpressions();
+				maxAux3 = ((IfElse)statements.get(i)).getElseBody().lengthStackExpressions();
+				
+				maxAux = Math.max(maxAux1, Math.max(maxAux2, maxAux3));
+				
 			} else if (statements.get(i) instanceof While) {
+				
 				int maxAux1 = 0, maxAux2 = 0;
 				Expression condition = ((While) statements.get(i)).getCondition();
-				maxAux = calculateExpSubTree(condition);
+
+				maxAux1 = calculateExpSubTree(condition);
+				maxAux2 = ((While)statements.get(i)).getBody().lengthStackExpressions();
+				
+				maxAux = Math.max(maxAux1, maxAux2);
+				
 			} else if (statements.get(i) instanceof ArrayAssignment) {
+				int maxAux1=0, maxAux2=0;
+				ArrayIdentifier ident = (ArrayIdentifier) ((ArrayAssignment) statements.get(i)).getIdentifier();
 				Expression exp = ((ArrayAssignment) statements.get(i)).getExpression();
-				maxAux = calculateExpSubTree(exp);
+				
+				maxAux1 = calculateExpSubTree(ident);
+				maxAux2 = calculateExpSubTree(exp);
+				maxAux = Math.max(maxAux1, maxAux2);
+				
 			} else if (statements.get(i) instanceof StructAssignment) {
+				
+				StructMember ident = (StructMember) ((StructAssignment) statements.get(i)).getMember();
 				Expression exp = ((StructAssignment) statements.get(i)).getExpression();
 				maxAux = calculateExpSubTree(exp);
+				//Hay que hacer maxAux2 con el identifier, solo si el structmember es un array, cosa que no se como comprobarlo
+				
 			} else if (statements.get(i) instanceof Call) {
+				
+				for(int j=0; j< ((Call) statements.get(i)).getVariables().size(); j++) {
+					
+					maxAux = Math.max(maxAux,calculateExpSubTree(((Call) statements.get(i)).getVariables().get(j)));
+				}
 				
 			} else if (statements.get(i) instanceof Block) {
 				
+				maxAux = ((Block) statements.get(i)).lengthStackExpressions();
+				
 			}
+			
 			Math.max(max, maxAux);
 		}
 
@@ -190,7 +256,16 @@ public class Block implements Statement {
 			num = 1;
 		} else if (exp instanceof DummyBoolean) {
 			num = 1;
-		} else if (exp instanceof Identifier) {
+		} else if (exp instanceof ArrayIdentifier){
+
+			for(int i=0; i< ((ArrayIdentifier) exp).getCoordinates().size(); i++) {
+				num = Math.max(num,calculateExpSubTree(((ArrayIdentifier) exp).getCoordinates().get(i)));
+			}
+			
+		} else if (exp instanceof StructMember){
+		
+			
+		}else if (exp instanceof Identifier) {
 			num = 1;
 		} else if (exp instanceof UnaryExpression) {
 			Expression nextExp = ((UnaryExpression) exp).getExpression();

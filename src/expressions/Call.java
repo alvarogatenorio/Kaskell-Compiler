@@ -97,4 +97,8 @@ public class Call implements Expression {
 		/* maybe and ind here?? */
 		instructions.addComment("{ End function call }\n");
 	}
+	
+	public List<Expression> getVariables(){
+		return this.variables;
+	}
 }

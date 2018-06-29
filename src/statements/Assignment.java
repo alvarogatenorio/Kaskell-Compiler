@@ -60,4 +60,8 @@ public class Assignment implements BasicStatement {
 	public Expression getExpression() {
 		return this.expression;
 	}
+	
+	public Identifier getIdentifier() {
+		return this.identifier;
+	}
 }

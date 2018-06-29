@@ -46,5 +46,8 @@ public class IfElse extends If {
 		instructions.set(jumpFrom1, instructions.get(jumpFrom1) + "fjp " + jumpTo1 + ";\n");
 		instructions.set(jumpFrom2, instructions.get(jumpFrom2) + "ujp " + jumpTo2 + ";\n");
 	}
-
+	
+	public Block getElseBody() {
+		return this.elseBody;
+	}
 }
