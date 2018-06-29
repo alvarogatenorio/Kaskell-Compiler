@@ -117,11 +117,40 @@
 	 \section{Generación Código de la Máquina-P}
 	 En el caso de generación de código consiste en generar un archivo de texto, con el código que acepta la máquina-P.
 	 
-	 Como es de esperar, al igual que en las dos anteriores se procede de manera estructural, usando los esquemas de generación de código visto en clase. Para ello es necesario saber, el valor de la dirección de memoria, para ello, nos ayudamos de la tabla de símbolos, que gracias a ella sabemos los marcos de definición de las variables y por tanto sabemos en que punto están almacenadas. Además tenemos también funciones que nos ayudan con los números especiales de los arrays, y los dos números del tamaño de argumentos y de la pila de expresiones que son necesarios al generar el código de una función. 
+	 Como es de esperar, al igual que en las dos anteriores se procede de manera estructural, usando los esquemas de generación de código visto en clase. Para ello es necesario saber, el valor de la dirección de memoria, para ello, nos ayudamos de la tabla de símbolos y de la clase Identificador, que gracias a ella sabemos los marcos de definición de las variables pues cada identificador tiene un atributo que se llama Delta, que básicamente es lo que tiene, y por tanto sabemos en que punto están almacenadas. Además tenemos también funciones que nos ayudan con los números especiales de los arrays, y los dos números del tamaño de argumentos y de la pila de expresiones que son necesarios al generar el código de una función. 
 	 \section{Errores}
 	 	Los errores se han ido tratando en cada una de las etapas, lanzando un mensaje de error con la fila y la columna asociadas al lugar del error, sea sintáctico, el cuál lo indicará cup; o sean de tipos o de identificadores, que lo hacen nuestras clases del árbol. 
 	 \section{Ejemplo de Código}
 	 Presentamos ahora un ejemplo de código completo sin errores, en el cuál observamos todo lo mencionado antes:
-	 
-	 
+\begin{verbatim}
+A := struK {
+              kinkeger num;
+              kool cond;
+           }
+           
+B := struk {
+            kinkeger sum;
+            [10][5] kinkeger vec;
+            }
+			
+{
+    A a;
+    B b;
+    a.num=78;
+    a.cond=kalse;
+    b.sum=0;
+    kor(kinkeger i=0; i<10; i++){
+        kinkeger j=4;
+        khile(j>-1){
+            b.vec[i][j] = b.sum + a.num*j-i;
+            j--;
+        }
+        a.num = f(a.num,a.cond) -5;	
+    }
+}
+
+f: kinkeger X kool -> kinkeger
+   (a,b)|->{kinkeger d; kif(b==kalse){d=0;}kelse{d=a;}b = knot b; kreturn d;}  
+\end{verbatim}
+	
 \end{document}
