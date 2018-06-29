@@ -81,7 +81,7 @@ public class Program {
 		File pMachineInput;
 		try {
 			/* Creates the P-code file and a buffer to write in it */
-			pMachineInput = new File("inputMaquinaP");
+			pMachineInput = new File("inputMaquinaP.txt");
 			BufferedWriter bw = new BufferedWriter(new FileWriter(pMachineInput));
 			/*
 			 * Creates a list of strings, representing each string a P-machine instruction,
@@ -91,12 +91,14 @@ public class Program {
 			Instructions instructions = new Instructions();
 
 			/* Calculating some stuff */
-			int max = 0;
+			int max1 = 0, max2=0;
 			for (int i = 0; i < blocks.size(); i++) {
-				max = Math.max(max, blocks.get(i).calculateBlockLocalVar());
+				max1 = Math.max(max1, blocks.get(i).calculateBlockLocalVar());
+				max2 = Math.max(max2, blocks.get(i).lengthStackExpressions());
 			}
 			instructions.addComment("{ Initialization of SP and EP }\n");
-			instructions.add("ssp " + (5 + max) + ";\n");
+			instructions.add("ssp " + (5 + max1) + ";\n");
+			instructions.add("sep " + max2 + ";\n");
 			instructions.addComment("{ End initialization of SP and EP }\n");
 
 			if (functions != null) {

@@ -139,6 +139,7 @@ public class Function {
 		instructions.set(jumpFrom, instructions.get(jumpFrom) + "ujp " + jumpTo + ";\n");
 		tail.getBlock().generateCode(instructions);
 		if (head.getReturnType() != null) {
+			instructions.add("lda 0 0");
 			instructions.add("retf;\n");
 		} else {
 			instructions.add("retp;\n");

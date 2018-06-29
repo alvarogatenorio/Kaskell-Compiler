@@ -185,5 +185,7 @@ public class StructMember extends Identifier implements Expression {
 		instructions.add("ind;\n");
 	}
 	
-	
+	public List<Identifier> getIdentifiers(){
+		return this.identifiers;
+	}
 }

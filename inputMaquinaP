@@ -1,6 +1,0 @@
-{ Simple assignment }
-{0} lda 0 5;
-{1} ldc 8;
-{2} sto;
-{ End of simple assignment }
-{3} stp;

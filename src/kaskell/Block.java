@@ -225,11 +225,19 @@ public class Block implements Statement {
 				maxAux = Math.max(maxAux1, maxAux2);
 				
 			} else if (statements.get(i) instanceof StructAssignment) {
-				
+				int maxAux1=0, maxAux2=0;
 				StructMember ident = (StructMember) ((StructAssignment) statements.get(i)).getMember();
 				Expression exp = ((StructAssignment) statements.get(i)).getExpression();
-				maxAux = calculateExpSubTree(exp);
-				//Hay que hacer maxAux2 con el identifier, solo si el structmember es un array, cosa que no se como comprobarlo
+				maxAux1 = calculateExpSubTree(exp);
+				
+				for(int j=0; j < ident.getIdentifiers().size(); j++) {
+					if(ident.getIdentifiers().get(j) instanceof ArrayIdentifier) {
+						ArrayIdentifier identArr = (ArrayIdentifier) ident.getIdentifiers().get(j);
+						maxAux2 = Math.max(maxAux2,calculateExpSubTree(identArr));
+					}
+				}
+				
+				maxAux = Math.max(maxAux1, maxAux2);
 				
 			} else if (statements.get(i) instanceof Call) {
 				
@@ -263,7 +271,13 @@ public class Block implements Statement {
 			}
 			
 		} else if (exp instanceof StructMember){
-		
+			StructMember ident = (StructMember) exp;
+			for(int j=0; j < ident.getIdentifiers().size(); j++) {
+				if(ident.getIdentifiers().get(j) instanceof ArrayIdentifier) {
+					ArrayIdentifier identArr = (ArrayIdentifier) ident.getIdentifiers().get(j);
+					num = Math.max(num,calculateExpSubTree(identArr));
+				}
+			}
 			
 		}else if (exp instanceof Identifier) {
 			num = 1;
