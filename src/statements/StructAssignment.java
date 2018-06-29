@@ -15,7 +15,7 @@ public class StructAssignment extends Assignment {
 
 	public boolean checkType() {
 
-		if (!this.member.getType().equals(this.expression.getType())) {
+		if (!this.member.getSimpleType().equals(this.expression.getType())) {
 			System.err.println(
 					"TYPE ERROR: in line " + (this.member.getRow() + 1) + " column " + (this.member.getColumn() + 1)
 							+ " fatal error the expression isn't typed as the struct member in this assignment!");

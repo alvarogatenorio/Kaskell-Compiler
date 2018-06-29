@@ -252,7 +252,7 @@ public class Block implements Statement {
 				
 			}
 			
-			Math.max(max, maxAux);
+			max = Math.max(max, maxAux);
 		}
 
 		return max;
