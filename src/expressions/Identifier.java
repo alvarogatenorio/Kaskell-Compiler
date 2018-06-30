@@ -20,6 +20,7 @@ public class Identifier implements Expression {
 	protected Type type;
 	protected int address;
 	protected int deltaDepth;
+	private boolean reference;
 
 	public Identifier(String s) {
 		this.s = s;

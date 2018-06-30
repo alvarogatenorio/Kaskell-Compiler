@@ -4,6 +4,7 @@ import java.util.List;
 
 import expressions.ArrayIdentifier;
 import expressions.BinaryExpression;
+import expressions.BinaryOperators;
 import expressions.Call;
 import expressions.DummyBoolean;
 import expressions.DummyInteger;
@@ -265,16 +266,20 @@ public class Block implements Statement {
 				num = num + 1;
 			}
 		} else if (exp instanceof BinaryExpression) {
-			if (((BinaryExpression) exp).isExponentialOrModulus()) {
-				/* To do */
-			} else {
+			if (((BinaryExpression) exp).isExponential()) {
+				/* To do*/
+			}
+			else {
 				/* Take the maximum of both expressions */
 				Expression leftExp = ((BinaryExpression) exp).getLeftExpression();
 				Expression rightExp = ((BinaryExpression) exp).getRightExpression();
-				int leftNum, rightNum;
+				int leftNum, rightNum, add=1;
 				leftNum = calculateExpSubTree(leftExp);
 				rightNum = calculateExpSubTree(rightExp);
-				num = Math.max(leftNum, rightNum) + 1;
+				if (((BinaryExpression) exp).isModulus()) {
+					add=3;
+				}
+				num = Math.max(leftNum, rightNum) + add;
 			}
 		}
 		return num;

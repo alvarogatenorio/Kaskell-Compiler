@@ -140,8 +140,11 @@ public class BinaryExpression implements Expression {
 		}
 	}
 	
-	public Boolean isExponentialOrModulus(){
-		return this.operator==BinaryOperators.MODULUS || this.operator==BinaryOperators.EXPONENTIAL;
+	public Boolean isExponential(){
+		return this.operator==BinaryOperators.EXPONENTIAL;
+	}
+	public Boolean isModulus(){
+		return this.operator==BinaryOperators.MODULUS;
 	}
 	
 	public Expression getRightExpression() {
