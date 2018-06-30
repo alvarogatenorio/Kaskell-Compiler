@@ -1,5 +1,6 @@
 package expressions;
 
+import functions.FunctionTail;
 import kaskell.Instructions;
 import statements.BasicStatement;
 import types.Type;
@@ -14,5 +15,8 @@ public interface Expression extends BasicStatement {
 	public int getColumn();
 
 	public void generateCode(Instructions instructions);
-	
+
+	public void setInsideFunction(boolean b);
+
+	public void setFunctionInside(FunctionTail f);
 }

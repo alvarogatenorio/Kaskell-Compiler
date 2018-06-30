@@ -3,6 +3,7 @@ package statements;
 import java.util.List;
 
 import expressions.Identifier;
+import functions.FunctionTail;
 import kaskell.Definition;
 import kaskell.Instructions;
 import kaskell.SymbolTable;
@@ -27,6 +28,8 @@ public class Declaration implements BasicStatement, Definition {
 	 */
 
 	private boolean insideStructType;
+	private boolean insideFunction;
+	private FunctionTail functionInside;
 	private int address;
 
 	/* One may think we only need this attributes */
@@ -48,6 +51,8 @@ public class Declaration implements BasicStatement, Definition {
 		this.structDimensions = null;
 		this.address = -1;
 		this.insideStructType = false;
+		this.insideFunction = false;
+		this.functionInside = null;
 	}
 
 	/* Something like "A a" being "A" a previously defined StructType (hopefully) */
@@ -58,6 +63,8 @@ public class Declaration implements BasicStatement, Definition {
 		this.structDimensions = null;
 		this.address = -1;
 		this.insideStructType = false;
+		this.insideFunction = false;
+		this.functionInside = null;
 	}
 
 	/*
@@ -71,6 +78,8 @@ public class Declaration implements BasicStatement, Definition {
 		this.type = null;
 		this.address = -1;
 		this.insideStructType = false;
+		this.insideFunction = false;
+		this.functionInside = null;
 	}
 
 	/*
@@ -128,6 +137,9 @@ public class Declaration implements BasicStatement, Definition {
 				this.identifier.setInsideStructType(true);
 				/* The address will be set in the identifier when checking indentifiers */
 
+			} else if (insideFunction) {
+				this.identifier.setInsideFunction(true);
+				this.identifier.setFunctionInside(functionInside);
 			} else { // ordinary case
 				this.address = 5 + symbolTable.getAccumulation() - this.getSize();
 			}
@@ -164,6 +176,14 @@ public class Declaration implements BasicStatement, Definition {
 
 	public void setInsideStructType(boolean insideStructType) {
 		this.insideStructType = insideStructType;
+	}
+
+	public void setInsideFunction(boolean insideFunction) {
+		this.insideFunction = insideFunction;
+	}
+
+	public void setFunctionInside(FunctionTail functionInside) {
+		this.functionInside = functionInside;
 	}
 
 	@Override

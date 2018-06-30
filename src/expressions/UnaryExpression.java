@@ -1,5 +1,6 @@
 package expressions;
 
+import functions.FunctionTail;
 import kaskell.Instructions;
 import kaskell.SymbolTable;
 import statements.Assignment;
@@ -99,11 +100,21 @@ public class UnaryExpression implements Expression {
 		}
 	}
 
-	public boolean isMinusMinusOrIsPlusPlus(){
-		return this.operator==UnaryOperators.PLUS_PLUS || this.operator==UnaryOperators.MINUS_MINUS;
+	public boolean isMinusMinusOrIsPlusPlus() {
+		return this.operator == UnaryOperators.PLUS_PLUS || this.operator == UnaryOperators.MINUS_MINUS;
 	}
-	
+
 	public Expression getExpression() {
 		return this.expression;
+	}
+
+	@Override
+	public void setInsideFunction(boolean b) {
+		this.expression.setInsideFunction(b);
+	}
+
+	@Override
+	public void setFunctionInside(FunctionTail f) {
+		this.expression.setFunctionInside(f);
 	}
 }

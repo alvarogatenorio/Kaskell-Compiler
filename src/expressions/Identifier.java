@@ -1,5 +1,6 @@
 package expressions;
 
+import functions.FunctionTail;
 import kaskell.Instructions;
 import kaskell.SymbolTable;
 import types.ArrayType;
@@ -17,10 +18,13 @@ public class Identifier implements Expression {
 	private int row;
 	private int column;
 	private boolean insideStructType;
+	private boolean insideFunction;
+	private FunctionTail functionInside;
 	protected Type type;
 	protected int address;
 	protected int deltaDepth;
-	private boolean reference;
+	private boolean isParameter;
+	private boolean isReferenceParameter;
 
 	public Identifier(String s) {
 		this.s = s;
@@ -28,6 +32,10 @@ public class Identifier implements Expression {
 		address = -1;
 		deltaDepth = 0;
 		insideStructType = false;
+		insideFunction = false;
+		functionInside = null;
+		isParameter = false;
+		isReferenceParameter = false;
 	}
 
 	public void setRow(int row) {
@@ -69,6 +77,14 @@ public class Identifier implements Expression {
 		if (insideStructType) {
 			this.type = symbolTable.searchStructFieldType(this);
 			this.address = symbolTable.getAccumulation() - this.type.getSize();
+		} else if (insideFunction) {
+			this.type = symbolTable.searchIdentifierInsideFunctionType(this);
+			/*
+			 * This is in fact the memory address of the identifier, as the 5 first
+			 * positions are reserved for other stuff
+			 */
+			this.address = 5 + functionInside.getArguments().size() + symbolTable.getAccumulation()
+					- this.type.getSize();
 		} else {
 			wellIdentified = symbolTable.searchIdentifier(this);
 			if (wellIdentified) {
@@ -129,6 +145,14 @@ public class Identifier implements Expression {
 
 	public void setInsideStructType(boolean insideStructType) {
 		this.insideStructType = insideStructType;
+	}
+
+	public void setInsideFunction(boolean insideFunction) {
+		this.insideFunction = insideFunction;
+	}
+
+	public void setFunctionInside(FunctionTail functionInside) {
+		this.functionInside = functionInside;
 	}
 
 	public boolean equals(Identifier other) {

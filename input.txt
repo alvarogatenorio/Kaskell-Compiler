@@ -1,6 +1,14 @@
 {
-  kinkeger a = 0;
-  f(a);
+    kinkeger i = 8;
 }
-f:kinkeger -> kinkeger
-(a)|-> {kreturn a;}
+
+f:kinkeger X kool -> kinkeger
+(a,b)|->{
+           kinkeger d;
+           kif (b == kalse) {
+             d = 0;
+           } kelse {
+             d = a;
+           }
+           kreturn d;
+        }

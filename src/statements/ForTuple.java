@@ -49,7 +49,7 @@ public class ForTuple {
 		return initial;
 	}
 
-	public BasicStatement getCondition() {
+	public Expression getCondition() {
 		return condition;
 	}
 

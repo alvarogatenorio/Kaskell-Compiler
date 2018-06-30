@@ -158,6 +158,15 @@ public class SymbolTable {
 		return definition;
 	}
 
+	public Type searchIdentifierInsideFunctionType(Identifier id) {
+		Definition def = table.get(2).get(id.toString());
+		/* In this case is a parameter */
+		if (def instanceof FunctionTail) {
+			return ((FunctionTail) def).searchParameterType(id.toString());
+		}
+		return table.get(2).get(id.toString()).getDefinitionType();
+	}
+
 	public FunctionTail searchFunctionTailFromCall(Identifier call) {
 		return (FunctionTail) (table.get(1).get(call.toString()));
 	}

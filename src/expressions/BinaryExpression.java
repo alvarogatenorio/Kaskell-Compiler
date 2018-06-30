@@ -1,5 +1,6 @@
 package expressions;
 
+import functions.FunctionTail;
 import kaskell.Instructions;
 import kaskell.SymbolTable;
 import types.Type;
@@ -153,5 +154,18 @@ public class BinaryExpression implements Expression {
 	
 	public Expression getLeftExpression() {
 		return this.left;
+	}
+
+	@Override
+	public void setInsideFunction(boolean b) {
+		this.left.setInsideFunction(b);
+		this.right.setInsideFunction(b);
+		
+	}
+
+	@Override
+	public void setFunctionInside(FunctionTail f) {
+		this.left.setFunctionInside(f);
+		this.right.setFunctionInside(f);
 	}
 }

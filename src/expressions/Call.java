@@ -60,7 +60,7 @@ public class Call implements Expression {
 			type = symbolTable.searchCallType(identifier);
 			arguments = symbolTable.searchCallArguments(identifier);
 			address = symbolTable.searchFunctionTailFromCall(identifier);
-			identifier.setDeltaDepth(symbolTable.getDepth()-1);
+			identifier.setDeltaDepth(symbolTable.getDepth() - 1);
 		}
 		return wellIdentified;
 	}
@@ -97,8 +97,22 @@ public class Call implements Expression {
 		/* maybe and ind here?? */
 		instructions.addComment("{ End function call }\n");
 	}
-	
-	public List<Expression> getVariables(){
+
+	public List<Expression> getVariables() {
 		return this.variables;
+	}
+
+	@Override
+	public void setInsideFunction(boolean b) {
+		for (int i = 0; i < variables.size(); i++) {
+			variables.get(i).setInsideFunction(b);
+		}
+	}
+
+	@Override
+	public void setFunctionInside(FunctionTail f) {
+		for (int i = 0; i < variables.size(); i++) {
+			variables.get(i).setFunctionInside(f);
+		}
 	}
 }

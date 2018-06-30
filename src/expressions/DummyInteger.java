@@ -1,5 +1,6 @@
 package expressions;
 
+import functions.FunctionTail;
 import kaskell.Instructions;
 import kaskell.SymbolTable;
 import types.Type;
@@ -50,6 +51,18 @@ public class DummyInteger implements Expression {
 	@Override
 	public void generateCode(Instructions instructions) {
 		instructions.add("ldc " + i + ";\n");
+	}
+
+	@Override
+	public void setInsideFunction(boolean b) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setFunctionInside(FunctionTail f) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

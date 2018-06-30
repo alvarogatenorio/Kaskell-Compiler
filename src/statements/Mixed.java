@@ -2,6 +2,7 @@ package statements;
 
 import expressions.Expression;
 import expressions.Identifier;
+import functions.FunctionTail;
 import kaskell.Definition;
 import kaskell.Instructions;
 import kaskell.SymbolTable;
@@ -19,6 +20,8 @@ public class Mixed implements BasicStatement, Definition {
 	private Expression expression;
 	private Identifier identifier;
 	private int address;
+	private boolean insideFunction;
+	private FunctionTail functionInside;
 
 	public Mixed(Type type, Identifier identifier, Expression expression) {
 		this.type = type;
@@ -68,7 +71,12 @@ public class Mixed implements BasicStatement, Definition {
 		 * in code generation
 		 */
 		if (wellIdentified) {
-			this.address = 5 + symbolTable.getAccumulation() - this.getSize();
+			if (insideFunction) {
+				this.identifier.setInsideFunction(true);
+				this.identifier.setFunctionInside(functionInside);
+			} else {
+				this.address = 5 + symbolTable.getAccumulation() - this.getSize();
+			}
 			identifier.checkIdentifiers(symbolTable);
 		}
 		return wellIdentified;
@@ -91,6 +99,7 @@ public class Mixed implements BasicStatement, Definition {
 	public Expression getExpression() {
 		return this.expression;
 	}
+
 	@Override
 	public void generateCode(Instructions instructions) {
 		/*
@@ -98,5 +107,13 @@ public class Mixed implements BasicStatement, Definition {
 		 */
 		Assignment aux = new Assignment(identifier, expression);
 		aux.generateCode(instructions);
+	}
+
+	public void setInsideFunction(boolean insideFunction) {
+		this.insideFunction = insideFunction;
+	}
+
+	public void setFunctionInside(FunctionTail functionInside) {
+		this.functionInside = functionInside;
 	}
 }

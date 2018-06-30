@@ -4,7 +4,6 @@ import java.util.List;
 
 import expressions.ArrayIdentifier;
 import expressions.BinaryExpression;
-import expressions.BinaryOperators;
 import expressions.Call;
 import expressions.DummyBoolean;
 import expressions.DummyInteger;
@@ -12,11 +11,13 @@ import expressions.Expression;
 import expressions.Identifier;
 import expressions.StructMember;
 import expressions.UnaryExpression;
+import functions.FunctionTail;
 import statements.ArrayAssignment;
 import statements.Assignment;
 import statements.BasicStatement;
 import statements.Declaration;
 import statements.For;
+import statements.ForTuple;
 import statements.If;
 import statements.IfElse;
 import statements.Mixed;
@@ -267,21 +268,78 @@ public class Block implements Statement {
 			}
 		} else if (exp instanceof BinaryExpression) {
 			if (((BinaryExpression) exp).isExponential()) {
-				/* To do*/
-			}
-			else {
+				/* To do */
+			} else {
 				/* Take the maximum of both expressions */
 				Expression leftExp = ((BinaryExpression) exp).getLeftExpression();
 				Expression rightExp = ((BinaryExpression) exp).getRightExpression();
-				int leftNum, rightNum, add=1;
+				int leftNum, rightNum, add = 1;
 				leftNum = calculateExpSubTree(leftExp);
 				rightNum = calculateExpSubTree(rightExp);
 				if (((BinaryExpression) exp).isModulus()) {
-					add=3;
+					add = 3;
 				}
 				num = Math.max(leftNum, rightNum) + add;
 			}
 		}
 		return num;
+	}
+
+	/* Horrendously huge as hell, but really easy */
+	public void setInsideFunction(FunctionTail f) {
+		if (statements != null) {
+			for (int i = 0; i < statements.size(); i++) {
+				if (statements.get(i) instanceof Declaration) {
+					((Declaration) statements.get(i)).setInsideFunction(true);
+					((Declaration) statements.get(i)).setFunctionInside(f);
+				} else if (statements.get(i) instanceof Mixed) {
+					((Mixed) statements.get(i)).setInsideFunction(true);
+					((Mixed) statements.get(i)).setFunctionInside(f);
+				} else if (statements.get(i) instanceof Assignment) {
+					((Assignment) (statements.get(i))).getIdentifier().setInsideFunction(true);
+					((Assignment) (statements.get(i))).getExpression().setInsideFunction(true);
+					((Assignment) (statements.get(i))).getIdentifier().setFunctionInside(f);
+					((Assignment) (statements.get(i))).getExpression().setFunctionInside(f);
+				} else if (statements.get(i) instanceof For) {
+					ForTuple aux = ((For) statements.get(i)).getForTuple();
+					if (aux.getInitial() instanceof Mixed) {
+						((Mixed) statements.get(i)).setInsideFunction(true);
+						((Mixed) statements.get(i)).setFunctionInside(f);
+					} else if (aux.getInitial() instanceof Assignment) {
+						((Assignment) (aux.getInitial())).getIdentifier().setInsideFunction(true);
+						((Assignment) (aux.getInitial())).getExpression().setInsideFunction(true);
+						((Assignment) (aux.getInitial())).getIdentifier().setFunctionInside(f);
+						((Assignment) (aux.getInitial())).getExpression().setFunctionInside(f);
+					}
+					aux.getCondition().setInsideFunction(true);
+					aux.getCondition().setFunctionInside(f);
+					if (aux.getLoopEpilogue() instanceof Assignment) {
+						((Assignment) (aux.getLoopEpilogue())).getIdentifier().setInsideFunction(true);
+						((Assignment) (aux.getLoopEpilogue())).getExpression().setInsideFunction(true);
+						((Assignment) (aux.getLoopEpilogue())).getIdentifier().setFunctionInside(f);
+						((Assignment) (aux.getLoopEpilogue())).getExpression().setFunctionInside(f);
+					} else if (aux.getLoopEpilogue() instanceof Expression) {
+						((Expression) (aux.getLoopEpilogue())).setInsideFunction(true);
+						((Expression) (aux.getLoopEpilogue())).setFunctionInside(f);
+					}
+					((For) statements.get(i)).getBody().setInsideFunction(f);
+				} else if (statements.get(i) instanceof While) {
+					((While) (statements.get(i))).getCondition().setInsideFunction(true);
+					((While) (statements.get(i))).getCondition().setFunctionInside(f);
+					((While) (statements.get(i))).getBody().setInsideFunction(f);
+				} else if (statements.get(i) instanceof IfElse) {
+					((IfElse) (statements.get(i))).getCondition().setInsideFunction(true);
+					((IfElse) (statements.get(i))).getCondition().setFunctionInside(f);
+					((IfElse) (statements.get(i))).getBody().setInsideFunction(f);
+					((IfElse) (statements.get(i))).getElseBody().setInsideFunction(f);
+				} else if (statements.get(i) instanceof If) {
+					((If) (statements.get(i))).getCondition().setInsideFunction(true);
+					((If) (statements.get(i))).getCondition().setFunctionInside(f);
+					((If) (statements.get(i))).getBody().setInsideFunction(f);
+				} else if (statements.get(i) instanceof Block) {
+					((Block) (statements.get(i))).setInsideFunction(f);
+				}
+			}
+		}
 	}
 }
