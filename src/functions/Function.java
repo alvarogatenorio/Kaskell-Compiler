@@ -126,6 +126,9 @@ public class Function {
 		tail.getBlock().generateCode(instructions);
 		if (head.getReturnType() != null) {
 			instructions.add("lda 0 0;\n");
+			instructions.add("lda ;\n"); //AQUI HAY QUE PONER LA DIRECCION DE LO QUE QUEREMOS DEVOLVER
+			instructions.add("ind;\n");
+			instructions.add("sto;\n");
 			instructions.add("retf;\n");
 		} else {
 			instructions.add("retp;\n");
