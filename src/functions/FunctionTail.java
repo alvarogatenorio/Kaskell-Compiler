@@ -29,6 +29,7 @@ public class FunctionTail implements Definition {
 		if (variables != null) {
 			for (int i = 0; i < variables.size(); i++) {
 				wellIdentified = wellIdentified && symbolTable.insertIdentifier(variables.get(i), this);
+				variables.get(i).setAddress(5 + i);
 			}
 		}
 		/* Setting types */

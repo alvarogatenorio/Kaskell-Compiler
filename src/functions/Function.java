@@ -2,29 +2,12 @@ package functions;
 
 import java.util.List;
 
-import expressions.ArrayIdentifier;
-import expressions.BinaryExpression;
-import expressions.Call;
-import expressions.DummyBoolean;
-import expressions.DummyInteger;
 import expressions.Expression;
 import expressions.Identifier;
-import expressions.StructMember;
-import expressions.UnaryExpression;
 import kaskell.Block;
 import kaskell.Instructions;
 import kaskell.ReturnBlock;
 import kaskell.SymbolTable;
-import statements.ArrayAssignment;
-import statements.Assignment;
-import statements.BasicStatement;
-import statements.For;
-import statements.If;
-import statements.IfElse;
-import statements.Mixed;
-import statements.Statement;
-import statements.StructAssignment;
-import statements.While;
 import types.Type;
 
 public class Function {
@@ -130,10 +113,10 @@ public class Function {
 
 	public void generateCode(Instructions instructions) {
 		int numMarc = staticMarc();
-		int lengthPExp = lengthStackExpressions();
+		int lengthPExp = tail.getBlock().lengthStackExpressions();
 		instructions.addComment("{ Function code }\n");
 		instructions.add("ssp " + numMarc + ";\n");
-		this.address = instructions.size();
+		this.address = instructions.getCounter();
 		this.tail.setAddress(this.address);
 		instructions.add("sep " + lengthPExp + ";\n");
 		int jumpFrom = instructions.size();
@@ -173,170 +156,6 @@ public class Function {
 		return 5 + parameters + localVar;
 	}
 
-	public int lengthStackExpressions() {
-		int max = 0, maxAux = 0;
-		List<Statement> statements = tail.getBlock().getStatements();
-		/* Checks each statement */
-		for (int i = 0; i < statements.size(); i++) {
-			maxAux=0;
-			if (statements.get(i) instanceof Assignment) {
-				
-				Expression exp = ((Assignment) statements.get(i)).getExpression();
-				maxAux = calculateExpSubTree(exp);
-				
-			} else if (statements.get(i) instanceof Mixed) {
-				
-				Expression exp = ((Mixed) statements.get(i)).getExpression();
-				maxAux = calculateExpSubTree(exp);
-				
-			} else if (statements.get(i) instanceof For) {
-				
-				int maxAux1 = 0, maxAux2 = 0, maxAux3 = 0, maxAux4 = 0;
-
-				/* first component of the for tuple */
-				BasicStatement init = ((For) statements.get(i)).getForTuple().getInitial();
-				if (init instanceof Assignment) {
-					Expression exp = ((Assignment) init).getExpression();
-					maxAux1 = calculateExpSubTree(exp);
-				} else if (init instanceof Mixed) {
-					Expression exp = ((Mixed) init).getExpression();
-					maxAux1 = calculateExpSubTree(exp);
-				}
-
-				/* second component of the for tuple */
-				Expression condition = (Expression) ((For) statements.get(i)).getForTuple().getCondition();
-				maxAux2 = calculateExpSubTree(condition);
-
-				/* third component of the for tuple */
-				BasicStatement loopEpilogue = ((For) statements.get(i)).getForTuple().getLoopEpilogue();
-				if (loopEpilogue instanceof Assignment) {
-					Expression exp = ((Assignment) loopEpilogue).getExpression();
-					maxAux3 = calculateExpSubTree(exp);
-				} else if (loopEpilogue instanceof Expression) {
-					maxAux3 = calculateExpSubTree((Expression) loopEpilogue);
-				}
-
-				maxAux4 = ((For) statements.get(i)).getBody().lengthStackExpressions();
-				
-				maxAux = Math.max(maxAux1, Math.max(maxAux2, Math.max(maxAux3, maxAux4)));
-				
-			} else if (statements.get(i) instanceof If) {
-				
-				int maxAux1 = 0, maxAux2 = 0;
-				Expression condition = ((If) statements.get(i)).getCondition();
-			
-				maxAux1 = calculateExpSubTree(condition);
-				maxAux2 = ((If)statements.get(i)).getBody().lengthStackExpressions();
-				
-				maxAux = Math.max(maxAux1, maxAux2);
-				
-			} else if (statements.get(i) instanceof IfElse) {
-				
-				int maxAux1 = 0, maxAux2 = 0, maxAux3 = 0;
-				Expression condition = ((IfElse) statements.get(i)).getCondition();
-				
-				maxAux1 = calculateExpSubTree(condition);
-				maxAux2 = ((IfElse)statements.get(i)).getBody().lengthStackExpressions();
-				maxAux3 = ((IfElse)statements.get(i)).getElseBody().lengthStackExpressions();
-				
-				maxAux = Math.max(maxAux1, Math.max(maxAux2, maxAux3));
-				
-			} else if (statements.get(i) instanceof While) {
-				
-				int maxAux1 = 0, maxAux2 = 0;
-				Expression condition = ((While) statements.get(i)).getCondition();
-
-				maxAux1 = calculateExpSubTree(condition);
-				maxAux2 = ((While)statements.get(i)).getBody().lengthStackExpressions();
-				
-				maxAux = Math.max(maxAux1, maxAux2);
-				
-			} else if (statements.get(i) instanceof ArrayAssignment) {
-				int maxAux1=0, maxAux2=0;
-				ArrayIdentifier ident = (ArrayIdentifier) ((ArrayAssignment) statements.get(i)).getIdentifier();
-				Expression exp = ((ArrayAssignment) statements.get(i)).getExpression();
-				
-				maxAux1 = calculateExpSubTree(ident);
-				maxAux2 = calculateExpSubTree(exp);
-				maxAux = Math.max(maxAux1, maxAux2);
-				
-			} else if (statements.get(i) instanceof StructAssignment) {
-				int maxAux1=0, maxAux2=0;
-				StructMember ident = (StructMember) ((StructAssignment) statements.get(i)).getMember();
-				Expression exp = ((StructAssignment) statements.get(i)).getExpression();
-				maxAux1 = calculateExpSubTree(exp);
-				
-				for(int j=0; j < ident.getIdentifiers().size(); j++) {
-					if(ident.getIdentifiers().get(j) instanceof ArrayIdentifier) {
-						ArrayIdentifier identArr = (ArrayIdentifier) ident.getIdentifiers().get(j);
-						maxAux2 = Math.max(maxAux2,calculateExpSubTree(identArr));
-					}
-				}
-				
-				maxAux = Math.max(maxAux1, maxAux2);
-				
-			} else if (statements.get(i) instanceof Call) {
-				
-				for(int j=0; j< ((Call) statements.get(i)).getVariables().size(); j++) {
-					
-					maxAux = Math.max(maxAux,calculateExpSubTree(((Call) statements.get(i)).getVariables().get(j)));
-				}
-				
-			} else if (statements.get(i) instanceof Block) {
-				
-				maxAux = ((Block) statements.get(i)).lengthStackExpressions();
-				
-			}
-			
-			max = Math.max(max, maxAux);
-		}
-
-		return max;
-	}
-
-	private int calculateExpSubTree(Expression exp) {
-		int num = 0;
-		if (exp instanceof DummyInteger) {
-			num = 1;
-		} else if (exp instanceof DummyBoolean) {
-			num = 1;
-		} else if (exp instanceof ArrayIdentifier){
-
-			for(int i=0; i< ((ArrayIdentifier) exp).getCoordinates().size(); i++) {
-				num = Math.max(num,calculateExpSubTree(((ArrayIdentifier) exp).getCoordinates().get(i)));
-			}
-			
-		} else if (exp instanceof StructMember){
-			StructMember ident = (StructMember) exp;
-			for(int j=0; j < ident.getIdentifiers().size(); j++) {
-				if(ident.getIdentifiers().get(j) instanceof ArrayIdentifier) {
-					ArrayIdentifier identArr = (ArrayIdentifier) ident.getIdentifiers().get(j);
-					num = Math.max(num,calculateExpSubTree(identArr));
-				}
-			}
-			
-		}else if (exp instanceof Identifier) {
-			num = 1;
-		} else if (exp instanceof UnaryExpression) {
-			Expression nextExp = ((UnaryExpression) exp).getExpression();
-			num = calculateExpSubTree(nextExp);
-			if (((UnaryExpression) exp).isMinusMinusOrIsPlusPlus()) {
-				num = num + 1;
-			}
-		} else if (exp instanceof BinaryExpression) {
-			if (((BinaryExpression) exp).isExponentialOrModulus()) {
-				/* To do */
-			} else {
-				Expression leftExp = ((BinaryExpression) exp).getLeftExpression();
-				Expression rightExp = ((BinaryExpression) exp).getRightExpression();
-				int leftNum, rightNum;
-				leftNum = calculateExpSubTree(leftExp);
-				rightNum = calculateExpSubTree(rightExp);
-				num = Math.max(leftNum, rightNum) + 1;
-			}
-		}
-		return num;
-	}
 	public int getAddress() {
 		return this.address;
 	}

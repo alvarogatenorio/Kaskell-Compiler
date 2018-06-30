@@ -1,0 +1,23 @@
+{ Initialization of SP and EP }
+{0} ssp 6;
+{1} sep 1;
+{ End initialization of SP and EP }
+{ Function code }
+{2} ssp 6;
+{3} sep 0;
+{4} ujp 5;
+{5} lda 0 0;
+{6} retf;
+{ End funtion code }
+{ Simple assignment }
+{7} lda 0 5;
+{8} ldc 0;
+{9} sto;
+{ End of simple assignment }
+{ Function call }
+{10} mst 1;
+{11} lda 0 5;
+{12} ind;
+{13} cup 1 2;
+{ End function call }
+{14} stp;

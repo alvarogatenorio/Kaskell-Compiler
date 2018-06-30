@@ -1,1 +1,6 @@
-{kinkeger a = 8;}
+{
+  kinkeger a = 0;
+  f(a);
+}
+f:kinkeger -> kinkeger
+(a)|-> {kreturn a;}

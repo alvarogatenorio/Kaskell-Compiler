@@ -149,4 +149,12 @@ public class Identifier implements Expression {
 	public int getDeltaDepth() {
 		return this.deltaDepth;
 	}
+
+	/*
+	 * A dirty shortcut to assign addresses, used only when assigning addresses to
+	 * function parameters
+	 */
+	public void setAddress(int a) {
+		this.address = a;
+	}
 }
