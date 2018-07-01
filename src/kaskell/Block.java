@@ -241,7 +241,11 @@ public class Block implements Statement {
 			num = 1;
 		} else if (exp instanceof DummyBoolean) { /* Simple case */
 			num = 1;
-		} else if (exp instanceof ArrayIdentifier) {
+		} else if (exp instanceof Call) {
+			for (int j = 0; j < ((Call) exp).getVariables().size(); j++) {
+				num = Math.max(num, calculateExpSubTree(((Call) exp).getVariables().get(j)));
+			}
+		}else if (exp instanceof ArrayIdentifier) {
 			/* We must take the maximum of each coordinate evaluation expression */
 			for (int i = 0; i < ((ArrayIdentifier) exp).getCoordinates().size(); i++) {
 				/* Notice this will be at least one */

@@ -100,12 +100,17 @@ public class Program {
 			instructions.add("ssp " + (5 + max1) + ";\n");
 			instructions.add("sep " + max2 + ";\n");
 			instructions.addComment("{ End initialization of SP and EP }\n");
+			int jumpFrom = instructions.size();
+			instructions.add("");
+			
 
 			if (functions != null) {
 				for (int i = 0; i < functions.size(); i++) {
 					functions.get(i).generateCode(instructions);
 				}
 			}
+			int jumpTo = instructions.getCounter() + 1;
+			instructions.set(jumpFrom, instructions.get(jumpFrom) + "ujp " + jumpTo + ";\n");
 			/* Blocks is never null!! */
 			for (int i = 0; i < blocks.size(); i++) {
 				blocks.get(i).generateCode(instructions);
