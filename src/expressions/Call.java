@@ -86,7 +86,7 @@ public class Call implements Expression {
 	public void generateCode(Instructions instructions) {
 		instructions.addComment("{ Function call }\n");
 		//instructions.add("mst " + identifier.getDeltaDepth() + ";\n");
-		instructions.add("mst " + 1 + ";\n");
+		instructions.add("mst " + 0 + ";\n");
 		for (int i = 0; i < arguments.size(); i++) {
 			/* Non simple types are passed by reference */
 			if (arguments.get(i).getType() == null) {

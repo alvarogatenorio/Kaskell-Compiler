@@ -1,3 +1,28 @@
-{kinkeger a = f(0);}
-f:kinkeger->kinkeger
-(a)|->{kreturn a;}
+A := struK {
+              kinkeger num;
+              kool cond;
+           }
+           
+B := struK {
+            kinkeger sum;
+            [10][5] kinkeger vec;
+            }
+			
+{
+    A a;
+    B b;
+    a.num=78;
+    a.cond=kalse;
+    b.sum=0;
+    kor(kinkeger i=0; i<10; i++){
+        kinkeger j=4;
+        khile((-1)<j){
+            b.vec[i][j] = b.sum + a.num*j-i;
+            j--;
+        }
+        a.num = f(a.num,a.cond) -5;	
+    }
+}
+
+f: kinkeger X kool -> kinkeger
+   (a,b)|->{kinkeger d; kif(b==kalse){d=0;}kelse{d=a;}b = knot b; kreturn d;}
