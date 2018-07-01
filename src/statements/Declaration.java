@@ -140,6 +140,11 @@ public class Declaration implements BasicStatement, Definition {
 			} else if (insideFunction) {
 				this.identifier.setInsideFunction(true);
 				this.identifier.setFunctionInside(functionInside);
+				int argOffset = 0;
+				if (functionInside.getArguments() != null) {
+					argOffset = functionInside.getArguments().size();
+				}
+				this.address = 5 + argOffset + symbolTable.getAccumulation() - this.getSize();
 			} else { // ordinary case
 				this.address = 5 + symbolTable.getAccumulation() - this.getSize();
 			}

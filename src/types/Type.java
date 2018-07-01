@@ -12,7 +12,7 @@ public class Type {
 		return this.type;
 	}
 
-	/* Checks if two types are equal */
+	/* Checks if two types are equal, warning, it may not commute */
 	public boolean equals(Type other) {
 		/*
 		 * Since getType returns an enumerate, it doesn't matter if we don't use equals

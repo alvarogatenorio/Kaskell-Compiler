@@ -20,7 +20,7 @@ public class ArrayType extends Type {
 		this.dimensions = dimensions;
 		this.complex = complex;
 	}
-	
+
 	public int getSize() {
 		/* Just applying the formula */
 		int size = 1;
@@ -57,7 +57,9 @@ public class ArrayType extends Type {
 			 */
 			if ((aux.getType() == this.getType()) && (aux.getSize() == this.getSize())) {
 				for (int i = 0; i < dimensions.size(); i++) {
-					if (dimensions.get(i) != aux.getDimensions().get(i)) {
+					int a = dimensions.get(i);
+					int b = aux.getDimensions().get(i);
+					if (a != b) {
 						return false;
 					}
 				}

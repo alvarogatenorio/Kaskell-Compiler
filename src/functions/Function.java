@@ -126,7 +126,8 @@ public class Function {
 		tail.getBlock().generateCode(instructions);
 		if (head.getReturnType() != null) {
 			instructions.add("lda 0 0;\n");
-			instructions.add("lda ;\n"); //AQUI HAY QUE PONER LA DIRECCION DE LO QUE QUEREMOS DEVOLVER
+			/* He puesto un 0, pero, npi */
+			instructions.add("lda 0 " + ((ReturnBlock) (tail.getBlock())).getAddress() + ";\n");
 			instructions.add("ind;\n");
 			instructions.add("sto;\n");
 			instructions.add("retf;\n");
@@ -144,7 +145,9 @@ public class Function {
 		 * reference, their size is 1, and the others are integers or booleans, so their
 		 * size is also 1
 		 */
-		parameters = head.getArguments().size();
+		if (head.getArguments() != null) {
+			parameters = head.getArguments().size();
+		}
 
 		/*
 		 * For the local variables, we need to go through all the block recursively,

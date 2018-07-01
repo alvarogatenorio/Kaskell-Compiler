@@ -28,7 +28,7 @@ public class UnaryExpression implements Expression {
 		if (expression instanceof Identifier) {
 			type = ((Identifier) expression).getSimpleType();
 		}
-		if (!type.equals(operator.getType())) {
+		if (!type.equals(operator.getType()) || !operator.getType().equals(type)) {
 			System.err.println("TYPE ERROR: in line " + (this.getRow() + 1) + " column " + (this.getColumn() + 1)
 					+ " the type of the expresion does not match with the type of the operator!");
 			return false;

@@ -32,22 +32,24 @@ public class BinaryExpression implements Expression {
 					+ " the left type of the expression is void!");
 			return false;
 		}
-		if (left instanceof Identifier) {
+		if (left instanceof ArrayIdentifier) {
 			leftType = ((Identifier) left).getSimpleType();
 		}
-		if (right instanceof Identifier) {
+		if (right instanceof ArrayIdentifier) {
 			rightType = ((Identifier) right).getSimpleType();
 		}
 		/* Equals is an special case */
 		if (this.operator == BinaryOperators.EQUALS) {
 			this.operator.setEqualsSidesTypes(leftType);
 		}
-		if (!leftType.equals(operator.getLeftType())) {
+		/* Both checks are necessary */
+		if (!leftType.equals(operator.getLeftType()) || !operator.getLeftType().equals(leftType)) {
 			System.err.println("TYPE ERROR: in line " + (this.getRow() + 1) + " column " + (this.getColumn() + 1)
 					+ " the left type of the expresion does not match with the left type of the operator!");
 			return false;
 		}
-		if (!rightType.equals(operator.getRightType())) {
+		/* Both checks are necessary */
+		if (!rightType.equals(operator.getRightType()) || !operator.getRightType().equals(rightType)) {
 			System.err.println("TYPE ERROR: in line " + (this.getRow() + 1) + " column " + (this.getColumn() + 1)
 					+ " the right type of the expresion does not match with the right type of the operator!");
 			return false;
@@ -140,18 +142,19 @@ public class BinaryExpression implements Expression {
 			break;
 		}
 	}
-	
-	public Boolean isExponential(){
-		return this.operator==BinaryOperators.EXPONENTIAL;
+
+	public Boolean isExponential() {
+		return this.operator == BinaryOperators.EXPONENTIAL;
 	}
-	public Boolean isModulus(){
-		return this.operator==BinaryOperators.MODULUS;
+
+	public Boolean isModulus() {
+		return this.operator == BinaryOperators.MODULUS;
 	}
-	
+
 	public Expression getRightExpression() {
 		return this.right;
 	}
-	
+
 	public Expression getLeftExpression() {
 		return this.left;
 	}
@@ -160,7 +163,7 @@ public class BinaryExpression implements Expression {
 	public void setInsideFunction(boolean b) {
 		this.left.setInsideFunction(b);
 		this.right.setInsideFunction(b);
-		
+
 	}
 
 	@Override

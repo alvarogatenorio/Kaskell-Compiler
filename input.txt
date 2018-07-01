@@ -1,14 +1,22 @@
+A:= struK {kinkeger a; kool b;}
+B:= struK {kinkeger a; A b;}
+
 {
-    kinkeger i = 8;
+    [5]kinkeger i;
+    f(i,krue);
 }
 
-f:kinkeger X kool -> kinkeger
+f: [5]kinkeger X kool-> kinkeger 
 (a,b)|->{
-           kinkeger d;
-           kif (b == kalse) {
-             d = 0;
+
+           [8]A d;
+           B e;
+           kif (d[0].a == 2) {
+             d[9].b = kalse;
+             e.b.a = 89;
            } kelse {
-             d = a;
+             d[7].a = 8;
            }
-           kreturn d;
+           f(a,kalse);
+           kreturn 9;
         }

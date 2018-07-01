@@ -26,7 +26,8 @@ public class Call implements Expression {
 	public boolean checkType() {
 		if ((variables != null && arguments != null) && (variables.size() == arguments.size())) {
 			for (int i = 0; i < variables.size(); i++) {
-				if (variables.get(i).checkType() && !(variables.get(i).getType().equals(arguments.get(i)))) {
+				if (variables.get(i).checkType() && (!(variables.get(i).getType().equals(arguments.get(i)))
+						|| !(arguments.get(i).equals(variables.get(i).getType())))) {
 					int num = i + 1;
 					System.err.println("TYPE ERROR: in line " + (this.getRow() + 1) + " column "
 							+ (this.getColumn() + 1) + " the variable type number " + num
@@ -60,7 +61,8 @@ public class Call implements Expression {
 			type = symbolTable.searchCallType(identifier);
 			arguments = symbolTable.searchCallArguments(identifier);
 			address = symbolTable.searchFunctionTailFromCall(identifier);
-			identifier.setDeltaDepth(symbolTable.getDepth() - 1);
+			//identifier.setDeltaDepth(symbolTable.getDepth() - 1);
+			identifier.setDeltaDepth(1);
 		}
 		return wellIdentified;
 	}
@@ -83,7 +85,8 @@ public class Call implements Expression {
 	@Override
 	public void generateCode(Instructions instructions) {
 		instructions.addComment("{ Function call }\n");
-		instructions.add("mst " + identifier.getDeltaDepth() + ";\n");
+		//instructions.add("mst " + identifier.getDeltaDepth() + ";\n");
+		instructions.add("mst " + 1 + ";\n");
 		for (int i = 0; i < arguments.size(); i++) {
 			/* Non simple types are passed by reference */
 			if (arguments.get(i).getType() == null) {

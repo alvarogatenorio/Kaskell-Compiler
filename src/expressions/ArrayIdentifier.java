@@ -41,7 +41,7 @@ public class ArrayIdentifier extends Identifier {
 	public boolean checkType() {
 		boolean wellTyped = true;
 		ArrayType type = (ArrayType) (this.getType());
-		if (type.getSize() == coordinates.size()) {
+		if (type.getDimensions().size() == coordinates.size()) {
 			for (int i = 0; i < coordinates.size(); i++) {
 				wellTyped = wellTyped && coordinates.get(i).checkType();
 				if (!(coordinates.get(i).getType().equals(new Type(Types.INTEGER)))) {
@@ -78,7 +78,7 @@ public class ArrayIdentifier extends Identifier {
 			d.set(i, (dimensions.get(i + 1) + 1) * d.get(i + 1));
 		}
 		/* Generating actual code */
-		//instructions.add("ldc " + this.address + ";\n");
+		// instructions.add("ldc " + this.address + ";\n");
 		instructions.add("lda " + this.deltaDepth + " " + this.address + ";\n");
 		for (int i = 0; i < coordinates.size(); i++) {
 			/* Generates code for coordinate expression */
@@ -89,8 +89,8 @@ public class ArrayIdentifier extends Identifier {
 		}
 		instructions.add("ind;\n");
 	}
-	
-	public List<Expression> getCoordinates(){
+
+	public List<Expression> getCoordinates() {
 		return this.coordinates;
 	}
 }

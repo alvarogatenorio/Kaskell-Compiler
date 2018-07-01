@@ -87,6 +87,10 @@ public class StructMember extends Identifier implements Expression {
 	@Override
 	public boolean checkIdentifiers(SymbolTable symbolTable) {
 		/* check the first identifier, if it is not in the symbol table, go home */
+		if (this.insideFunction) {
+			identifiers.get(0).setInsideFunction(true);
+			identifiers.get(0).setFunctionInside(this.functionInside);
+		}
 		boolean wellIdentified = identifiers.get(0).checkIdentifiers(symbolTable);
 		/*
 		 * At this point, the address of the StructMember is the address of the first

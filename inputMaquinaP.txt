@@ -1,39 +1,61 @@
 { Initialization of SP and EP }
-{0} ssp 6;
+{0} ssp 10;
 {1} sep 1;
 { End initialization of SP and EP }
 { Function code }
-{2} ssp 8;
+{2} ssp 26;
 {3} sep 2;
 {4} ujp 5;
 { Two-branch if }
 {5} lda 0 7;
-{6} ind;
-{7} ldc false;
-{8} equ;
-{9} fjp 14;
-{ Simple assignment }
-{10} lda 0 6;
-{11} ldc 0;
-{12} sto;
-{ End of simple assignment }
-{13} ujp 18;
-{ Simple assignment }
-{14} lda 0 6;
-{15} lda 0 6;
-{16} ind;
-{17} sto;
-{ End of simple assignment }
+{6} inc 0;
+{7} ind;
+{8} ldc 2;
+{9} equ;
+{10} fjp 20;
+{ StructType assignment }
+{11} lda 0 7;
+{12} inc 1;
+{13} ldc false;
+{14} sto;
+{ End of StructType assignment }
+{ StructType assignment }
+{15} lda 0 23;
+{16} inc 1;
+{17} ldc 89;
+{18} sto;
+{ End of StructType assignment }
+{19} ujp 24;
+{ StructType assignment }
+{20} lda 0 7;
+{21} inc 0;
+{22} ldc 8;
+{23} sto;
+{ End of StructType assignment }
 { End of two-branch if }
-{18} lda 0 0;
-{19} lda ;
-{20} ind;
-{21} sto;
-{22} retf;
-{ End funtion code }
+{ Function call }
+{24} mst 1;
+{25} lda 0 -1;
+{26} ind;
+{27} ldc false;
+{28} cup 2 2;
+{ End function call }
 { Simple assignment }
-{23} lda 0 5;
-{24} ldc 8;
-{25} sto;
+{29} lda 0 -1;
+{30} ldc 9;
+{31} sto;
 { End of simple assignment }
-{26} stp;
+{32} lda 0 0;
+{33} lda 0 -1;
+{34} ind;
+{35} sto;
+{36} retf;
+{ End funtion code }
+{ Function call }
+{37} mst 1;
+{38} lda 0 5;
+{39} ind;
+{40} ldc true;
+{41} cup 2 2;
+{ End function call }
+{42} stp;

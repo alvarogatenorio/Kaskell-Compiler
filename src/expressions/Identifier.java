@@ -17,9 +17,9 @@ public class Identifier implements Expression {
 	private String s;
 	private int row;
 	private int column;
-	private boolean insideStructType;
-	private boolean insideFunction;
-	private FunctionTail functionInside;
+	protected boolean insideStructType;
+	protected boolean insideFunction;
+	protected FunctionTail functionInside;
 	protected Type type;
 	protected int address;
 	protected int deltaDepth;
@@ -79,12 +79,7 @@ public class Identifier implements Expression {
 			this.address = symbolTable.getAccumulation() - this.type.getSize();
 		} else if (insideFunction) {
 			this.type = symbolTable.searchIdentifierInsideFunctionType(this);
-			/*
-			 * This is in fact the memory address of the identifier, as the 5 first
-			 * positions are reserved for other stuff
-			 */
-			this.address = 5 + functionInside.getArguments().size() + symbolTable.getAccumulation()
-					- this.type.getSize();
+			this.address = symbolTable.searchIdentifierAddress(this);
 		} else {
 			wellIdentified = symbolTable.searchIdentifier(this);
 			if (wellIdentified) {
@@ -95,7 +90,7 @@ public class Identifier implements Expression {
 				 */
 				this.type = symbolTable.searchIdentifierType(this);
 				this.address = symbolTable.searchIdentifierAddress(this);
-				this.deltaDepth = symbolTable.getDepth() - symbolTable.searchDefinitionDepth(this);
+				//this.deltaDepth = symbolTable.getDepth() - symbolTable.searchDefinitionDepth(this);
 			}
 		}
 		return wellIdentified;

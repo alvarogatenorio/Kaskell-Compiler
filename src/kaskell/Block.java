@@ -122,13 +122,13 @@ public class Block implements Statement {
 				}
 				/* We also check go for recursion in its block */
 				num = num + ((For) statements.get(i)).getBody().calculateBlockLocalVar();
-			} else if (statements.get(i) instanceof If) {
-				/* Go for recursion in its block */
-				num = num + ((If) statements.get(i)).getBody().calculateBlockLocalVar();
 			} else if (statements.get(i) instanceof IfElse) {
 				/* Go for recursion in its blocks */
 				num = num + ((IfElse) statements.get(i)).getBody().calculateBlockLocalVar()
 						+ ((IfElse) statements.get(i)).getElseBody().calculateBlockLocalVar();
+			} else if (statements.get(i) instanceof If) {
+				/* Go for recursion in its block */
+				num = num + ((If) statements.get(i)).getBody().calculateBlockLocalVar();
 			} else if (statements.get(i) instanceof While) {
 				/* Go for recursion in its block */
 				num = num + ((While) statements.get(i)).getBody().calculateBlockLocalVar();
@@ -181,12 +181,6 @@ public class Block implements Statement {
 				}
 				maxAux4 = ((For) statements.get(i)).getBody().lengthStackExpressions();
 				maxAux = Math.max(maxAux1, Math.max(maxAux2, Math.max(maxAux3, maxAux4)));
-			} else if (statements.get(i) instanceof If) {
-				int maxAux1 = 0, maxAux2 = 0;
-				Expression condition = ((If) statements.get(i)).getCondition();
-				maxAux1 = calculateExpSubTree(condition);
-				maxAux2 = ((If) statements.get(i)).getBody().lengthStackExpressions();
-				maxAux = Math.max(maxAux1, maxAux2);
 			} else if (statements.get(i) instanceof IfElse) {
 				int maxAux1 = 0, maxAux2 = 0, maxAux3 = 0;
 				Expression condition = ((IfElse) statements.get(i)).getCondition();
@@ -194,6 +188,12 @@ public class Block implements Statement {
 				maxAux2 = ((IfElse) statements.get(i)).getBody().lengthStackExpressions();
 				maxAux3 = ((IfElse) statements.get(i)).getElseBody().lengthStackExpressions();
 				maxAux = Math.max(maxAux1, Math.max(maxAux2, maxAux3));
+			} else if (statements.get(i) instanceof If) {
+				int maxAux1 = 0, maxAux2 = 0;
+				Expression condition = ((If) statements.get(i)).getCondition();
+				maxAux1 = calculateExpSubTree(condition);
+				maxAux2 = ((If) statements.get(i)).getBody().lengthStackExpressions();
+				maxAux = Math.max(maxAux1, maxAux2);
 			} else if (statements.get(i) instanceof While) {
 				int maxAux1 = 0, maxAux2 = 0;
 				Expression condition = ((While) statements.get(i)).getCondition();
@@ -235,7 +235,7 @@ public class Block implements Statement {
 	 * Computes the stack length of an expression, it may have been prettier if we
 	 * split this in the different expression classes (maybe in the future)
 	 */
-	private int calculateExpSubTree(Expression exp) {
+	protected int calculateExpSubTree(Expression exp) {
 		int num = 0;
 		if (exp instanceof DummyInteger) { /* Simple case */
 			num = 1;
@@ -295,6 +295,11 @@ public class Block implements Statement {
 				} else if (statements.get(i) instanceof Mixed) {
 					((Mixed) statements.get(i)).setInsideFunction(true);
 					((Mixed) statements.get(i)).setFunctionInside(f);
+					((Mixed) statements.get(i)).getExpression().setInsideFunction(true);
+					((Mixed) statements.get(i)).getExpression().setFunctionInside(f);
+				} else if (statements.get(i) instanceof StructAssignment) {
+					((StructAssignment) (statements.get(i))).getMember().setInsideFunction(true);
+					((StructAssignment) (statements.get(i))).getMember().setFunctionInside(f);
 				} else if (statements.get(i) instanceof Assignment) {
 					((Assignment) (statements.get(i))).getIdentifier().setInsideFunction(true);
 					((Assignment) (statements.get(i))).getExpression().setInsideFunction(true);
@@ -327,7 +332,7 @@ public class Block implements Statement {
 					((While) (statements.get(i))).getCondition().setInsideFunction(true);
 					((While) (statements.get(i))).getCondition().setFunctionInside(f);
 					((While) (statements.get(i))).getBody().setInsideFunction(f);
-				} else if (statements.get(i) instanceof IfElse) {
+				} else if (statements.get(i) instanceof IfElse) { /* Order matters here */
 					((IfElse) (statements.get(i))).getCondition().setInsideFunction(true);
 					((IfElse) (statements.get(i))).getCondition().setFunctionInside(f);
 					((IfElse) (statements.get(i))).getBody().setInsideFunction(f);
