@@ -116,11 +116,7 @@ public class Function {
 		int lengthPExp = tail.getBlock().lengthStackExpressions();
 		instructions.addComment("{ Function code }\n");
 		instructions.addComment("{ Function prologue }\n");
-		if (tail.getBlock() instanceof ReturnBlock) {
-			instructions.add("ssp " + (numMarc + 1) + ";\n");
-		} else {
-			instructions.add("ssp " + numMarc + ";\n");
-		}
+		instructions.add("ssp " + numMarc + ";\n");
 		this.address = instructions.getCounter();
 		this.tail.setAddress(this.address);
 		instructions.add("sep " + lengthPExp + ";\n");
@@ -132,11 +128,11 @@ public class Function {
 		tail.getBlock().generateCode(instructions);
 		instructions.addComment("{ Function epilogue }\n");
 		if (head.getReturnType() != null) {
-			instructions.add("lda 0 0;\n");
-			/* He puesto un 0, pero, npi */
-			instructions.add("lda 0 " + ((ReturnBlock) (tail.getBlock())).getAddress() + ";\n");
-			instructions.add("ind;\n");
-			instructions.add("sto;\n");
+			//instructions.add("lda 0 0;\n");
+			// instructions.add("lda 0 " + ((ReturnBlock) (tail.getBlock())).getAddress() +
+			// ";\n");
+			//instructions.add("ind;\n");
+			//instructions.add("sto;\n");
 			instructions.add("retf;\n");
 		} else {
 			instructions.add("retp;\n");

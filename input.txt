@@ -1,5 +1,3 @@
-{
-  kinkeger a = 9;
-}
+{kinkeger a = f(0);}
 f:kinkeger->kinkeger
-(a) |-> {kreturn a;}
+(a)|->{kreturn a;}

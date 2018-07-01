@@ -21,6 +21,7 @@ public class ReturnBlock extends Block {
 		super(statements);
 		this.returnStatement = returnStatement;
 		this.id = new Identifier("1");
+		id.setAddress(0);
 		this.aux = new Assignment(id, returnStatement);
 	}
 
@@ -31,14 +32,13 @@ public class ReturnBlock extends Block {
 		this.decAux = new Declaration(returnStatement.getType(), id);
 		decAux.setInsideFunction(true);
 		decAux.setFunctionInside(f);
-		wellIdentified = wellIdentified && decAux.checkIdentifiers(symbolTable) && aux.checkIdentifiers(symbolTable);
 		this.returnAddress = id.getAddress();
 		return wellIdentified;
 	}
 
 	/* Checks the block itself and the expression (return statement) */
 	public boolean checkType() {
-		return super.checkType() && aux.checkType();
+		return super.checkType() && returnStatement.checkType();
 	}
 
 	public int lengthStackExpressions() {
