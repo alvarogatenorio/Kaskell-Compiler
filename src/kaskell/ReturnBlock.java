@@ -27,8 +27,7 @@ public class ReturnBlock extends Block {
 	/* Checks the block itself and the expression (return statement) */
 	public boolean checkIdentifiers(SymbolTable symbolTable) {
 		boolean wellIdentified = super.checkIdentifiers(symbolTable);
-		symbolTable.insertIdentifier(id, decAux);
-		wellIdentified = wellIdentified && aux.checkIdentifiers(symbolTable);
+		wellIdentified = wellIdentified && decAux.checkIdentifiers(symbolTable) && aux.checkIdentifiers(symbolTable);
 		this.returnAddress = id.getAddress();
 		return wellIdentified;
 	}

@@ -11,7 +11,7 @@ f: [5]kinkeger X kool-> kinkeger
 
            [8]A d;
            B e;
-           kif (d[0].a == 2) {
+           kif (d[f(a,krue)].a == 2) {
              d[9].b = kalse;
              e.b.a = 89;
            } kelse {
@@ -20,3 +20,5 @@ f: [5]kinkeger X kool-> kinkeger
            f(a,kalse);
            kreturn 9;
         }
+g:kinkeger -> kool
+(a)|->{kreturn kalse;}

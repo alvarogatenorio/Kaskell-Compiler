@@ -3,6 +3,7 @@ package expressions;
 import java.util.ArrayList;
 import java.util.List;
 
+import functions.FunctionTail;
 import kaskell.Instructions;
 import kaskell.SymbolTable;
 import types.ArrayType;
@@ -88,6 +89,21 @@ public class ArrayIdentifier extends Identifier {
 			instructions.add("ixa " + g * d.get(i) + ";\n");
 		}
 		instructions.add("ind;\n");
+	}
+
+	public void setInsideFunction(boolean insideFunction) {
+		super.setInsideFunction(insideFunction);
+		this.insideFunction = insideFunction;
+		for (int i = 0; i < coordinates.size(); i++) {
+			coordinates.get(i).setInsideFunction(insideFunction);
+		}
+	}
+
+	public void setFunctionInside(FunctionTail functionInside) {
+		super.setFunctionInside(functionInside);
+		for (int i = 0; i < coordinates.size(); i++) {
+			coordinates.get(i).setFunctionInside(functionInside);
+		}
 	}
 
 	public List<Expression> getCoordinates() {

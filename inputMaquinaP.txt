@@ -3,9 +3,11 @@
 {1} sep 1;
 { End initialization of SP and EP }
 { Function code }
+{ Function prologue }
 {2} ssp 26;
 {3} sep 2;
 {4} ujp 5;
+{ End of function prologue }
 { Two-branch if }
 {5} lda 0 7;
 {6} inc 0;
@@ -35,27 +37,48 @@
 { End of two-branch if }
 { Function call }
 {24} mst 1;
-{25} lda 0 -1;
+{25} lda 0 5;
 {26} ind;
 {27} ldc false;
 {28} cup 2 2;
 { End function call }
 { Simple assignment }
-{29} lda 0 -1;
+{29} lda 0 24;
 {30} ldc 9;
 {31} sto;
 { End of simple assignment }
+{ Function epilogue }
 {32} lda 0 0;
-{33} lda 0 -1;
+{33} lda 0 24;
 {34} ind;
 {35} sto;
 {36} retf;
+{ End of function epilogue }
+{ End funtion code }
+{ Function code }
+{ Function prologue }
+{37} ssp 6;
+{38} sep 1;
+{39} ujp 40;
+{ End of function prologue }
+{ Simple assignment }
+{40} lda 0 5;
+{41} ldc false;
+{42} sto;
+{ End of simple assignment }
+{ Function epilogue }
+{43} lda 0 0;
+{44} lda 0 5;
+{45} ind;
+{46} sto;
+{47} retf;
+{ End of function epilogue }
 { End funtion code }
 { Function call }
-{37} mst 1;
-{38} lda 0 5;
-{39} ind;
-{40} ldc true;
-{41} cup 2 2;
+{48} mst 1;
+{49} lda 0 5;
+{50} ind;
+{51} ldc true;
+{52} cup 2 2;
 { End function call }
-{42} stp;
+{53} stp;

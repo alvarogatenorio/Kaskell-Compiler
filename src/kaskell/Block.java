@@ -285,7 +285,12 @@ public class Block implements Statement {
 		return num;
 	}
 
-	/* Horrendously huge as hell, but really easy */
+	/*
+	 * Horrendously huge as hell, but really easy. Could have been done better
+	 * adding the setInsideFunction() methods to the interface Statement (to do in
+	 * the future), in fact one of the methods can actually be suppressed with
+	 * little modifications
+	 */
 	public void setInsideFunction(FunctionTail f) {
 		if (statements != null) {
 			for (int i = 0; i < statements.size(); i++) {
@@ -343,6 +348,9 @@ public class Block implements Statement {
 					((If) (statements.get(i))).getBody().setInsideFunction(f);
 				} else if (statements.get(i) instanceof Block) {
 					((Block) (statements.get(i))).setInsideFunction(f);
+				} else if (statements.get(i) instanceof Expression) {
+					((Expression) (statements.get(i))).setInsideFunction(true);
+					((Expression) (statements.get(i))).setFunctionInside(f);
 				}
 			}
 		}

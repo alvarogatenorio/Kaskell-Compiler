@@ -115,6 +115,7 @@ public class Function {
 		int numMarc = staticMarc();
 		int lengthPExp = tail.getBlock().lengthStackExpressions();
 		instructions.addComment("{ Function code }\n");
+		instructions.addComment("{ Function prologue }\n");
 		instructions.add("ssp " + numMarc + ";\n");
 		this.address = instructions.getCounter();
 		this.tail.setAddress(this.address);
@@ -123,7 +124,9 @@ public class Function {
 		instructions.add("");
 		int jumpTo = instructions.getCounter() + 1;
 		instructions.set(jumpFrom, instructions.get(jumpFrom) + "ujp " + jumpTo + ";\n");
+		instructions.addComment("{ End of function prologue }\n");
 		tail.getBlock().generateCode(instructions);
+		instructions.addComment("{ Function epilogue }\n");
 		if (head.getReturnType() != null) {
 			instructions.add("lda 0 0;\n");
 			/* He puesto un 0, pero, npi */
@@ -134,6 +137,7 @@ public class Function {
 		} else {
 			instructions.add("retp;\n");
 		}
+		instructions.addComment("{ End of function epilogue }\n");
 		instructions.addComment("{ End funtion code }\n");
 	}
 

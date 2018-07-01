@@ -16,6 +16,7 @@ public class FunctionTail implements Definition {
 	private Type type;
 	private int address;
 	private HashMap<String, Type> parameterMap;
+	private HashMap<String, Integer> parameterAddressMap;
 
 	public FunctionTail(List<Identifier> variables, Block body) {
 		this.variables = variables;
@@ -24,6 +25,7 @@ public class FunctionTail implements Definition {
 		this.type = null;
 		this.address = -1;
 		this.parameterMap = new HashMap<String, Type>();
+		this.parameterAddressMap = new HashMap<String, Integer>();
 	}
 
 	public boolean checkIdentifiers(SymbolTable symbolTable) {
@@ -33,6 +35,7 @@ public class FunctionTail implements Definition {
 			for (int i = 0; i < variables.size(); i++) {
 				wellIdentified = wellIdentified && symbolTable.insertIdentifier(variables.get(i), this);
 				variables.get(i).setAddress(5 + i);
+				this.parameterAddressMap.put(variables.get(i).toString(), variables.get(i).getAddress());
 			}
 		}
 		/* Setting types and filling the map */
@@ -89,5 +92,9 @@ public class FunctionTail implements Definition {
 
 	public Type searchParameterType(String id) {
 		return this.parameterMap.get(id);
+	}
+
+	public int searchParameterAddress(String id) {
+		return this.parameterAddressMap.get(id);
 	}
 }

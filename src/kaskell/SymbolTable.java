@@ -212,6 +212,8 @@ public class SymbolTable {
 			return ((Declaration) def).getAddress(this);
 		} else if (def instanceof Mixed) {
 			return ((Mixed) def).getAddress();
+		} else if (def instanceof FunctionTail) {
+			return ((FunctionTail) def).searchParameterAddress(identifier.toString());
 		}
 		/*
 		 * Be careful, it returns -1 when the identifier is not induced by a Declaration
