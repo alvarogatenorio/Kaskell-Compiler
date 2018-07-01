@@ -1,24 +1,5 @@
-A:= struK {kinkeger a; kool b;}
-B:= struK {kinkeger a; A b;}
-
 {
-    [5]kinkeger i;
-    f(i,krue);
+  kinkeger a = 9;
 }
-
-f: [5]kinkeger X kool-> kinkeger 
-(a,b)|->{
-
-           [8]A d;
-           B e;
-           kif (d[f(a,krue)].a == 2) {
-             d[9].b = kalse;
-             e.b.a = 89;
-           } kelse {
-             d[7].a = 8;
-           }
-           f(a,kalse);
-           kreturn 9;
-        }
-g:kinkeger -> kool
-(a)|->{kreturn kalse;}
+f:kinkeger->kinkeger
+(a) |-> {kreturn a;}

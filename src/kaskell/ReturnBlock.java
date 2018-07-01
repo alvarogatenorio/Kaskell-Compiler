@@ -15,18 +15,22 @@ public class ReturnBlock extends Block {
 	private Assignment aux;
 	private int returnAddress;
 	private Declaration decAux;
+	private FunctionTail f;
 
 	public ReturnBlock(List<Statement> statements, Expression returnStatement) {
 		super(statements);
 		this.returnStatement = returnStatement;
 		this.id = new Identifier("1");
-		this.decAux = new Declaration(returnStatement.getType(), id);
 		this.aux = new Assignment(id, returnStatement);
 	}
 
 	/* Checks the block itself and the expression (return statement) */
 	public boolean checkIdentifiers(SymbolTable symbolTable) {
 		boolean wellIdentified = super.checkIdentifiers(symbolTable);
+		wellIdentified = wellIdentified && returnStatement.checkIdentifiers(symbolTable);
+		this.decAux = new Declaration(returnStatement.getType(), id);
+		decAux.setInsideFunction(true);
+		decAux.setFunctionInside(f);
 		wellIdentified = wellIdentified && decAux.checkIdentifiers(symbolTable) && aux.checkIdentifiers(symbolTable);
 		this.returnAddress = id.getAddress();
 		return wellIdentified;
@@ -42,6 +46,7 @@ public class ReturnBlock extends Block {
 	}
 
 	public void setInsideFunction(FunctionTail f) {
+		this.f = f;
 		super.setInsideFunction(f);
 		id.setFunctionInside(f);
 		id.setInsideFunction(true);

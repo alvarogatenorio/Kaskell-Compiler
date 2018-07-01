@@ -116,7 +116,11 @@ public class Function {
 		int lengthPExp = tail.getBlock().lengthStackExpressions();
 		instructions.addComment("{ Function code }\n");
 		instructions.addComment("{ Function prologue }\n");
-		instructions.add("ssp " + numMarc + ";\n");
+		if (tail.getBlock() instanceof ReturnBlock) {
+			instructions.add("ssp " + (numMarc + 1) + ";\n");
+		} else {
+			instructions.add("ssp " + numMarc + ";\n");
+		}
 		this.address = instructions.getCounter();
 		this.tail.setAddress(this.address);
 		instructions.add("sep " + lengthPExp + ";\n");

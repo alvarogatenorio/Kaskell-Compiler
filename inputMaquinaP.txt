@@ -1,84 +1,30 @@
 { Initialization of SP and EP }
-{0} ssp 10;
+{0} ssp 6;
 {1} sep 1;
 { End initialization of SP and EP }
 { Function code }
 { Function prologue }
-{2} ssp 26;
-{3} sep 2;
+{2} ssp 7;
+{3} sep 1;
 {4} ujp 5;
 { End of function prologue }
-{ Two-branch if }
-{5} lda 0 7;
-{6} inc 0;
+{ Simple assignment }
+{5} lda 0 6;
+{6} lda 0 5;
 {7} ind;
-{8} ldc 2;
-{9} equ;
-{10} fjp 20;
-{ StructType assignment }
-{11} lda 0 7;
-{12} inc 1;
-{13} ldc false;
-{14} sto;
-{ End of StructType assignment }
-{ StructType assignment }
-{15} lda 0 23;
-{16} inc 1;
-{17} ldc 89;
-{18} sto;
-{ End of StructType assignment }
-{19} ujp 24;
-{ StructType assignment }
-{20} lda 0 7;
-{21} inc 0;
-{22} ldc 8;
-{23} sto;
-{ End of StructType assignment }
-{ End of two-branch if }
-{ Function call }
-{24} mst 1;
-{25} lda 0 5;
-{26} ind;
-{27} ldc false;
-{28} cup 2 2;
-{ End function call }
-{ Simple assignment }
-{29} lda 0 24;
-{30} ldc 9;
-{31} sto;
+{8} sto;
 { End of simple assignment }
 { Function epilogue }
-{32} lda 0 0;
-{33} lda 0 24;
-{34} ind;
-{35} sto;
-{36} retf;
+{9} lda 0 0;
+{10} lda 0 6;
+{11} ind;
+{12} sto;
+{13} retf;
 { End of function epilogue }
 { End funtion code }
-{ Function code }
-{ Function prologue }
-{37} ssp 6;
-{38} sep 1;
-{39} ujp 40;
-{ End of function prologue }
 { Simple assignment }
-{40} lda 0 5;
-{41} ldc false;
-{42} sto;
+{14} lda 0 5;
+{15} ldc 9;
+{16} sto;
 { End of simple assignment }
-{ Function epilogue }
-{43} lda 0 0;
-{44} lda 0 5;
-{45} ind;
-{46} sto;
-{47} retf;
-{ End of function epilogue }
-{ End funtion code }
-{ Function call }
-{48} mst 1;
-{49} lda 0 5;
-{50} ind;
-{51} ldc true;
-{52} cup 2 2;
-{ End function call }
-{53} stp;
+{17} stp;
