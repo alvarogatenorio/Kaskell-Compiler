@@ -1,2 +1,2 @@
 # Kaskell
-Intento de compilador
+Full compiler of a custom language
